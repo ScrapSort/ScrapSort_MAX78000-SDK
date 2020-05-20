@@ -72,12 +72,12 @@ uint32_t ramTop = (MXC_SRAM_MEM_BASE + (MXC_SRAM_MEM_SIZE*0.8));
 void ECC_IRQHandler(void) 
 {
     eccErr = MXC_GCR->eccerr;
-    eccDErr = MXC_GCR->eccnded;
+    eccDErr = MXC_GCR->eccced;
     eccAddr = MXC_GCR->eccaddr;
     eccFlag = 1;
 
     MXC_GCR->eccerr = MXC_GCR->eccerr;
-    MXC_GCR->eccnded = MXC_GCR->eccnded;
+    MXC_GCR->eccced = MXC_GCR->eccced;
 }
 
 
@@ -96,7 +96,7 @@ int main(void)
 
     // Clear all ECC Errors -- write-1-to-clear
     MXC_GCR->eccerr = MXC_GCR->eccerr;
-    MXC_GCR->eccnded = MXC_GCR->eccnded;
+    MXC_GCR->eccced = MXC_GCR->eccced;
 
     // Enable interrupts for ECC errors
     MXC_GCR->eccie |=  MXC_F_GCR_ECCIE_RAM;

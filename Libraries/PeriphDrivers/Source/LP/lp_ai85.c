@@ -228,9 +228,19 @@ void MXC_LP_DisableRTCAlarmWakeup (void)
     MXC_GCR->pm &= ~MXC_F_GCR_PM_RTC_WE;
 }
 
+void MXC_LP_EnableWUTAlarmWakeup (void)
+{
+    MXC_GCR->pm |= MXC_F_GCR_PM_WUT_WE;
+}
+
+void MXC_LP_DisableWUTAlarmWakeup (void)
+{
+    MXC_GCR->pm &= ~MXC_F_GCR_PM_WUT_WE;
+}
+
 int MXC_LP_ConfigDeepSleepClocks (uint32_t mask)
 {
-    if (! (mask & ( MXC_F_GCR_PM_IBROPD | MXC_F_GCR_PM_IPOPD))) {
+    if (! (mask & ( MXC_F_GCR_PM_IBRO_PD | MXC_F_GCR_PM_IPO_PD))) {
         return E_BAD_PARAM;
     }
     

@@ -1,5 +1,5 @@
 /* ****************************************************************************
- * Copyright (C) 2019 Maxim Integrated Products, Inc., All Rights Reserved.
+ * Copyright (C) Maxim Integrated Products, Inc., All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,9 +28,6 @@
  * trademarks, maskwork rights, or any other form of intellectual
  * property whatsoever. Maxim Integrated Products, Inc. retains all
  * ownership rights.
- *
- * $Date: 2018-08-28 17:03:02 -0500 (Tue, 28 Aug 2018) $
- * $Revision: 37424 $
  *
  *************************************************************************** */
 #include "mxc_device.h"
@@ -96,7 +93,7 @@ void MXC_LP_EnterStorageMode (void)
 void MXC_LP_EnterShutDownMode (void)
 {
     MXC_GCR->pm &= ~MXC_F_GCR_PM_MODE;
-    MXC_GCR->pm |= MXC_S_GCR_PM_MODE_SHUTDOWN;
+    MXC_GCR->pm |= MXC_S_GCR_PM_MODE_POWERDOWN;
     
     while (1); // Should never reach this line - device will reset on exit from shutdown mode.
 }
@@ -229,65 +226,24 @@ void MXC_LP_DisableRTCAlarmWakeup (void)
     MXC_GCR->pm &= ~MXC_F_GCR_PM_RTC_WE;
 }
 
+void MXC_LP_EnableWUTAlarmWakeup (void)
+{
+    MXC_GCR->pm |= MXC_F_GCR_PM_WUT_WE;
+}
+
+void MXC_LP_DisableWUTAlarmWakeup (void)
+{
+    MXC_GCR->pm &= ~MXC_F_GCR_PM_WUT_WE;
+}
+
 int MXC_LP_ConfigDeepSleepClocks (uint32_t mask)
 {
-    if (! (mask & ( MXC_F_GCR_PM_IBROPD | MXC_F_GCR_PM_IPOPD
-                     | MXC_F_GCR_PM_ERFOPD))) {
+    if (! (mask & ( MXC_F_GCR_PM_IBRO_PD | MXC_F_GCR_PM_IPO_PD))) {
         return E_BAD_PARAM;
-    }
-    
+}
+
     MXC_GCR->pm |= mask;
     return E_NO_ERROR;
-}
-
-void MXC_LP_SysRam0LightSleepEnable (void)
-{
-    MXC_GCR->memckcn |= MXC_F_GCR_MEMCKCN_SYSRAM0LS;
-}
-
-void MXC_LP_SysRam1LightSleepEnable (void)
-{
-    MXC_GCR->memckcn |= MXC_F_GCR_MEMCKCN_SYSRAM1LS;
-}
-
-void MXC_LP_SysRam2LightSleepEnable (void)
-{
-    MXC_GCR->memckcn |= MXC_F_GCR_MEMCKCN_SYSRAM2LS;
-}
-
-void MXC_LP_SysRam3LightSleepEnable (void)
-{
-    MXC_GCR->memckcn |= MXC_F_GCR_MEMCKCN_SYSRAM3LS;
-}
-
-void MXC_LP_ROMLightSleepEnable (void)
-{
-    MXC_GCR->memckcn |= MXC_F_GCR_MEMCKCN_ROMLS;
-}
-
-void MXC_LP_SysRam0LightSleepDisable (void)
-{
-    MXC_GCR->memckcn &= ~MXC_F_GCR_MEMCKCN_SYSRAM0LS;
-}
-
-void MXC_LP_SysRam1LightSleepDisable (void)
-{
-    MXC_GCR->memckcn &= ~MXC_F_GCR_MEMCKCN_SYSRAM1LS;
-}
-
-void MXC_LP_SysRam2LightSleepDisable (void)
-{
-    MXC_GCR->memckcn &= ~MXC_F_GCR_MEMCKCN_SYSRAM2LS;
-}
-
-void MXC_LP_SysRam3LightSleepDisable (void)
-{
-    MXC_GCR->memckcn &= ~MXC_F_GCR_MEMCKCN_SYSRAM3LS;
-}
-
-void MXC_LP_ROMLightSleepDisable (void)
-{
-    MXC_GCR->memckcn &= ~MXC_F_GCR_MEMCKCN_ROMLS;
 }
 
 void MXC_LP_SysRam0Shutdown (void)

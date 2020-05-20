@@ -1,3 +1,36 @@
+/* ****************************************************************************
+ * Copyright (C) 2018 Maxim Integrated Products, Inc., All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL MAXIM INTEGRATED BE LIABLE FOR ANY CLAIM, DAMAGES
+ * OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * Except as contained in this notice, the name of Maxim Integrated
+ * Products, Inc. shall not be used except as stated in the Maxim Integrated
+ * Products, Inc. Branding Policy.
+ *
+ * The mere transfer of this software does not imply any licenses
+ * of trade secrets, proprietary technology, copyrights, patents,
+ * trademarks, maskwork rights, or any other form of intellectual
+ * property whatsoever. Maxim Integrated Products, Inc. retains all
+ * ownership rights.
+ *
+ *************************************************************************** */
+
 #include "uart.h"
 #include "mxc_device.h"
 #include "mxc_pins.h"
@@ -27,20 +60,12 @@ int MXC_UART_Init (mxc_uart_regs_t* uart, unsigned int baud, mxc_uart_clock_t cl
     }
 
     switch(clock){
-    case MXC_UART_EXT_CLK:
-        MXC_GPIO_Config(&gpio_cfg_extclk);
-        break;
-
     case MXC_UART_32K_CLK:
         MXC_SYS_ClockSourceEnable(MXC_SYS_CLOCK_ERTCO);
         break;
 
     case MXC_UART_8M_CLK:
         MXC_SYS_ClockSourceEnable(MXC_SYS_CLOCK_IBRO);
-        break;
-
-    case MXC_UART_32M_CLK:
-        MXC_SYS_ClockSourceEnable(MXC_SYS_CLOCK_ERFO);
         break;
 
     default:
@@ -62,6 +87,14 @@ int MXC_UART_Init (mxc_uart_regs_t* uart, unsigned int baud, mxc_uart_clock_t cl
         MXC_GPIO_Config (&gpio_cfg_uart2);
         MXC_SYS_ClockEnable (MXC_SYS_PERIPH_CLOCK_UART2);
         break;
+
+    case 3:
+        MXC_GPIO_Config (&gpio_cfg_uart3);
+        MXC_SYS_ClockEnable (MXC_SYS_PERIPH_CLOCK_UART3);
+        break;
+
+    default:
+        return E_BAD_PARAM;
     }
 
     return MXC_UART_RevB_Init (uart, baud, clock);
@@ -83,6 +116,12 @@ int MXC_UART_Shutdown (mxc_uart_regs_t* uart)
         MXC_SYS_Reset_Periph (MXC_SYS_RESET0_UART2);
         MXC_SYS_ClockDisable (MXC_SYS_PERIPH_CLOCK_UART2);
         break;
+    case 3:
+        MXC_LPGCR->rst |= MXC_F_LPGCR_RST_UART3;
+        MXC_LPGCR->pclkdis |= MXC_F_LPGCR_PCLKDIS_UART3;
+        break;
+    default:
+        return E_BAD_PARAM;
     }
 
     return E_NO_ERROR;
@@ -152,16 +191,6 @@ int MXC_UART_GetActive (mxc_uart_regs_t* uart)
 int MXC_UART_AbortTransmission (mxc_uart_regs_t* uart)
 {
     return MXC_UART_RevB_AbortTransmission (uart);
-}
-
-int MXC_UART_ReadCharacterRaw (mxc_uart_regs_t* uart)
-{
-    return MXC_UART_RevB_ReadCharacterRaw (uart);
-}
-
-int MXC_UART_WriteCharacterRaw (mxc_uart_regs_t* uart, uint8_t character)
-{
-    return MXC_UART_RevB_WriteCharacterRaw (uart, character);
 }
 
 int MXC_UART_ReadCharacter (mxc_uart_regs_t* uart)

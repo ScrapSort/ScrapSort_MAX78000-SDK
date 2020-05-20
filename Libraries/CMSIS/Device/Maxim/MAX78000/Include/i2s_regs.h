@@ -89,7 +89,9 @@ typedef struct {
     __IO uint32_t ctrl0ch0;             /**< <tt>\b 0x00:</tt> I2S CTRL0CH0 Register */
     __R  uint32_t rsv_0x4_0xf[3];
     __IO uint32_t ctrl1ch0;             /**< <tt>\b 0x10:</tt> I2S CTRL1CH0 Register */
-    __R  uint32_t rsv_0x14_0x2f[7];
+    __R  uint32_t rsv_0x14_0x1f[3];
+    __IO uint32_t filtch0;              /**< <tt>\b 0x20:</tt> I2S FILTCH0 Register */
+    __R  uint32_t rsv_0x24_0x2f[3];
     __IO uint32_t dmach0;               /**< <tt>\b 0x30:</tt> I2S DMACH0 Register */
     __R  uint32_t rsv_0x34_0x3f[3];
     __IO uint32_t fifoch0;              /**< <tt>\b 0x40:</tt> I2S FIFOCH0 Register */
@@ -97,6 +99,8 @@ typedef struct {
     __IO uint32_t intfl;                /**< <tt>\b 0x50:</tt> I2S INTFL Register */
     __IO uint32_t inten;                /**< <tt>\b 0x54:</tt> I2S INTEN Register */
     __IO uint32_t extsetup;             /**< <tt>\b 0x58:</tt> I2S EXTSETUP Register */
+    __IO uint32_t wken;                 /**< <tt>\b 0x5C:</tt> I2S WKEN Register */
+    __IO uint32_t wkfl;                 /**< <tt>\b 0x60:</tt> I2S WKFL Register */
 } mxc_i2s_regs_t;
 
 /* Register offsets for module I2S */
@@ -108,11 +112,14 @@ typedef struct {
  */
  #define MXC_R_I2S_CTRL0CH0                 ((uint32_t)0x00000000UL) /**< Offset from I2S Base Address: <tt> 0x0000</tt> */ 
  #define MXC_R_I2S_CTRL1CH0                 ((uint32_t)0x00000010UL) /**< Offset from I2S Base Address: <tt> 0x0010</tt> */ 
+ #define MXC_R_I2S_FILTCH0                  ((uint32_t)0x00000020UL) /**< Offset from I2S Base Address: <tt> 0x0020</tt> */ 
  #define MXC_R_I2S_DMACH0                   ((uint32_t)0x00000030UL) /**< Offset from I2S Base Address: <tt> 0x0030</tt> */ 
  #define MXC_R_I2S_FIFOCH0                  ((uint32_t)0x00000040UL) /**< Offset from I2S Base Address: <tt> 0x0040</tt> */ 
  #define MXC_R_I2S_INTFL                    ((uint32_t)0x00000050UL) /**< Offset from I2S Base Address: <tt> 0x0050</tt> */ 
  #define MXC_R_I2S_INTEN                    ((uint32_t)0x00000054UL) /**< Offset from I2S Base Address: <tt> 0x0054</tt> */ 
  #define MXC_R_I2S_EXTSETUP                 ((uint32_t)0x00000058UL) /**< Offset from I2S Base Address: <tt> 0x0058</tt> */ 
+ #define MXC_R_I2S_WKEN                     ((uint32_t)0x0000005CUL) /**< Offset from I2S Base Address: <tt> 0x005C</tt> */ 
+ #define MXC_R_I2S_WKFL                     ((uint32_t)0x00000060UL) /**< Offset from I2S Base Address: <tt> 0x0060</tt> */ 
 /**@} end of group i2s_registers */
 
 /**
@@ -123,6 +130,18 @@ typedef struct {
  */
  #define MXC_F_I2S_CTRL0CH0_LSB_FIRST_POS               1 /**< CTRL0CH0_LSB_FIRST Position */
  #define MXC_F_I2S_CTRL0CH0_LSB_FIRST                   ((uint32_t)(0x1UL << MXC_F_I2S_CTRL0CH0_LSB_FIRST_POS)) /**< CTRL0CH0_LSB_FIRST Mask */
+
+ #define MXC_F_I2S_CTRL0CH0_PDM_FILT_POS                2 /**< CTRL0CH0_PDM_FILT Position */
+ #define MXC_F_I2S_CTRL0CH0_PDM_FILT                    ((uint32_t)(0x1UL << MXC_F_I2S_CTRL0CH0_PDM_FILT_POS)) /**< CTRL0CH0_PDM_FILT Mask */
+
+ #define MXC_F_I2S_CTRL0CH0_PDM_EN_POS                  3 /**< CTRL0CH0_PDM_EN Position */
+ #define MXC_F_I2S_CTRL0CH0_PDM_EN                      ((uint32_t)(0x1UL << MXC_F_I2S_CTRL0CH0_PDM_EN_POS)) /**< CTRL0CH0_PDM_EN Mask */
+
+ #define MXC_F_I2S_CTRL0CH0_USEDDR_POS                  4 /**< CTRL0CH0_USEDDR Position */
+ #define MXC_F_I2S_CTRL0CH0_USEDDR                      ((uint32_t)(0x1UL << MXC_F_I2S_CTRL0CH0_USEDDR_POS)) /**< CTRL0CH0_USEDDR Mask */
+
+ #define MXC_F_I2S_CTRL0CH0_PDM_INV_POS                 5 /**< CTRL0CH0_PDM_INV Position */
+ #define MXC_F_I2S_CTRL0CH0_PDM_INV                     ((uint32_t)(0x1UL << MXC_F_I2S_CTRL0CH0_PDM_INV_POS)) /**< CTRL0CH0_PDM_INV Mask */
 
  #define MXC_F_I2S_CTRL0CH0_CH_MODE_POS                 6 /**< CTRL0CH0_CH_MODE Position */
  #define MXC_F_I2S_CTRL0CH0_CH_MODE                     ((uint32_t)(0x3UL << MXC_F_I2S_CTRL0CH0_CH_MODE_POS)) /**< CTRL0CH0_CH_MODE Mask */
@@ -157,7 +176,7 @@ typedef struct {
  #define MXC_F_I2S_CTRL0CH0_RST_POS                     19 /**< CTRL0CH0_RST Position */
  #define MXC_F_I2S_CTRL0CH0_RST                         ((uint32_t)(0x1UL << MXC_F_I2S_CTRL0CH0_RST_POS)) /**< CTRL0CH0_RST Mask */
 
- #define MXC_F_I2S_CTRL0CH0_FIFO_LSB_POS                19 /**< CTRL0CH0_FIFO_LSB Position */
+ #define MXC_F_I2S_CTRL0CH0_FIFO_LSB_POS                20 /**< CTRL0CH0_FIFO_LSB Position */
  #define MXC_F_I2S_CTRL0CH0_FIFO_LSB                    ((uint32_t)(0x1UL << MXC_F_I2S_CTRL0CH0_FIFO_LSB_POS)) /**< CTRL0CH0_FIFO_LSB Mask */
 
  #define MXC_F_I2S_CTRL0CH0_RX_THD_VAL_POS              24 /**< CTRL0CH0_RX_THD_VAL Position */
@@ -231,11 +250,11 @@ typedef struct {
  * @brief    ISR Status.
  * @{
  */
- #define MXC_F_I2S_INTFL_TX_OV_CH0_POS                  0 /**< INTFL_TX_OV_CH0 Position */
- #define MXC_F_I2S_INTFL_TX_OV_CH0                      ((uint32_t)(0x1UL << MXC_F_I2S_INTFL_TX_OV_CH0_POS)) /**< INTFL_TX_OV_CH0 Mask */
+ #define MXC_F_I2S_INTFL_RX_OV_CH0_POS                  0 /**< INTFL_RX_OV_CH0 Position */
+ #define MXC_F_I2S_INTFL_RX_OV_CH0                      ((uint32_t)(0x1UL << MXC_F_I2S_INTFL_RX_OV_CH0_POS)) /**< INTFL_RX_OV_CH0 Mask */
 
- #define MXC_F_I2S_INTFL_TX_THD_CH0_POS                 1 /**< INTFL_TX_THD_CH0 Position */
- #define MXC_F_I2S_INTFL_TX_THD_CH0                     ((uint32_t)(0x1UL << MXC_F_I2S_INTFL_TX_THD_CH0_POS)) /**< INTFL_TX_THD_CH0 Mask */
+ #define MXC_F_I2S_INTFL_RX_THD_CH0_POS                 1 /**< INTFL_RX_THD_CH0 Position */
+ #define MXC_F_I2S_INTFL_RX_THD_CH0                     ((uint32_t)(0x1UL << MXC_F_I2S_INTFL_RX_THD_CH0_POS)) /**< INTFL_RX_THD_CH0 Mask */
 
  #define MXC_F_I2S_INTFL_TX_OB_CH0_POS                  2 /**< INTFL_TX_OB_CH0 Position */
  #define MXC_F_I2S_INTFL_TX_OB_CH0                      ((uint32_t)(0x1UL << MXC_F_I2S_INTFL_TX_OB_CH0_POS)) /**< INTFL_TX_OB_CH0 Mask */
@@ -251,11 +270,11 @@ typedef struct {
  * @brief    Interrupt Enable.
  * @{
  */
- #define MXC_F_I2S_INTEN_TX_OV_CH0_POS                  0 /**< INTEN_TX_OV_CH0 Position */
- #define MXC_F_I2S_INTEN_TX_OV_CH0                      ((uint32_t)(0x1UL << MXC_F_I2S_INTEN_TX_OV_CH0_POS)) /**< INTEN_TX_OV_CH0 Mask */
+ #define MXC_F_I2S_INTEN_RX_OV_CH0_POS                  0 /**< INTEN_RX_OV_CH0 Position */
+ #define MXC_F_I2S_INTEN_RX_OV_CH0                      ((uint32_t)(0x1UL << MXC_F_I2S_INTEN_RX_OV_CH0_POS)) /**< INTEN_RX_OV_CH0 Mask */
 
- #define MXC_F_I2S_INTEN_TX_THD_CH0_POS                 1 /**< INTEN_TX_THD_CH0 Position */
- #define MXC_F_I2S_INTEN_TX_THD_CH0                     ((uint32_t)(0x1UL << MXC_F_I2S_INTEN_TX_THD_CH0_POS)) /**< INTEN_TX_THD_CH0 Mask */
+ #define MXC_F_I2S_INTEN_RX_THD_CH0_POS                 1 /**< INTEN_RX_THD_CH0 Position */
+ #define MXC_F_I2S_INTEN_RX_THD_CH0                     ((uint32_t)(0x1UL << MXC_F_I2S_INTEN_RX_THD_CH0_POS)) /**< INTEN_RX_THD_CH0 Mask */
 
  #define MXC_F_I2S_INTEN_TX_OB_CH0_POS                  2 /**< INTEN_TX_OB_CH0 Position */
  #define MXC_F_I2S_INTEN_TX_OB_CH0                      ((uint32_t)(0x1UL << MXC_F_I2S_INTEN_TX_OB_CH0_POS)) /**< INTEN_TX_OB_CH0 Mask */

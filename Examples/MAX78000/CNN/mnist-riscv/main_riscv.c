@@ -678,6 +678,13 @@ int main(void)
 
   printf("Time for CNN: %d us\n\n", cnn_time);
 
+  // Disable power to CNN
+  MXC_BBFC->reg3 = 0xf; // Reset
+  MXC_BBFC->reg1 = 0x0; // Mask memory
+  MXC_BBFC->reg0 = 0x0; // Power
+  MXC_BBFC->reg2 = 0xf; // Iso
+  MXC_BBFC->reg3 = 0x0; // Reset
+
   printf("Classification results:\n");
   for (i = 0; i < NUM_OUTPUTS; i++) {
     digs = (1000 * ml_softmax[i] + 0x4000) >> 15;

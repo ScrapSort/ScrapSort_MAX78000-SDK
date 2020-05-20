@@ -56,15 +56,20 @@ const mxc_gpio_cfg_t gpio_cfg_uart0_flow        =   { MXC_GPIO0, (MXC_GPIO_PIN_2
 const mxc_gpio_cfg_t gpio_cfg_uart1             =   { MXC_GPIO0, (MXC_GPIO_PIN_12 | MXC_GPIO_PIN_13), MXC_GPIO_FUNC_ALT1, MXC_GPIO_PAD_NONE };
 const mxc_gpio_cfg_t gpio_cfg_uart1_flow        =   { MXC_GPIO0, (MXC_GPIO_PIN_14 | MXC_GPIO_PIN_15), MXC_GPIO_FUNC_ALT2, MXC_GPIO_PAD_NONE };
 const mxc_gpio_cfg_t gpio_cfg_uart2             =   { MXC_GPIO1, (MXC_GPIO_PIN_0 | MXC_GPIO_PIN_1), MXC_GPIO_FUNC_ALT1, MXC_GPIO_PAD_NONE };
+const mxc_gpio_cfg_t gpio_cfg_uart3             =   { MXC_GPIO2, (MXC_GPIO_PIN_6 | MXC_GPIO_PIN_7), MXC_GPIO_FUNC_ALT2, MXC_GPIO_PAD_NONE };
 
 const mxc_gpio_cfg_t antenna_ctrl0              =   { MXC_GPIO1, (MXC_GPIO_PIN_8 | MXC_GPIO_PIN_9), MXC_GPIO_FUNC_ALT1, MXC_GPIO_PAD_NONE };
 const mxc_gpio_cfg_t antenna_ctrl1              =   { MXC_GPIO1, (MXC_GPIO_PIN_6 | MXC_GPIO_PIN_7), MXC_GPIO_FUNC_ALT2, MXC_GPIO_PAD_NONE };
 
 // Timers are only defined once, depending on package, each timer could be mapped to other pins
-const mxc_gpio_cfg_t gpio_cfg_tmr0 =    { MXC_GPIO0, (MXC_GPIO_PIN_2 | MXC_GPIO_PIN_3), MXC_GPIO_FUNC_ALT3, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
-const mxc_gpio_cfg_t gpio_cfg_tmr1 =    { MXC_GPIO0, (MXC_GPIO_PIN_2  |  MXC_GPIO_PIN_3), MXC_GPIO_FUNC_ALT3, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
-const mxc_gpio_cfg_t gpio_cfg_tmr2 =    { MXC_GPIO0, (MXC_GPIO_PIN_4  |  MXC_GPIO_PIN_5), MXC_GPIO_FUNC_ALT3, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
-const mxc_gpio_cfg_t gpio_cfg_tmr3 =    { MXC_GPIO0, (MXC_GPIO_PIN_14 | MXC_GPIO_PIN_15), MXC_GPIO_FUNC_ALT3, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
+const mxc_gpio_cfg_t gpio_cfg_tmr0  =    { MXC_GPIO0, (MXC_GPIO_PIN_2),  MXC_GPIO_FUNC_ALT3, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
+const mxc_gpio_cfg_t gpio_cfg_tmr1  =    { MXC_GPIO0, (MXC_GPIO_PIN_2),  MXC_GPIO_FUNC_ALT3, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
+const mxc_gpio_cfg_t gpio_cfg_tmr2  =    { MXC_GPIO0, (MXC_GPIO_PIN_4),  MXC_GPIO_FUNC_ALT3, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
+const mxc_gpio_cfg_t gpio_cfg_tmr3  =    { MXC_GPIO0, (MXC_GPIO_PIN_14), MXC_GPIO_FUNC_ALT3, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
+const mxc_gpio_cfg_t gpio_cfg_tmr0b =    { MXC_GPIO0, (MXC_GPIO_PIN_3),  MXC_GPIO_FUNC_ALT1, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
+const mxc_gpio_cfg_t gpio_cfg_tmr1b =    { MXC_GPIO0, (MXC_GPIO_PIN_3),  MXC_GPIO_FUNC_ALT1, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
+const mxc_gpio_cfg_t gpio_cfg_tmr2b =    { MXC_GPIO0, (MXC_GPIO_PIN_5),  MXC_GPIO_FUNC_ALT1, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
+const mxc_gpio_cfg_t gpio_cfg_tmr3b =    { MXC_GPIO1, (MXC_GPIO_PIN_15), MXC_GPIO_FUNC_ALT1, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
 const mxc_gpio_cfg_t gpio_cfg_tmr4 =    { MXC_GPIO0, (MXC_GPIO_PIN_6  |  MXC_GPIO_PIN_7), MXC_GPIO_FUNC_ALT2, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
 const mxc_gpio_cfg_t gpio_cfg_tmr5 =    { MXC_GPIO0, (MXC_GPIO_PIN_22 | MXC_GPIO_PIN_23), MXC_GPIO_FUNC_ALT1, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIO};
 

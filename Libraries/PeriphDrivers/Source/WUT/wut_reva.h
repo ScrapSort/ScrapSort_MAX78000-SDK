@@ -35,7 +35,7 @@
  **************************************************************************** */
 
 /* **** Includes **** */
-#include "mxc_config.h"
+#include "mxc_device.h"
 #include "mxc_assert.h"
 #include "mxc_sys.h"
 #include "wut.h"
@@ -46,19 +46,20 @@
 /* **** Globals **** */
 
 /* **** Local Variables **** */
-static uint32_t wut_count;
-static uint32_t wut_snapshot;
 
 /* **** Functions **** */
 
 /* ************************************************************************** */
-void MXC_WUT_RevA_Init(mxc_wut_regs_t* wut, wut_pres_t pres);
+void MXC_WUT_RevA_Init(mxc_wut_regs_t* wut, mxc_wut_pres_t pres);
 
 void MXC_WUT_RevA_Shutdown(mxc_wut_regs_t* wut);
 
+void MXC_WUT_RevA_Enable(mxc_wut_regs_t* wut);
+
 void MXC_WUT_RevA_Disable(mxc_wut_regs_t* wut);
 
-void MXC_WUT_RevA_Config(mxc_wut_regs_t* wut, const wut_cfg_t *cfg);
+
+void MXC_WUT_RevA_Config(mxc_wut_regs_t* wut, const mxc_wut_cfg_t *cfg);
 
 uint32_t MXC_WUT_RevA_GetCompare(mxc_wut_regs_t* wut);
 
@@ -74,16 +75,16 @@ void MXC_WUT_RevA_SetCompare(mxc_wut_regs_t* wut, uint32_t cmp_cnt);
 
 void MXC_WUT_RevA_SetCount(mxc_wut_regs_t* wut, uint32_t cnt);
 
-int MXC_WUT_RevA_GetTicks(mxc_wut_regs_t* wut, uint32_t time, wut_unit_t units, uint32_t *ticks);
+int MXC_WUT_RevA_GetTicks(mxc_wut_regs_t* wut, uint32_t timerClock, uint32_t time, mxc_wut_unit_t units, uint32_t *ticks);
 
-int MXC_WUT_RevA_GetTime(mxc_wut_regs_t* wut, uint32_t ticks, uint32_t *time, wut_unit_t *units);
+int MXC_WUT_RevA_GetTime(mxc_wut_regs_t* wut, uint32_t timerClock, uint32_t ticks, uint32_t *time, mxc_wut_unit_t *units);
 
 void MXC_WUT_RevA_Edge(mxc_wut_regs_t* wut);
 
 void MXC_WUT_RevA_Store(mxc_wut_regs_t* wut);
 
-void MXC_WUT_RevA_RestoreBBClock(mxc_wut_regs_t* wut, uint32_t dbbFreq);
+void MXC_WUT_RevA_RestoreBBClock(mxc_wut_regs_t* wut, uint32_t dbbFreq, uint32_t timerClock);
 
 uint32_t MXC_WUT_RevA_GetSleepTicks(mxc_wut_regs_t* wut);
 
-void MXC_WUT_RevA_Delay_MS(mxc_wut_regs_t* wut, uint32_t waitMs);
+void MXC_WUT_RevA_Delay_MS(mxc_wut_regs_t* wut, uint32_t waitMs, uint32_t timerClock);

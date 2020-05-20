@@ -33,7 +33,7 @@
 *******************************************************************************/
 
 // cifar-100
-// Created using ./ai8xize.py -e --verbose --top-level cnn -L --test-dir sdk/Examples/MAX78000/CNN --prefix cifar-100 --checkpoint-file trained/ai85-cifar100.pth.tar --config-file networks/cifar100-simple.yaml --device 85 --compact-data --mexpress --softmax --display-checkpoint
+// Created using ./ai8xize.py -e --verbose --top-level cnn -L --test-dir sdk/Examples/MAX78000/CNN --prefix cifar-100 --checkpoint-file trained/ai85-cifar100.pth.tar --config-file networks/cifar100-simple.yaml --device 85 --compact-data --mexpress --softmax --display-checkpoint --boost 2.5
 
 // Configuring 14 layers:
 // Layer 0: 3x32x32 (HWC/little data), no pooling, conv2d with kernel size 3x3, stride 1/1, pad 1/1, 16x32x32 output
@@ -1316,7 +1316,7 @@ int main(void)
 
   // Reset all domains, restore power to CNN
   MXC_BBFC->reg3 = 0xf; // Reset
-  MXC_BBFC->reg1 = 0xf; // Mask
+  MXC_BBFC->reg1 = 0xf; // Mask memory
   MXC_BBFC->reg0 = 0xf; // Power
   MXC_BBFC->reg2 = 0x0; // Iso
   MXC_BBFC->reg3 = 0x0; // Reset
@@ -1325,11 +1325,23 @@ int main(void)
   MXC_GCR->pclkdiv |= MXC_S_GCR_PCLKDIV_CNNCLKDIV_DIV1; // CNN clock: 100 MHz div 2
   MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_CNN); // Enable CNN clock
 
+  // Configure P2.5, turn on the CNN Boost
+  mxc_gpio_cfg_t gpio_out;
+  gpio_out.port = MXC_GPIO2;
+  gpio_out.mask = MXC_GPIO_PIN_5;
+  gpio_out.pad = MXC_GPIO_PAD_NONE;
+  gpio_out.func = MXC_GPIO_FUNC_OUT;
+  MXC_GPIO_Config(&gpio_out);
+  MXC_GPIO_OutSet(gpio_out.port, gpio_out.mask);
+
   printf("\n*** CNN Test ***\n");
 
   if (!cnn_load()) fail();
   MXC_TMR_SW_Start(MXC_TMR0);
   cnn_wait();
+
+  // Turn off the CNN Boost
+  MXC_GPIO_OutClr(gpio_out.port, gpio_out.mask);
 
   if (!cnn_check()) fail();
   if (!softmax_layer()) fail();
@@ -1337,6 +1349,13 @@ int main(void)
   printf("\n*** PASS ***\n\n");
 
   printf("Time for CNN: %d us\n\n", cnn_time);
+
+  // Disable power to CNN
+  MXC_BBFC->reg3 = 0xf; // Reset
+  MXC_BBFC->reg1 = 0x0; // Mask memory
+  MXC_BBFC->reg0 = 0x0; // Power
+  MXC_BBFC->reg2 = 0xf; // Iso
+  MXC_BBFC->reg3 = 0x0; // Reset
 
   printf("Classification results:\n");
   for (i = 0; i < NUM_OUTPUTS; i++) {

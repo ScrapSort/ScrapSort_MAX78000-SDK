@@ -35,9 +35,8 @@
  **************************************************************************** */
 
 /* **** Includes **** */
-#include "mxc_config.h"
+#include "mxc_device.h"
 #include "mxc_assert.h"
-#include "mxc_sys.h"
 #include "wut.h"
 #include "gcr_regs.h"
 
@@ -52,7 +51,7 @@ static uint32_t wut_snapshot;
 /* **** Functions **** */
 
 /* ************************************************************************** */
-void MXC_WUT_RevA_Init(mxc_wut_regs_t* wut, wut_pres_t pres)
+void MXC_WUT_RevA_Init(mxc_wut_regs_t* wut, mxc_wut_pres_t pres)
 {   
     // Disable timer and clear settings
     wut->cn = 0;
@@ -61,7 +60,7 @@ void MXC_WUT_RevA_Init(mxc_wut_regs_t* wut, wut_pres_t pres)
     wut->intr = MXC_F_WUT_INTR_IRQ_CLR;
 
     // Set the prescaler
-    wut->cn = pres;
+    wut->cn |= pres;
 
     // Initialize the compare register
     wut->cmp = 0xFFFFFFFF;
@@ -90,10 +89,10 @@ void MXC_WUT_RevA_Disable(mxc_wut_regs_t* wut)
 }
 
 /* ************************************************************************** */
-void MXC_WUT_RevA_Config(mxc_wut_regs_t* wut, const wut_cfg_t *cfg)
+void MXC_WUT_RevA_Config(mxc_wut_regs_t* wut, const mxc_wut_cfg_t *cfg)
 {
     // Configure the timer
-    wut->cn = (wut->cn & ~(MXC_F_WUT_CN_TMODE | MXC_F_WUT_CN_TPOL)) |
+    wut->cn |= (wut->cn & ~(MXC_F_WUT_CN_TMODE | MXC_F_WUT_CN_TPOL)) |
               ((cfg->mode << MXC_F_WUT_CN_TMODE_POS) & MXC_F_WUT_CN_TMODE);
               
     wut->cnt = 0x1;
@@ -144,14 +143,12 @@ void MXC_WUT_RevA_SetCount(mxc_wut_regs_t* wut, uint32_t cnt)
 }
 
 /* ************************************************************************* */
-int MXC_WUT_RevA_GetTicks(mxc_wut_regs_t* wut, uint32_t time, wut_unit_t units, uint32_t *ticks)
+int MXC_WUT_RevA_GetTicks(mxc_wut_regs_t* wut, uint32_t timerClock, uint32_t time, mxc_wut_unit_t units, uint32_t *ticks)
 {
     uint32_t unit_div0, unit_div1;
-    uint32_t timerClock;
     uint32_t prescale;
     uint64_t temp_ticks;
     
-    timerClock = SYS_WUT_GetFreq();
     prescale = ((wut->cn & MXC_F_WUT_CN_PRES) >> MXC_F_WUT_CN_PRES_POS) 
         | (((wut->cn & MXC_F_WUT_CN_PRES3) >> (MXC_F_WUT_CN_PRES3_POS))<<3);
     
@@ -188,10 +185,9 @@ int MXC_WUT_RevA_GetTicks(mxc_wut_regs_t* wut, uint32_t time, wut_unit_t units, 
 }
 
 /* ************************************************************************* */
-int MXC_WUT_RevA_GetTime(mxc_wut_regs_t* wut, uint32_t ticks, uint32_t *time, wut_unit_t *units)
+int MXC_WUT_RevA_GetTime(mxc_wut_regs_t* wut, uint32_t timerClock, uint32_t ticks, uint32_t *time, mxc_wut_unit_t *units)
 {
     uint64_t temp_time = 0;
-    uint32_t timerClock = SYS_WUT_GetFreq();
     uint32_t prescale = ((wut->cn & MXC_F_WUT_CN_PRES) >> MXC_F_WUT_CN_PRES_POS) 
         | (((wut->cn & MXC_F_WUT_CN_PRES3) >> (MXC_F_WUT_CN_PRES3_POS))<<3);
     
@@ -242,14 +238,14 @@ void MXC_WUT_RevA_Store(mxc_wut_regs_t* wut)
 }
 
 /* ************************************************************************** */
-void MXC_WUT_RevA_RestoreBBClock(mxc_wut_regs_t* wut, uint32_t dbbFreq)
+void MXC_WUT_RevA_RestoreBBClock(mxc_wut_regs_t* wut, uint32_t dbbFreq, uint32_t timerClock)
 {
     /* restore DBB clock from WUT */
-    MXC_WUT_RevA_Edge();
+    MXC_WUT_RevA_Edge(wut);
     wut->preset = wut_snapshot + (uint64_t)(wut->cnt - wut_count + 1)
-                      * dbbFreq / SYS_WUT_GetFreq();
+                      * dbbFreq / timerClock;
     wut->reload = 1;  // arm DBB_CNT update on the next rising WUT clock
-    MXC_WUT_RevA_Edge();
+    MXC_WUT_RevA_Edge(wut);
 }
 
 /* ************************************************************************** */
@@ -259,12 +255,12 @@ uint32_t MXC_WUT_RevA_GetSleepTicks(mxc_wut_regs_t* wut)
 }
 
 /* ************************************************************************** */
-void MXC_WUT_RevA_Delay_MS(mxc_wut_regs_t* wut, uint32_t waitMs)
+void MXC_WUT_RevA_Delay_MS(mxc_wut_regs_t* wut, uint32_t waitMs, uint32_t timerClock)
 {
     /* assume WUT is already running */
     uint32_t  tmp = wut->cnt;
 
-    tmp += (waitMs * (SYS_WUT_GetFreq() / 
+    tmp += (waitMs * (timerClock / 
         (0x1 << ((wut->cn & MXC_F_WUT_CN_PRES) >> MXC_F_WUT_CN_PRES_POS)))
         + 500) / 1000 ;
 

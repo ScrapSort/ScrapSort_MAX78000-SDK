@@ -670,7 +670,7 @@ int main(void)
 
   // Reset all domains, restore power to CNN
   MXC_BBFC->reg3 = 0xf; // Reset
-  MXC_BBFC->reg1 = 0xf; // Mask
+  MXC_BBFC->reg1 = 0xf; // Mask memory
   MXC_BBFC->reg0 = 0xf; // Power
   MXC_BBFC->reg2 = 0x0; // Iso
   MXC_BBFC->reg3 = 0x0; // Reset
@@ -691,6 +691,13 @@ int main(void)
   printf("\n*** PASS ***\n\n");
 
   printf("Time for CNN: %d us\n\n", cnn_time);
+
+  // Disable power to CNN
+  MXC_BBFC->reg3 = 0xf; // Reset
+  MXC_BBFC->reg1 = 0x0; // Mask memory
+  MXC_BBFC->reg0 = 0x0; // Power
+  MXC_BBFC->reg2 = 0xf; // Iso
+  MXC_BBFC->reg3 = 0x0; // Reset
 
   printf("Classification results:\n");
   for (i = 0; i < NUM_OUTPUTS; i++) {

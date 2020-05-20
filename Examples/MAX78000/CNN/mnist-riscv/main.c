@@ -58,7 +58,7 @@ int main(void)
 
   // Reset all domains, restore power to CNN
   MXC_BBFC->reg3 = 0xf; // Reset
-  MXC_BBFC->reg1 = 0xf; // Mask
+  MXC_BBFC->reg1 = 0xf; // Mask memory
   MXC_BBFC->reg0 = 0xf; // Power
   MXC_BBFC->reg2 = 0x0; // Iso
   MXC_BBFC->reg3 = 0x0; // Reset

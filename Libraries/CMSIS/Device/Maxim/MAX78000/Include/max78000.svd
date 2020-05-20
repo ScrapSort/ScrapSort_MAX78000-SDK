@@ -5257,6 +5257,30 @@
        <access>read-write</access>
       </field>
       <field>
+       <name>PDM_FILT</name>
+       <description>PDM Filter.</description>
+       <bitRange>[2:2]</bitRange>
+       <access>read-write</access>
+      </field>
+      <field>
+       <name>PDM_EN</name>
+       <description>PDM Enable.</description>
+       <bitRange>[3:3]</bitRange>
+       <access>read-write</access>
+      </field>
+      <field>
+       <name>USEDDR</name>
+       <description>DDR.</description>
+       <bitRange>[4:4]</bitRange>
+       <access>read-write</access>
+      </field>
+      <field>
+       <name>PDM_INV</name>
+       <description>Invert PDM.</description>
+       <bitRange>[5:5]</bitRange>
+       <access>read-write</access>
+      </field>
+      <field>
        <name>CH_MODE</name>
        <description>SCK Select.</description>
        <bitRange>[7:6]</bitRange>
@@ -5325,7 +5349,7 @@
       <field>
        <name>FIFO_LSB</name>
        <description>Bit Field Control. </description>
-       <bitRange>[19:19]</bitRange>
+       <bitRange>[20:20]</bitRange>
        <access>read-write</access>
       </field>
       <field>
@@ -5372,6 +5396,11 @@
        <access>read-write</access>
       </field>
      </fields>
+    </register>
+    <register>
+     <name>FILTCH0</name>
+     <description>Filter.</description>
+     <addressOffset>0x20</addressOffset>
     </register>
     <register>
      <name>DMACH0</name>
@@ -5435,13 +5464,13 @@
      <addressOffset>0x50</addressOffset>
      <fields>
       <field>
-       <name>TX_OV_CH0</name>
+       <name>RX_OV_CH0</name>
        <description>Status for RX FIFO Overrun interrupt.</description>
        <bitRange>[0:0]</bitRange>
        <access>read-write</access>
       </field>
       <field>
-       <name>TX_THD_CH0</name>
+       <name>RX_THD_CH0</name>
        <description>Status for interrupt when RX FIFO reaches the number of bytes configured by the RXTHD field.</description>
        <bitRange>[1:1]</bitRange>
        <access>read-write</access>
@@ -5466,13 +5495,13 @@
      <addressOffset>0x54</addressOffset>
      <fields>
       <field>
-       <name>TX_OV_CH0</name>
+       <name>RX_OV_CH0</name>
        <description>Enable for RX FIFO Overrun interrupt.</description>
        <bitRange>[0:0]</bitRange>
        <access>read-write</access>
       </field>
       <field>
-       <name>TX_THD_CH0</name>
+       <name>RX_THD_CH0</name>
        <description>Enable for interrupt when RX FIFO reaches the number of bytes configured by the RXTHD field.</description>
        <bitRange>[1:1]</bitRange>
        <access>read-write</access>
@@ -5503,6 +5532,16 @@
        <access>read-write</access>
       </field>
      </fields>
+    </register>
+    <register>
+     <name>WKEN</name>
+     <description>Wakeup Enable.</description>
+     <addressOffset>0x5C</addressOffset>
+    </register>
+    <register>
+     <name>WKFL</name>
+     <description>Wakeup Flags.</description>
+     <addressOffset>0x60</addressOffset>
     </register>
    </registers>
   </peripheral>
@@ -9571,7 +9610,7 @@
          <value>0</value>
         </enumeratedValue>
         <enumeratedValue>
-         <name>CLK1</name>
+         <name>External_Clock</name>
          <description>Clock 1</description>
          <value>1</value>
         </enumeratedValue>

@@ -105,7 +105,7 @@ typedef struct {
     __IO uint32_t sysie;                /**< <tt>\b 0x54:</tt> GCR SYSIE Register */
     __R  uint32_t rsv_0x58_0x63[3];
     __IO uint32_t eccerr;               /**< <tt>\b 0x64:</tt> GCR ECCERR Register */
-    __IO uint32_t eccnded;              /**< <tt>\b 0x68:</tt> GCR ECCNDED Register */
+    __IO uint32_t eccced;               /**< <tt>\b 0x68:</tt> GCR ECCCED Register */
     __IO uint32_t eccie;                /**< <tt>\b 0x6C:</tt> GCR ECCIE Register */
     __IO uint32_t eccaddr;              /**< <tt>\b 0x70:</tt> GCR ECCADDR Register */
 } mxc_gcr_regs_t;
@@ -132,7 +132,7 @@ typedef struct {
  #define MXC_R_GCR_REVISION                 ((uint32_t)0x00000050UL) /**< Offset from GCR Base Address: <tt> 0x0050</tt> */ 
  #define MXC_R_GCR_SYSIE                    ((uint32_t)0x00000054UL) /**< Offset from GCR Base Address: <tt> 0x0054</tt> */ 
  #define MXC_R_GCR_ECCERR                   ((uint32_t)0x00000064UL) /**< Offset from GCR Base Address: <tt> 0x0064</tt> */ 
- #define MXC_R_GCR_ECCNDED                  ((uint32_t)0x00000068UL) /**< Offset from GCR Base Address: <tt> 0x0068</tt> */ 
+ #define MXC_R_GCR_ECCCED                   ((uint32_t)0x00000068UL) /**< Offset from GCR Base Address: <tt> 0x0068</tt> */ 
  #define MXC_R_GCR_ECCIE                    ((uint32_t)0x0000006CUL) /**< Offset from GCR Base Address: <tt> 0x006C</tt> */ 
  #define MXC_R_GCR_ECCADDR                  ((uint32_t)0x00000070UL) /**< Offset from GCR Base Address: <tt> 0x0070</tt> */ 
 /**@} end of group gcr_registers */
@@ -350,14 +350,14 @@ typedef struct {
  #define MXC_F_GCR_PM_AINCOMP_WE_POS                    9 /**< PM_AINCOMP_WE Position */
  #define MXC_F_GCR_PM_AINCOMP_WE                        ((uint32_t)(0x1UL << MXC_F_GCR_PM_AINCOMP_WE_POS)) /**< PM_AINCOMP_WE Mask */
 
- #define MXC_F_GCR_PM_ISOPD_POS                         15 /**< PM_ISOPD Position */
- #define MXC_F_GCR_PM_ISOPD                             ((uint32_t)(0x1UL << MXC_F_GCR_PM_ISOPD_POS)) /**< PM_ISOPD Mask */
+ #define MXC_F_GCR_PM_ISO_PD_POS                        15 /**< PM_ISO_PD Position */
+ #define MXC_F_GCR_PM_ISO_PD                            ((uint32_t)(0x1UL << MXC_F_GCR_PM_ISO_PD_POS)) /**< PM_ISO_PD Mask */
 
- #define MXC_F_GCR_PM_IPOPD_POS                         16 /**< PM_IPOPD Position */
- #define MXC_F_GCR_PM_IPOPD                             ((uint32_t)(0x1UL << MXC_F_GCR_PM_IPOPD_POS)) /**< PM_IPOPD Mask */
+ #define MXC_F_GCR_PM_IPO_PD_POS                        16 /**< PM_IPO_PD Position */
+ #define MXC_F_GCR_PM_IPO_PD                            ((uint32_t)(0x1UL << MXC_F_GCR_PM_IPO_PD_POS)) /**< PM_IPO_PD Mask */
 
- #define MXC_F_GCR_PM_IBROPD_POS                        17 /**< PM_IBROPD Position */
- #define MXC_F_GCR_PM_IBROPD                            ((uint32_t)(0x1UL << MXC_F_GCR_PM_IBROPD_POS)) /**< PM_IBROPD Mask */
+ #define MXC_F_GCR_PM_IBRO_PD_POS                       17 /**< PM_IBRO_PD Position */
+ #define MXC_F_GCR_PM_IBRO_PD                           ((uint32_t)(0x1UL << MXC_F_GCR_PM_IBRO_PD_POS)) /**< PM_IBRO_PD Mask */
 
 /**@} end of group GCR_PM_Register */
 
@@ -461,17 +461,17 @@ typedef struct {
  * @brief    Memory Zeroize Control.
  * @{
  */
- #define MXC_F_GCR_MEMZ_SRAM0_POS                       0 /**< MEMZ_SRAM0 Position */
- #define MXC_F_GCR_MEMZ_SRAM0                           ((uint32_t)(0x1UL << MXC_F_GCR_MEMZ_SRAM0_POS)) /**< MEMZ_SRAM0 Mask */
+ #define MXC_F_GCR_MEMZ_RAM0_POS                        0 /**< MEMZ_RAM0 Position */
+ #define MXC_F_GCR_MEMZ_RAM0                            ((uint32_t)(0x1UL << MXC_F_GCR_MEMZ_RAM0_POS)) /**< MEMZ_RAM0 Mask */
 
- #define MXC_F_GCR_MEMZ_SRAM1_POS                       1 /**< MEMZ_SRAM1 Position */
- #define MXC_F_GCR_MEMZ_SRAM1                           ((uint32_t)(0x1UL << MXC_F_GCR_MEMZ_SRAM1_POS)) /**< MEMZ_SRAM1 Mask */
+ #define MXC_F_GCR_MEMZ_RAM1_POS                        1 /**< MEMZ_RAM1 Position */
+ #define MXC_F_GCR_MEMZ_RAM1                            ((uint32_t)(0x1UL << MXC_F_GCR_MEMZ_RAM1_POS)) /**< MEMZ_RAM1 Mask */
 
- #define MXC_F_GCR_MEMZ_SRAM2_POS                       2 /**< MEMZ_SRAM2 Position */
- #define MXC_F_GCR_MEMZ_SRAM2                           ((uint32_t)(0x1UL << MXC_F_GCR_MEMZ_SRAM2_POS)) /**< MEMZ_SRAM2 Mask */
+ #define MXC_F_GCR_MEMZ_RAM2_POS                        2 /**< MEMZ_RAM2 Position */
+ #define MXC_F_GCR_MEMZ_RAM2                            ((uint32_t)(0x1UL << MXC_F_GCR_MEMZ_RAM2_POS)) /**< MEMZ_RAM2 Mask */
 
- #define MXC_F_GCR_MEMZ_SRAM3_POS                       3 /**< MEMZ_SRAM3 Position */
- #define MXC_F_GCR_MEMZ_SRAM3                           ((uint32_t)(0x1UL << MXC_F_GCR_MEMZ_SRAM3_POS)) /**< MEMZ_SRAM3 Mask */
+ #define MXC_F_GCR_MEMZ_RAM3_POS                        3 /**< MEMZ_RAM3 Position */
+ #define MXC_F_GCR_MEMZ_RAM3                            ((uint32_t)(0x1UL << MXC_F_GCR_MEMZ_RAM3_POS)) /**< MEMZ_RAM3 Mask */
 
  #define MXC_F_GCR_MEMZ_ICC1_POS                        14 /**< MEMZ_ICC1 Position */
  #define MXC_F_GCR_MEMZ_ICC1                            ((uint32_t)(0x1UL << MXC_F_GCR_MEMZ_ICC1_POS)) /**< MEMZ_ICC1 Mask */
@@ -484,8 +484,8 @@ typedef struct {
  * @brief    System Status Register.
  * @{
  */
- #define MXC_F_GCR_SYSST_ICECLOCK_POS                   0 /**< SYSST_ICECLOCK Position */
- #define MXC_F_GCR_SYSST_ICECLOCK                       ((uint32_t)(0x1UL << MXC_F_GCR_SYSST_ICECLOCK_POS)) /**< SYSST_ICECLOCK Mask */
+ #define MXC_F_GCR_SYSST_ICELOCK_POS                    0 /**< SYSST_ICELOCK Position */
+ #define MXC_F_GCR_SYSST_ICELOCK                        ((uint32_t)(0x1UL << MXC_F_GCR_SYSST_ICELOCK_POS)) /**< SYSST_ICELOCK Mask */
 
 /**@} end of group GCR_SYSST_Register */
 
@@ -551,8 +551,8 @@ typedef struct {
  #define MXC_F_GCR_PCLKDIS1_SMPHR_POS                   9 /**< PCLKDIS1_SMPHR Position */
  #define MXC_F_GCR_PCLKDIS1_SMPHR                       ((uint32_t)(0x1UL << MXC_F_GCR_PCLKDIS1_SMPHR_POS)) /**< PCLKDIS1_SMPHR Mask */
 
- #define MXC_F_GCR_PCLKDIS1_OWIRE_POS                   13 /**< PCLKDIS1_OWIRE Position */
- #define MXC_F_GCR_PCLKDIS1_OWIRE                       ((uint32_t)(0x1UL << MXC_F_GCR_PCLKDIS1_OWIRE_POS)) /**< PCLKDIS1_OWIRE Mask */
+ #define MXC_F_GCR_PCLKDIS1_OWM_POS                     13 /**< PCLKDIS1_OWM Position */
+ #define MXC_F_GCR_PCLKDIS1_OWM                         ((uint32_t)(0x1UL << MXC_F_GCR_PCLKDIS1_OWM_POS)) /**< PCLKDIS1_OWM Mask */
 
  #define MXC_F_GCR_PCLKDIS1_CRC_POS                     14 /**< PCLKDIS1_CRC Position */
  #define MXC_F_GCR_PCLKDIS1_CRC                         ((uint32_t)(0x1UL << MXC_F_GCR_PCLKDIS1_CRC_POS)) /**< PCLKDIS1_CRC Mask */
@@ -632,14 +632,14 @@ typedef struct {
 
 /**
  * @ingroup  gcr_registers
- * @defgroup GCR_ECCNDED GCR_ECCNDED
+ * @defgroup GCR_ECCCED GCR_ECCCED
  * @brief    ECC Not Double Error Detect Register
  * @{
  */
- #define MXC_F_GCR_ECCNDED_RAM_POS                      0 /**< ECCNDED_RAM Position */
- #define MXC_F_GCR_ECCNDED_RAM                          ((uint32_t)(0x1UL << MXC_F_GCR_ECCNDED_RAM_POS)) /**< ECCNDED_RAM Mask */
+ #define MXC_F_GCR_ECCCED_RAM_POS                       0 /**< ECCCED_RAM Position */
+ #define MXC_F_GCR_ECCCED_RAM                           ((uint32_t)(0x1UL << MXC_F_GCR_ECCCED_RAM_POS)) /**< ECCCED_RAM Mask */
 
-/**@} end of group GCR_ECCNDED_Register */
+/**@} end of group GCR_ECCCED_Register */
 
 /**
  * @ingroup  gcr_registers

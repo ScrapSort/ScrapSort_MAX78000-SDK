@@ -72,11 +72,8 @@ typedef enum {
  *
  */
 typedef enum {
-    MXC_LP_IPO = MXC_F_GCR_PM_IPOPD,
-    MXC_LP_IBRO = MXC_F_GCR_PM_IBROPD,
-#ifdef MXC_F_GCR_PM_ERFOPD
-    MXC_LP_ERFO = MXC_F_GCR_PM_ERFOPD
-#endif
+    MXC_LP_IPO = MXC_F_GCR_PM_IPO_PD,
+    MXC_LP_IBRO = MXC_F_GCR_PM_IBRO_PD,
 } mxc_lp_cfg_ds_pd_t;
 
 /**
@@ -231,6 +228,16 @@ void MXC_LP_EnableRTCAlarmWakeup (void);
  * @brief      Disables the RTC alarm from waking up the device.
  */
 void MXC_LP_DisableRTCAlarmWakeup (void);
+
+/**
+ * @brief      Enables the WUT alarm to wake up the device from any low power mode.
+ */
+void MXC_LP_EnableWUTAlarmWakeup (void);
+
+/**
+ * @brief      Disables the WUT alarm from waking up the device.
+ */
+void MXC_LP_DisableWUTAlarmWakeup (void);
 /**
  * @brief      Enables the USB to wake up the device from any low power mode.
  */
