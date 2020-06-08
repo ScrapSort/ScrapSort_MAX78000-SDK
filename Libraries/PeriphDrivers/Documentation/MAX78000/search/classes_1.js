@@ -32,6 +32,7 @@ var searchData=
   ['mxc_5fpwrseq_5fregs_5ft',['mxc_pwrseq_regs_t',['../group__pwrseq__registers.html#structmxc__pwrseq__regs__t',1,'']]],
   ['mxc_5frtc_5fregs_5ft',['mxc_rtc_regs_t',['../group__rtc__registers.html#structmxc__rtc__regs__t',1,'']]],
   ['mxc_5fsema_5fregs_5ft',['mxc_sema_regs_t',['../group__sema__registers.html#structmxc__sema__regs__t',1,'']]],
+  ['mxc_5fsimo_5fregs_5ft',['mxc_simo_regs_t',['../group__simo__registers.html#structmxc__simo__regs__t',1,'']]],
   ['mxc_5fspi_5fregs_5ft',['mxc_spi_regs_t',['../group__spi__registers.html#structmxc__spi__regs__t',1,'']]],
   ['mxc_5ftmr_5fcfg_5ft',['mxc_tmr_cfg_t',['../group__tmr.html#structmxc__tmr__cfg__t',1,'']]],
   ['mxc_5ftmr_5fregs_5ft',['mxc_tmr_regs_t',['../group__tmr__registers.html#structmxc__tmr__regs__t',1,'']]],
@@ -39,5 +40,6 @@ var searchData=
   ['mxc_5fuart_5fregs_5ft',['mxc_uart_regs_t',['../group__uart__registers.html#structmxc__uart__regs__t',1,'']]],
   ['mxc_5fwdt_5fcfg_5ft',['mxc_wdt_cfg_t',['../group__wdt.html#structmxc__wdt__cfg__t',1,'']]],
   ['mxc_5fwdt_5fregs_5ft',['mxc_wdt_regs_t',['../group__wdt__registers.html#structmxc__wdt__regs__t',1,'']]],
+  ['mxc_5fwut_5fcfg_5ft',['mxc_wut_cfg_t',['../group__wut.html#structmxc__wut__cfg__t',1,'']]],
   ['mxc_5fwut_5fregs_5ft',['mxc_wut_regs_t',['../group__wut__registers.html#structmxc__wut__regs__t',1,'']]]
 ];

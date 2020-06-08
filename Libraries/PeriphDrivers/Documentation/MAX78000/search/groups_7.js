@@ -2,9 +2,9 @@ var searchData=
 [
   ['gcr_5fclkctrl',['GCR_CLKCTRL',['../group___g_c_r___c_l_k_c_t_r_l.html',1,'']]],
   ['gcr_5feccaddr',['GCR_ECCADDR',['../group___g_c_r___e_c_c_a_d_d_r.html',1,'']]],
+  ['gcr_5feccced',['GCR_ECCCED',['../group___g_c_r___e_c_c_c_e_d.html',1,'']]],
   ['gcr_5feccerr',['GCR_ECCERR',['../group___g_c_r___e_c_c_e_r_r.html',1,'']]],
   ['gcr_5feccie',['GCR_ECCIE',['../group___g_c_r___e_c_c_i_e.html',1,'']]],
-  ['gcr_5feccnded',['GCR_ECCNDED',['../group___g_c_r___e_c_c_n_d_e_d.html',1,'']]],
   ['gcr_5feventen',['GCR_EVENTEN',['../group___g_c_r___e_v_e_n_t_e_n.html',1,'']]],
   ['gcr_5fmemctrl',['GCR_MEMCTRL',['../group___g_c_r___m_e_m_c_t_r_l.html',1,'']]],
   ['gcr_5fmemz',['GCR_MEMZ',['../group___g_c_r___m_e_m_z.html',1,'']]],

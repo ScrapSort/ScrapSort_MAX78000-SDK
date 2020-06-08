@@ -19,14 +19,14 @@
 * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 *
-* Except as contained in this notice, the name of Maxim Integrated 
-* Products, Inc. shall not be used except as stated in the Maxim Integrated 
+* Except as contained in this notice, the name of Maxim Integrated
+* Products, Inc. shall not be used except as stated in the Maxim Integrated
 * Products, Inc. Branding Policy.
 *
 * The mere transfer of this software does not imply any licenses
 * of trade secrets, proprietary technology, copyrights, patents,
 * trademarks, maskwork rights, or any other form of intellectual
-* property whatsoever. Maxim Integrated Products, Inc. retains all 
+* property whatsoever. Maxim Integrated Products, Inc. retains all
 * ownership rights.
 ******************************************************************************/
 
@@ -46,7 +46,7 @@ char iv[AES_DATA_LEN] = {
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00
-  };
+};
 /*
  * 128-bit Encrypt vector
  *

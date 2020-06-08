@@ -5,13 +5,51 @@ Refer to [Getting Started with the MAX78000 Evaluation Kit](https://github.com/M
 ## Release Notes
 
 May 21, 2020
+* Initial Release
 
-*   Initial Release
+June 7, 2020
+* In the Documentation folder of the SDK, added a MAX78000.html file which serves as a single source for all MAX78000 related documents.
+* Added a README.md file for each example.
+* Added automatic configuration of ADC GPIO pins.
+* Fixed minor GPIO peripheral library bugs.
+* Added optional configuration of TMR GPIO pins.
 
 ## Known Issues & Upcoming Features
 
-*   There is very limited support for the RISC-V core.  More support will be added in a future release.
-*   There will be more examples coming in a future release.
-    *   I2C
-    *   Low Power (including showing the use of a UART and a Timer in low power mode)
-*   Each example needs a README file stating the purpose of the example, any connections that need to be made prior to running the example, and the expected output of the example.
+* Debug support for the RISC-V core has not been validated.
+* There will be more examples coming in a future release.
+* The Eclipse projects show errors and warnings indicating there are unresolved references.  However, the projects still build and run correctly.
+* When uninstalling the SDK using the maintenance tool, an error will occur referring to the fstab file.  This error can be ignored - the uninstall will still complete.
+
+## Example Status
+
+| Example              |  GCC Status | Eclipse Support | Notes                                                                                           |
+|----------------------|:-----------:|:---------------:|-------------------------------------------------------------------------------------------------|
+| ADC                  |   Complete  |       Yes       | The overflow, low limit, and high limit are not reported properly in the example.               |
+| AES                  |   Complete  |       Yes       |                                                                                                 |
+| CNN/cats-vs-dogs-chw |   Complete  |        No       |                                                                                                 |
+| CNN/cifar-10         |   Complete  |        No       |                                                                                                 |
+| CNN/cifar-100        |   Complete  |        No       |                                                                                                 |
+| CNN/kws20            |   Complete  |        No       |                                                                                                 |
+| CNN/kws20_demo       |   Complete  |     Partial     | The example can be imported into Eclipse, but it has no debug configuration associated with it. |
+| CNN/mnist            |   Complete  |        No       |                                                                                                 |
+| CNN/mnist-riscv      |   Complete  |        No       |                                                                                                 |
+| CRC                  |   Complete  |       Yes       |                                                                                                 |
+| DMA                  |   Complete  |       Yes       |                                                                                                 |
+| ECC                  |   Complete  |       Yes       |                                                                                                 |
+| Flash                | In Progress |   In Progress   |                                                                                                 |
+| GPIO                 |   Complete  |       Yes       |                                                                                                 |
+| Hello_World          |   Complete  |       Yes       |                                                                                                 |
+| I2C                  | In Progress |   In Progress   |                                                                                                 |
+| I2S                  | In Progress |   In Progress   |                                                                                                 |
+| ICC                  |   Complete  |       Yes       |                                                                                                 |
+| LP                   | In Progress |   In Progress   |                                                                                                 |
+| Pulse_Train          |   Complete  |       Yes       |                                                                                                 |
+| RTC                  |   Complete  |       Yes       |                                                                                                 |
+| SPI                  |   Complete  |       Yes       |                                                                                                 |
+| TFT_Demo             |   Complete  |       Yes       | The Readme.md file needs to be completed.                                                       |
+| TMR                  |   Complete  |       Yes       | The PWM signal created by this example is not currently working.                                |
+| TRNG                 |   Complete  |       Yes       |                                                                                                 |
+| UART                 | In Progress |   In Progress   |                                                                                                 |
+| Watchdog             | In Progress |   In Progress   |                                                                                                 |
+| WUT                  | In Progress |   In Progress   |                                                                                                 |

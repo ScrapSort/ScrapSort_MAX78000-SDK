@@ -33,6 +33,7 @@ var searchData=
   ['rtc_5ftoda',['RTC_TODA',['../group___r_t_c___t_o_d_a.html',1,'']]],
   ['rtc_5ftrim',['RTC_TRIM',['../group___r_t_c___t_r_i_m.html',1,'']]],
   ['register_20offsets',['Register Offsets',['../group___s_e_m_a___register___offsets.html',1,'']]],
+  ['register_20offsets',['Register Offsets',['../group___s_i_m_o___register___offsets.html',1,'']]],
   ['register_20offsets',['Register Offsets',['../group___s_p_i___register___offsets.html',1,'']]],
   ['register_20offsets',['Register Offsets',['../group___t_m_r___register___offsets.html',1,'']]],
   ['register_20offsets',['Register Offsets',['../group___t_r_n_g___register___offsets.html',1,'']]],

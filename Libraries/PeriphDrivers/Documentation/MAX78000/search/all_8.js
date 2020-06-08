@@ -2,9 +2,9 @@ var searchData=
 [
   ['gcr_5fclkctrl',['GCR_CLKCTRL',['../group___g_c_r___c_l_k_c_t_r_l.html',1,'']]],
   ['gcr_5feccaddr',['GCR_ECCADDR',['../group___g_c_r___e_c_c_a_d_d_r.html',1,'']]],
+  ['gcr_5feccced',['GCR_ECCCED',['../group___g_c_r___e_c_c_c_e_d.html',1,'']]],
   ['gcr_5feccerr',['GCR_ECCERR',['../group___g_c_r___e_c_c_e_r_r.html',1,'']]],
   ['gcr_5feccie',['GCR_ECCIE',['../group___g_c_r___e_c_c_i_e.html',1,'']]],
-  ['gcr_5feccnded',['GCR_ECCNDED',['../group___g_c_r___e_c_c_n_d_e_d.html',1,'']]],
   ['gcr_5feventen',['GCR_EVENTEN',['../group___g_c_r___e_v_e_n_t_e_n.html',1,'']]],
   ['gcr_5fmemctrl',['GCR_MEMCTRL',['../group___g_c_r___m_e_m_c_t_r_l.html',1,'']]],
   ['gcr_5fmemz',['GCR_MEMZ',['../group___g_c_r___m_e_m_z.html',1,'']]],
@@ -22,6 +22,7 @@ var searchData=
   ['gp0',['gp0',['../group__pwrseq__registers.html#a5f63f9fd8fbf27b12bb557d118c99826',1,'mxc_pwrseq_regs_t']]],
   ['gp1',['gp1',['../group__pwrseq__registers.html#aaa427340367c41c7ebfe1256fa3acdd8',1,'mxc_pwrseq_regs_t']]],
   ['general_2dpurpose_20input_2foutput_20_28gpio_29',['General-Purpose Input/Output (GPIO)',['../group__gpio.html',1,'']]],
+  ['gpio3_5fctrl',['gpio3_ctrl',['../group__mcr__registers.html#af5048b9034bbc4bbb8b3e1d160b199cb',1,'mxc_mcr_regs_t']]],
   ['gpio_5fds0',['GPIO_DS0',['../group___g_p_i_o___d_s0.html',1,'']]],
   ['gpio_5fds1',['GPIO_DS1',['../group___g_p_i_o___d_s1.html',1,'']]],
   ['gpio_5fdualedge',['GPIO_DUALEDGE',['../group___g_p_i_o___d_u_a_l_e_d_g_e.html',1,'']]],

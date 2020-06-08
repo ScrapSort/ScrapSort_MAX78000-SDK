@@ -135,6 +135,8 @@ Data Structures</h2></td></tr>
 <tr class="separator:a020ac83c0370aeaed24062eb081713f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8f15c6492a468155dc5b96a360cd2ea"><td class="memItemLeft" align="right" valign="top">__IO uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s__registers.html#ab8f15c6492a468155dc5b96a360cd2ea">ctrl1ch0</a></td></tr>
 <tr class="separator:ab8f15c6492a468155dc5b96a360cd2ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a180079560a12317c50c3b1b7697dbce1"><td class="memItemLeft" align="right" valign="top">__IO uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s__registers.html#a180079560a12317c50c3b1b7697dbce1">filtch0</a></td></tr>
+<tr class="separator:a180079560a12317c50c3b1b7697dbce1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54da5cb46f0741da08482f576500b10f"><td class="memItemLeft" align="right" valign="top">__IO uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s__registers.html#a54da5cb46f0741da08482f576500b10f">dmach0</a></td></tr>
 <tr class="separator:a54da5cb46f0741da08482f576500b10f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09af207fde949ce5670b42cc2536eb7f"><td class="memItemLeft" align="right" valign="top">__IO uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s__registers.html#a09af207fde949ce5670b42cc2536eb7f">fifoch0</a></td></tr>
@@ -145,6 +147,10 @@ Data Structures</h2></td></tr>
 <tr class="separator:ac739c97e3dfed1c05d96249bc00d2578"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaedbec3ea04f59a5a08eede9decb5ecc"><td class="memItemLeft" align="right" valign="top">__IO uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s__registers.html#aaedbec3ea04f59a5a08eede9decb5ecc">extsetup</a></td></tr>
 <tr class="separator:aaedbec3ea04f59a5a08eede9decb5ecc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a180fb4301217e58b8b04d69910d55e7d"><td class="memItemLeft" align="right" valign="top">__IO uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s__registers.html#a180fb4301217e58b8b04d69910d55e7d">wken</a></td></tr>
+<tr class="separator:a180fb4301217e58b8b04d69910d55e7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71c81fbb80641b4b170ab374e553582c"><td class="memItemLeft" align="right" valign="top">__IO uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s__registers.html#a71c81fbb80641b4b170ab374e553582c">wkfl</a></td></tr>
+<tr class="separator:a71c81fbb80641b4b170ab374e553582c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h4 class="groupheader">Field Documentation</h4>
 <a id="a020ac83c0370aeaed24062eb081713f8"></a>
@@ -222,6 +228,21 @@ Data Structures</h2></td></tr>
 
 </div>
 </div>
+<a id="a180079560a12317c50c3b1b7697dbce1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a180079560a12317c50c3b1b7697dbce1">&#9670;&nbsp;</a></span>filtch0</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__IO uint32_t filtch0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><code><b>0x20</b>:</code> I2S FILTCH0 Register </p>
+
+</div>
+</div>
 <a id="ac739c97e3dfed1c05d96249bc00d2578"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac739c97e3dfed1c05d96249bc00d2578">&#9670;&nbsp;</a></span>inten</h2>
 
@@ -252,6 +273,36 @@ Data Structures</h2></td></tr>
 
 </div>
 </div>
+<a id="a180fb4301217e58b8b04d69910d55e7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a180fb4301217e58b8b04d69910d55e7d">&#9670;&nbsp;</a></span>wken</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__IO uint32_t wken</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><code><b>0x5C</b>:</code> I2S WKEN Register </p>
+
+</div>
+</div>
+<a id="a71c81fbb80641b4b170ab374e553582c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71c81fbb80641b4b170ab374e553582c">&#9670;&nbsp;</a></span>wkfl</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__IO uint32_t wkfl</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><code><b>0x60</b>:</code> I2S WKFL Register </p>
+
+</div>
+</div>
 
 </div>
 </div>
@@ -260,7 +311,7 @@ Data Structures</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri May 15 2020 16:25:55 for MAX78000 Peripheral Driver API by
+    <li class="footer">Generated on Sun Jun 7 2020 20:33:59 for MAX78000 Peripheral Driver API by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

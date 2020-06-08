@@ -14,6 +14,7 @@ var searchData=
   ['fifo_5fsize',['fifo_size',['../group__cameraif__registers.html#abf15b71f7d2818f6ae510a16819057de',1,'mxc_cameraif_regs_t']]],
   ['fifoch0',['fifoch0',['../group__i2s__registers.html#a09af207fde949ce5670b42cc2536eb7f',1,'mxc_i2s_regs_t']]],
   ['fifolen',['fifolen',['../group__i2c__registers.html#a910d9726ac3e05225a070b69a9037b08',1,'mxc_i2c_regs_t']]],
+  ['filtch0',['filtch0',['../group__i2s__registers.html#a180079560a12317c50c3b1b7697dbce1',1,'mxc_i2s_regs_t']]],
   ['flash_20controller_20_20_28flc_29',['Flash Controller  (FLC)',['../group__flc.html',1,'']]],
   ['flc_5factrl',['FLC_ACTRL',['../group___f_l_c___a_c_t_r_l.html',1,'']]],
   ['flc_5faddr',['FLC_ADDR',['../group___f_l_c___a_d_d_r.html',1,'']]],

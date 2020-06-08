@@ -23,6 +23,7 @@ var modules =
     [ "TRNG", "group__trng.html", "group__trng" ],
     [ "UART", "group__uart.html", "group__uart" ],
     [ "WDT", "group__wdt.html", "group__wdt" ],
+    [ "Wakeup Timer (WUT)", "group__wut.html", "group__wut" ],
     [ "ADC_Registers", "group__adc__registers.html", "group__adc__registers" ],
     [ "AES_KEY_Registers", "group__aes__key__registers.html", "group__aes__key__registers" ],
     [ "BBFC_Registers", "group__bbfc__registers.html", "group__bbfc__registers" ],
@@ -34,6 +35,6 @@ var modules =
     [ "MCR_Registers", "group__mcr__registers.html", "group__mcr__registers" ],
     [ "PT_Registers", "group__pt__registers.html", "group__pt__registers" ],
     [ "PTG_Registers", "group__ptg__registers.html", "group__ptg__registers" ],
-    [ "WUT_Registers", "group__wut__registers.html", "group__wut__registers" ],
+    [ "SIMO_Registers", "group__simo__registers.html", "group__simo__registers" ],
     [ "External Memory Cache Controller (EMCC)", "group__emcc.html", "group__emcc" ]
 ];

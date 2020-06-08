@@ -56,7 +56,7 @@ var group__tmr =
     [ "MXC_TMR_GetFlags", "group__tmr.html#gad0e3d710386ef39ca79b7c4e87f96b26", null ],
     [ "MXC_TMR_GetPeriod", "group__tmr.html#gacb9e5277ceceba9a87038644f2e18360", null ],
     [ "MXC_TMR_GetTime", "group__tmr.html#ga17ce01e32c05bbca3c52c2ff6e20ad95", null ],
-    [ "MXC_TMR_Init", "group__tmr.html#gad3cb0e79690106e461cf316988ede230", null ],
+    [ "MXC_TMR_Init", "group__tmr.html#ga58d5a6df87c13d13fb759fc35e5e72a8", null ],
     [ "MXC_TMR_SetCompare", "group__tmr.html#gaa43ca41ee1a4f223572c621229039c14", null ],
     [ "MXC_TMR_SetCount", "group__tmr.html#ga8b6dc7b49cb169a2357bdee1a59543b3", null ],
     [ "MXC_TMR_SetPWM", "group__tmr.html#ga3b5c29727e46f47978286b2afd0c3e8a", null ],

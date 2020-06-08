@@ -1,12 +1,30 @@
 ## Description
 
-TBD<!--TBD-->
+This application demonstrates both encryption and decryption using AES.  A block of data is encrypted.  The resulting encrypted data is then decrypted.  The new plain text is then compared with the original plain text to confirm they match.  This is repeated three times using a different key size each time.
 
 ## Required Connections
 
-TBD<!--TBD-->
+-   Connect a USB cable between the PC and the CN1 (USB/PWR) connector.
+-   Connect pins 1 and 2 (P0_1) of the JH1 (UART 0 EN) header.
+-   Open an terminal application on the PC and connect to the EV kit's console UART at 115200, 8-N-1.
 
 ## Expected Output
 
-TBD<!--TBD-->
+The Console UART of the device will output these messages:
+
+```
+***** AES Example *****
+
+AES 128 bits Key Test
+Data Verified
+
+AES 192 bits Key Test
+Data Verified
+
+AES 256 bits Key Test
+Data Verified
+
+Example Succeeded
+```
+
 

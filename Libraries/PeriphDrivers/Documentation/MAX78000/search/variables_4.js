@@ -1,11 +1,11 @@
 var searchData=
 [
   ['eccaddr',['eccaddr',['../group__gcr__registers.html#a86a9c8da4c98f1feec252973106f11bc',1,'mxc_gcr_regs_t']]],
+  ['eccced',['eccced',['../group__gcr__registers.html#a528b8e5513397c4fd224f8e1ab137b63',1,'mxc_gcr_regs_t']]],
   ['eccdata',['eccdata',['../group__flc__registers.html#ae95a7e53d4cb6b865d305d146d087340',1,'mxc_flc_regs_t']]],
   ['eccen',['eccen',['../group__mcr__registers.html#ada5375eed4f0ed0f2fd3fc285651e51c',1,'mxc_mcr_regs_t']]],
   ['eccerr',['eccerr',['../group__gcr__registers.html#a3d9300f370fea5ec743ab5e6d12db523',1,'mxc_gcr_regs_t']]],
   ['eccie',['eccie',['../group__gcr__registers.html#af22a3cb8fed5c7882995ff8e36131a8b',1,'mxc_gcr_regs_t']]],
-  ['eccnded',['eccnded',['../group__gcr__registers.html#a4f4ae45026183b23a63130d6a5895568',1,'mxc_gcr_regs_t']]],
   ['en',['en',['../group__ecc__registers.html#ad64ed354f35ac607fc9568da4fd80337',1,'mxc_ecc_regs_t']]],
   ['en0',['en0',['../group__gpio__registers.html#af3dad786f2e5e745ad3d0cbf2f6194b4',1,'mxc_gpio_regs_t']]],
   ['en0_5fclr',['en0_clr',['../group__gpio__registers.html#a9d8fea45046f1ccd80ad02924c1726d1',1,'mxc_gpio_regs_t']]],

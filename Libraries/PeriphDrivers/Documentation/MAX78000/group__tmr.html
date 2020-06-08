@@ -116,8 +116,8 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gad3cb0e79690106e461cf316988ede230"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__tmr.html#gad3cb0e79690106e461cf316988ede230">MXC_TMR_Init</a> (<a class="el" href="group__tmr__registers.html#structmxc__tmr__regs__t">mxc_tmr_regs_t</a> *tmr, <a class="el" href="group__tmr.html#structmxc__tmr__cfg__t">mxc_tmr_cfg_t</a> *cfg)</td></tr>
-<tr class="separator:gad3cb0e79690106e461cf316988ede230"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga58d5a6df87c13d13fb759fc35e5e72a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__tmr.html#ga58d5a6df87c13d13fb759fc35e5e72a8">MXC_TMR_Init</a> (<a class="el" href="group__tmr__registers.html#structmxc__tmr__regs__t">mxc_tmr_regs_t</a> *tmr, <a class="el" href="group__tmr.html#structmxc__tmr__cfg__t">mxc_tmr_cfg_t</a> *cfg, bool init_pins)</td></tr>
+<tr class="separator:ga58d5a6df87c13d13fb759fc35e5e72a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2d67231e90c7b452e8e20951c0d72469"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__tmr.html#ga2d67231e90c7b452e8e20951c0d72469">MXC_TMR_Shutdown</a> (<a class="el" href="group__tmr__registers.html#structmxc__tmr__regs__t">mxc_tmr_regs_t</a> *tmr)</td></tr>
 <tr class="separator:ga2d67231e90c7b452e8e20951c0d72469"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9f7f78e2fdf6baee8c12430c0825eafe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__tmr.html#ga9f7f78e2fdf6baee8c12430c0825eafe">MXC_TMR_Start</a> (<a class="el" href="group__tmr__registers.html#structmxc__tmr__regs__t">mxc_tmr_regs_t</a> *tmr)</td></tr>
@@ -747,8 +747,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="gad3cb0e79690106e461cf316988ede230"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad3cb0e79690106e461cf316988ede230">&#9670;&nbsp;</a></span>MXC_TMR_Init()</h2>
+<a id="ga58d5a6df87c13d13fb759fc35e5e72a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga58d5a6df87c13d13fb759fc35e5e72a8">&#9670;&nbsp;</a></span>MXC_TMR_Init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -763,7 +763,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="group__tmr.html#structmxc__tmr__cfg__t">mxc_tmr_cfg_t</a> *&#160;</td>
-          <td class="paramname"><em>cfg</em>&#160;</td>
+          <td class="paramname"><em>cfg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>init_pins</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -777,7 +783,8 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tmr</td><td>Pointer to timer module to initialize. </td></tr>
-    <tr><td class="paramname">cfg</td><td>System configuration object</td></tr>
+    <tr><td class="paramname">cfg</td><td>System configuration object </td></tr>
+    <tr><td class="paramname">bool</td><td>True will initialize pins corresponding to the TMR and False will not if pins are pinned out otherwise it will not be used</td></tr>
   </table>
   </dd>
 </dl>
@@ -1205,7 +1212,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri May 15 2020 16:25:54 for MAX78000 Peripheral Driver API by
+    <li class="footer">Generated on Sun Jun 7 2020 20:33:59 for MAX78000 Peripheral Driver API by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

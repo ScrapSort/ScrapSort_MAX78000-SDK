@@ -1,6 +1,10 @@
 var searchData=
 [
   ['i2c',['i2c',['../group__i2c.html#ac3fac1949b2dff1219bd757c4571b52c',1,'_i2c_req_t']]],
+  ['iload_5fa',['iload_a',['../group__simo__registers.html#a51f401ee9d89bfaaa439a889bd337c62',1,'mxc_simo_regs_t']]],
+  ['iload_5fb',['iload_b',['../group__simo__registers.html#a31d5870b6d5daae6d846432552444f3a',1,'mxc_simo_regs_t']]],
+  ['iload_5fc',['iload_c',['../group__simo__registers.html#ac6cb7983389729be948c2018123752a2',1,'mxc_simo_regs_t']]],
+  ['iload_5fd',['iload_d',['../group__simo__registers.html#af2abc3335b933d169fb8519faeeef26b',1,'mxc_simo_regs_t']]],
   ['in',['in',['../group__gpio__registers.html#a145604370dee8aea94098479af5d089e',1,'mxc_gpio_regs_t']]],
   ['inen',['inen',['../group__gpio__registers.html#a3966f88b0d7d63574afa3a4a373f119b',1,'mxc_gpio_regs_t']]],
   ['info',['info',['../group__icc__registers.html#a4d6b29337a6769bf23915e8600d5adb8',1,'mxc_icc_regs_t']]],
@@ -19,5 +23,8 @@ var searchData=
   ['intmode',['intmode',['../group__gpio__registers.html#ad0f568fb6d572314501ec8f9f8315106',1,'mxc_gpio_regs_t']]],
   ['intpol',['intpol',['../group__gpio__registers.html#ab78639f01ed2880a0a880a894c32ef37',1,'mxc_gpio_regs_t']]],
   ['intr',['intr',['../group__adc__registers.html#ac84aece9db287b79a24918c9a667f2d4',1,'mxc_adc_regs_t::intr()'],['../group__flc__registers.html#ac84aece9db287b79a24918c9a667f2d4',1,'mxc_flc_regs_t::intr()'],['../group__wut__registers.html#ac84aece9db287b79a24918c9a667f2d4',1,'mxc_wut_regs_t::intr()']]],
-  ['invalidate',['invalidate',['../group__icc__registers.html#af614ad0651176983fbfa1a1b34a74932',1,'mxc_icc_regs_t']]]
+  ['invalidate',['invalidate',['../group__icc__registers.html#af614ad0651176983fbfa1a1b34a74932',1,'mxc_icc_regs_t']]],
+  ['ipka',['ipka',['../group__simo__registers.html#ac91088c3ff031a2c433e1f9bc6d29b00',1,'mxc_simo_regs_t']]],
+  ['ipkb',['ipkb',['../group__simo__registers.html#a495c2bb1e616fe11da1ab39e528bb1d4',1,'mxc_simo_regs_t']]],
+  ['ipo_5fmtrim',['ipo_mtrim',['../group__mcr__registers.html#acb00ab73bb501477bf6820e427cf8631',1,'mxc_mcr_regs_t']]]
 ];

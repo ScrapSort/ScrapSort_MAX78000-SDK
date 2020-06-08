@@ -57,6 +57,7 @@ var searchData=
   ['rxdata',['rxData',['../group__required.html#gab83c0e07099df7beb8e491cb91914de0',1,'_mxc_spi_req_t::rxData()'],['../group__required.html#gab83c0e07099df7beb8e491cb91914de0',1,'_mxc_uart_req_t::rxData()']]],
   ['rxlen',['rxLen',['../group__required.html#ga043f0f3e53b8233dca0b9446b9c36ccd',1,'_mxc_spi_req_t::rxLen()'],['../group__required.html#ga043f0f3e53b8233dca0b9446b9c36ccd',1,'_mxc_uart_req_t::rxLen()']]],
   ['register_20offsets',['Register Offsets',['../group___s_e_m_a___register___offsets.html',1,'']]],
+  ['register_20offsets',['Register Offsets',['../group___s_i_m_o___register___offsets.html',1,'']]],
   ['register_20offsets',['Register Offsets',['../group___s_p_i___register___offsets.html',1,'']]],
   ['register_20offsets',['Register Offsets',['../group___t_m_r___register___offsets.html',1,'']]],
   ['register_20offsets',['Register Offsets',['../group___t_r_n_g___register___offsets.html',1,'']]],

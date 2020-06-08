@@ -19,14 +19,14 @@
 * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 *
-* Except as contained in this notice, the name of Maxim Integrated 
-* Products, Inc. shall not be used except as stated in the Maxim Integrated 
+* Except as contained in this notice, the name of Maxim Integrated
+* Products, Inc. shall not be used except as stated in the Maxim Integrated
 * Products, Inc. Branding Policy.
 *
 * The mere transfer of this software does not imply any licenses
 * of trade secrets, proprietary technology, copyrights, patents,
 * trademarks, maskwork rights, or any other form of intellectual
-* property whatsoever. Maxim Integrated Products, Inc. retains all 
+* property whatsoever. Maxim Integrated Products, Inc. retains all
 * ownership rights.
 *
 ******************************************************************************/
@@ -34,9 +34,8 @@
 /**
  * @file main.c
  * @brief Configures and starts four different pulse trains on GPIO LEDs.
- * @details LED0 - PT6 setup as 2Hz continuous signal that outputs 10110b
- *          LED1 - PT7 setup as 10Hz continuous square wave
- *          SW1 - push button setup to stop/start pulse trains
+ * @details PT0 setup as 2Hz continuous signal that outputs 10110b
+ *          PT1 setup as 10Hz continuous square wave
  *
  * @note Interrupts for pulse trains are enabled but the interrupt handler only clears the flags.
  */
@@ -69,11 +68,11 @@ void ContinuousPulseTrain(void)
     
     //setup PT configuration
     mxc_pt_cfg_t ptConfig;
-    ptConfig.channel = 0;							//PT0
-    ptConfig.bps = 2;           					//bit rate
-    ptConfig.ptLength = 5;      					//bits
+    ptConfig.channel = 0;                           //PT0
+    ptConfig.bps = 2;                               //bit rate
+    ptConfig.ptLength = 5;                          //bits
     ptConfig.pattern = 0x16;
-    ptConfig.loop = 0;          					//continuous loop
+    ptConfig.loop = 0;                              //continuous loop
     ptConfig.loopDelay = 0;
     
     MXC_PT_Config(&ptConfig);
@@ -89,7 +88,7 @@ void SquareWave(void)
     //GPIO P0.19 uses PT1
     
     uint32_t freq = 10;//Hz
-    MXC_PT_SqrWaveConfig(1, freq);					//PT1
+    MXC_PT_SqrWaveConfig(1, freq);                  //PT1
     
     //start PT3
     MXC_PT_Start(MXC_F_PTG_ENABLE_PT1);
@@ -99,12 +98,9 @@ void SquareWave(void)
 int main(void)
 {
     printf("\n*************** Pulse Train Demo ****************\n");
-    printf("LED0 = Outputs continuous pattern of 10110b at 2bps\n");
-    printf("LED1 = Outputs 10Hz continuous square wave\n");
-
-    printf("\nConnect external LEDS to see the demo.\n");
-    printf("LED0 to P0.18 and LED1 to P0.19");
-
+    printf("PT0 (P0.18) = Outputs continuous pattern of 10110b at 2bps\n");
+    printf("PT1 (P0.19) = Outputs 10Hz continuous square wave\n");
+    
     NVIC_EnableIRQ(PT_IRQn);         //enabled default interrupt handler
     MXC_PT_EnableInt(ALL_PT);        //enabled interrupts for all PT
     MXC_PT_Init(MXC_PT_CLK_DIV1);    //initialize pulse trains

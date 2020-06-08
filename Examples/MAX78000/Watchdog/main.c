@@ -19,14 +19,14 @@
 * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 *
-* Except as contained in this notice, the name of Maxim Integrated 
-* Products, Inc. shall not be used except as stated in the Maxim Integrated 
+* Except as contained in this notice, the name of Maxim Integrated
+* Products, Inc. shall not be used except as stated in the Maxim Integrated
 * Products, Inc. Branding Policy.
 *
 * The mere transfer of this software does not imply any licenses
 * of trade secrets, proprietary technology, copyrights, patents,
 * trademarks, maskwork rights, or any other form of intellectual
-* property whatsoever. Maxim Integrated Products, Inc. retains all 
+* property whatsoever. Maxim Integrated Products, Inc. retains all
 * ownership rights.
 *
 ******************************************************************************/
@@ -35,18 +35,11 @@
  * @file    main.c
  * @brief   Demonstrates a watchdog timer in run mode
  *
- * @details When the program starts LED3 blinks three times and stops.
- *          Then LED0 start blinking continuously.
- *          Open a terminal program to see interrupt messages.
+ * @details SW2: Push SW2 to trigger a "too-late" watchdog reset. This will stop resetting the
+ *               watchdog timer until it generates the "too-late" interrupt.  After that it will
+ *               reset the watchdog timer only once, allowing it to pass the reset timeout period.
  *
- *          SW2: Push SW2 to trigger a watchdog reset. This will reset the watchdog before
- *               the wait period has expired and trigger an interrupt.
- *
- *          SW3: Push SW3 to trigger a delay and see LED0 stop blinking momentarily.
- *               This delay long enough for the timeout period to expire and trigger an interrupt.
- *
- *          SW3: Push SW3 to trigger a longer delay and see the program restart by blinking LED3 three times.
- *               This delay is long enough for the reset period to expire and trigger a reset.
+ *          SW3: Push SW3 to reset the watchdog timer in the "too-early" period.
  */
 
 /***** Includes *****/
@@ -62,9 +55,6 @@
 #include "pb.h"
 
 /***** Definitions *****/
-#define     OVERFLOW       //Test Windowed timer 
-                            //OVERFLOW
-                            //UNDERFLOW
 
 /***** Globals *****/
 //use push buttons defined in board.h
@@ -73,22 +63,39 @@ extern const mxc_gpio_cfg_t led_pin[];
 
 static mxc_wdt_cfg_t cfg;
 
+volatile int sw1_pressed = 0;
+volatile int sw2_pressed = 0;
+volatile int interrupt_count = 0;
+    
 // refers to array, do not change constants
-#define SW1 		0
-#define LED			0
+#define SW1         0
+#define LED         0
 /***** Functions *****/
 
 // *****************************************************************************
 void watchdogHandler()
-{    
+{
     MXC_WDT_ClearIntFlag(MXC_WDT0);
-    printf("\nTIMEOUT! \n");
+
+    if(interrupt_count == 0)
+    {
+        printf("\nWatchdog has tripped!\n");
+        printf("This is the first time, so we'll go ahead and reset it\n");
+        printf("once it is within the proper window.\n");
+        interrupt_count++;
+    }
+    else
+    {
+        printf("\nWatchdog has tripped!\n");
+        printf("This is the not the first time.  What happens if we\n");
+        printf("do not reset it?\n");
+    }
 }
 
 // *****************************************************************************
 void WDT0_IRQHandler(void)
 {
-	watchdogHandler();
+    watchdogHandler();
 }
 // *****************************************************************************
 void MXC_WDT_Setup()
@@ -110,10 +117,19 @@ void SW1_Callback()
     MXC_WDT_SetIntPeriod(MXC_WDT0, &cfg);
     MXC_WDT_ResetTimer(MXC_WDT0);
     MXC_WDT_EnableReset(MXC_WDT0);
-    MXC_WDT_EnableInt(MXC_WDT0);  
-    NVIC_SetVector(WDT0_IRQn, WDT0_IRQHandler);     
+    MXC_WDT_EnableInt(MXC_WDT0);
+    NVIC_SetVector(WDT0_IRQn, WDT0_IRQHandler);
     NVIC_EnableIRQ(WDT0_IRQn);
-    MXC_WDT_Enable(MXC_WDT0);  
+    MXC_WDT_Enable(MXC_WDT0);
+    sw1_pressed = 1;
+    PB_RegisterCallback(0, NULL);
+}
+
+void SW2_Callback()
+{
+    printf("What happens if the watchdog is reset too early?\n");
+    sw2_pressed = 1;
+    PB_RegisterCallback(1, NULL);
 }
 
 // *****************************************************************************
@@ -121,58 +137,76 @@ int main(void)
 {
     cfg.mode = MXC_WDT_WINDOWED;
     MXC_WDT_Init(MXC_WDT0, &cfg);
-
-	if(MXC_WDT_GetResetFlag(MXC_WDT0)) {
+    
+    if (MXC_WDT_GetResetFlag(MXC_WDT0)) {
         uint32_t resetFlags = MXC_WDT_GetResetFlag(MXC_WDT0);
-        if(resetFlags == MXC_F_WDT_CTRL_RST_LATE){
+        
+        if (resetFlags == MXC_F_WDT_CTRL_RST_LATE) {
             printf("\nWatchdog Reset occured too late (OVERFLOW)\n");
-        }else if(resetFlags == MXC_F_WDT_CTRL_RST_EARLY){
+        }
+        else if (resetFlags == MXC_F_WDT_CTRL_RST_EARLY) {
             printf("\nWatchdog Reset occured too soon (UNDERFLOW)\n");
         }
+        
         MXC_WDT_ClearResetFlag(MXC_WDT0);
         MXC_WDT_ClearIntFlag(MXC_WDT0);
         MXC_WDT_EnableReset(MXC_WDT0);
         MXC_WDT_Enable(MXC_WDT0);
-	}
-
+    }
+    
     printf("\n************** Watchdog Timer Demo ****************\n");
-    printf("Watchdog timer is configured in Windowed mode. You can\n");
-    printf("select between two tests: Timer Overflow and Underflow.\n");
-    printf("\nPress a button to create watchdog interrupt and reset:\n");
-    printf("SW1 (P2.6)= timeout and reset program\n\n");
-
+    printf("SW2: Push SW2 to trigger a \"too-late\" watchdog reset. This will stop resetting\n");
+    printf("     the watchdog timer until it generates the \"too-late\" interrupt.  After that\n");
+    printf("     it will reset the watchdog timer only once, allowing it to pass the reset\n");
+    printf("     timeout period.\n\n");
+    printf("SW3: Push SW3 to reset the watchdog timer in the \"too-early\" period.\n");
+    
     //Blink LED
     // MXC_GPIO_OutClr(led_pin[0].port,led_pin[0].mask);
     LED_Off(0);
-
+    
     //Blink LED three times at startup
     int numBlinks = 3;
-
-    while(numBlinks) {
+    
+    while (numBlinks) {
         LED_On(0);
         MXC_Delay(MXC_DELAY_MSEC(100));
         LED_Off(0);
         MXC_Delay(MXC_DELAY_MSEC(100));
         numBlinks--;
     }
-
-    //Setup watchdog
+    
+    //Setup and start watchdog
     MXC_WDT_Setup();
-
+    
+    // Configure push buttons
+    PB_RegisterCallback(0, SW1_Callback);
+    PB_IntEnable(0);
+    PB_RegisterCallback(1, SW2_Callback);
+    PB_IntEnable(1);
+    
     //Push SW1 to start longer delay - shows Interrupt before the reset happens
-
+    
     while (1) {
-        //Push SW1 to reset watchdog    
-        if(MXC_GPIO_InGet(pb_pin[SW1].port, pb_pin[SW1].mask) == 0) {
-            SW1_Callback();
-            #ifdef OVERFLOW
-                while(1);
-            #else
-                MXC_Delay(MXC_DELAY_MSEC(200));
-                MXC_WDT_ResetTimer(MXC_WDT0);
-            #endif
+        if(sw1_pressed) {
+            if(interrupt_count == 0)
+            {
+                while(interrupt_count == 0) {};
+                MXC_Delay(MXC_DELAY_MSEC(1500));
+            }
+            else
+            {
+            while (1);
+            }
+            
         }
-
+        if(sw2_pressed) {
+            // Reset the WDT too early.
+            MXC_Delay(MXC_DELAY_MSEC(200));
+            MXC_WDT_ResetTimer(MXC_WDT0);
+            sw2_pressed = 0;
+        }
+        
         //blink LED0
         MXC_Delay(MXC_DELAY_MSEC(500));
         LED_On(0);

@@ -1,6 +1,7 @@
 var searchData=
 [
   ['mask',['mask',['../group__gpio.html#ad3bee21df6875eeccd25d3c577e0600a',1,'mxc_gpio_cfg_t']]],
+  ['maxton',['maxton',['../group__simo__registers.html#a4ed97232e1922e09665d19cfe90cad39',1,'mxc_simo_regs_t']]],
   ['memctrl',['memctrl',['../group__gcr__registers.html#a4d2fd2c661cc165f36e3b36cb794cafe',1,'mxc_gcr_regs_t']]],
   ['memz',['memz',['../group__gcr__registers.html#a6826ace542358140e4ade1c99ed5ca87',1,'mxc_gcr_regs_t']]],
   ['miso',['miso',['../group__init__required.html#ga54488f6d73bac4372deb6e00a76dffcb',1,'_mxc_spi_pins_t']]],
