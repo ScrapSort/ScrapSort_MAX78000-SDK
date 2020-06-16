@@ -93,5 +93,14 @@ const mxc_gpio_cfg_t gpio_cfg_pcif_hsync;
 const mxc_gpio_cfg_t gpio_cfg_pcif_vsync;
 const mxc_gpio_cfg_t gpio_cfg_pcif_xclk;
 
+const mxc_gpio_cfg_t gpio_cfg_adc_ain0;
+const mxc_gpio_cfg_t gpio_cfg_adc_ain1;
+const mxc_gpio_cfg_t gpio_cfg_adc_ain2;
+const mxc_gpio_cfg_t gpio_cfg_adc_ain3;
+const mxc_gpio_cfg_t gpio_cfg_adc_ain4;
+const mxc_gpio_cfg_t gpio_cfg_adc_ain5;
+const mxc_gpio_cfg_t gpio_cfg_adc_ain6;
+const mxc_gpio_cfg_t gpio_cfg_adc_ain7;
+
 #endif /* _MXC_PINS_H_ */
 

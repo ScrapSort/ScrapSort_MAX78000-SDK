@@ -46,7 +46,7 @@
 #include "simo_regs.h"
 
 /***** Global Variables *****/
-mxc_uart_regs_t * ConsoleUart = MXC_UART_GET_UART(CONSOLE_UART);
+mxc_uart_regs_t* ConsoleUart = MXC_UART_GET_UART(CONSOLE_UART);
 extern uint32_t SystemCoreClock;
 
 const mxc_gpio_cfg_t pb_pin[] = {
@@ -82,9 +82,10 @@ const unsigned int num_leds = (sizeof(led_pin) / sizeof(mxc_gpio_cfg_t));
 // };
 
 /******************************************************************************/
-void mxc_assert(const char *expr, const char *file, int line)
+void mxc_assert(const char* expr, const char* file, int line)
 {
     printf("MXC_ASSERT %s #%d: (%s)\n", file, line, expr);
+    
     while (1);
 }
 
@@ -93,38 +94,38 @@ int Board_Init(void)
 {
 #ifndef __riscv
     int err;
-
+    
     // Set SWDCLK and SWDIO pads to 3.3V
     // MXC_GPIO0->vssel |= (3 << 28);
-
+    
     // Enable GPIO
     MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_GPIO0);
     MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_GPIO1);
     MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_GPIO2);
-
+    
     if ((err = Console_Init()) < E_NO_ERROR) {
         // Cannot use this macro, sind it uses printf which won't work
         // MXC_ASSERT_FAIL();
-
+        
         return err;
     }
-
+    
     // Set UART 0 pads to 3.3V
     MXC_GPIO0->vssel |= (0xF << 0);
-
+    
     if ((err = PB_Init()) != E_NO_ERROR) {
         MXC_ASSERT_FAIL();
         return err;
     }
-
+    
     if ((err = LED_Init()) != E_NO_ERROR) {
         MXC_ASSERT_FAIL();
         return err;
     }
-
+    
     MXC_SIMO->vrego_c = 0x43; // Set CNN voltage
 #endif // __riscv
-
+    
     return E_NO_ERROR;
 }
 
@@ -132,11 +133,11 @@ int Board_Init(void)
 int Console_Init(void)
 {
     int err;
-
+    
     if ((err = MXC_UART_Init(ConsoleUart, CONSOLE_BAUD, MXC_UART_8M_CLK)) != E_NO_ERROR) {
         return err;
     }
-
+    
     return E_NO_ERROR;
 }
 
@@ -144,11 +145,11 @@ int Console_Init(void)
 int Console_Shutdown(void)
 {
     int err;
-
+    
     if ((err = MXC_UART_Shutdown(ConsoleUart)) != E_NO_ERROR) {
         return err;
     }
-
+    
     return E_NO_ERROR;
 }
 
@@ -166,7 +167,7 @@ int Debug_Init(void)
     MXC_GPIO1->en0_clr = 0x0f;
     MXC_GPIO1->en1_set = 0x0f;
     MXC_GPIO1->en2_clr = 0x0f;
-
+    
     return E_NO_ERROR;
 }
 #endif // __riscv

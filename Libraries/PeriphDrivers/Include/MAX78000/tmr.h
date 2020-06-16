@@ -46,6 +46,7 @@
 #include "mxc_sys.h"
 #include "gcr_regs.h"
 #include "mcr_regs.h"
+#include "stdbool.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -146,10 +147,12 @@ typedef void (*mxc_tmr_complete_t) (int error);
  * @brief   Initialize timer module clock.
  * @param   tmr        Pointer to timer module to initialize.
  * @param   cfg        System configuration object
+ * @param   bool       True will initialize pins corresponding to the TMR and False will not if pins are pinned out otherwise it will not
+ *                     be used
  * 
  * @return  Success/Fail, see \ref MXC_Error_Codes for a list of return codes.
  */
-int MXC_TMR_Init (mxc_tmr_regs_t *tmr, mxc_tmr_cfg_t* cfg);
+int MXC_TMR_Init (mxc_tmr_regs_t *tmr, mxc_tmr_cfg_t* cfg, bool init_pins);
 
 /**
  * @brief   Shutdown timer module clock.

@@ -38,48 +38,55 @@
 #ifndef _TOUCHSCREEN_H_
 #define _TOUCHSCREEN_H_
 
+#include <spi.h>
+#include <gpio.h>
 
 /************************************************************************************/
-#define TS_MAX_BUTTONS  	 16
+#define TS_MAX_BUTTONS       16
 #define TS_INVALID_KEY_CODE  -1
 
 
 typedef enum {
-	TSC_TEMP0 	=	(0x83 | 0x00 | 0x00),
-	TSC_Y 		=	(0x83 | 0x10 | 0x04),
-	TSC_VBAT 	=	(0x83 | 0x20 | 0x00),
-	TSC_Z1 		=	(0x83 | 0x30 | 0x04),
-	TSC_Z2 		=	(0x83 | 0x40 | 0x04),
-	TSC_X 		=	(0x83 | 0x50 | 0x04),
-	TSC_AUX 	=	(0x83 | 0x60 | 0x00),
-	TSC_TEMP1 	=	(0x83 | 0x70 | 0x00),
-	TSC_DIFFX 	=	(0x81 | 0x50 | 0x00),
-	TSC_DIFFY 	=	(0x81 | 0x10 | 0x00),
-	TSC_DIFFZ1 	=	(0x81 | 0x30 | 0x00),
-	TSC_DIFFZ2 	=	(0x81 | 0x40 | 0x00),
-	TSC_START 	=	(0x82 | 0x00 | 0x00),
-	TSC_STOP 	=	(0x81 | 0x00 | 0x00)
+    TSC_TEMP0   = (0x83 | 0x00 | 0x00),
+    TSC_Y       = (0x83 | 0x10 | 0x04),
+    TSC_VBAT    = (0x83 | 0x20 | 0x00),
+    TSC_Z1      = (0x83 | 0x30 | 0x04),
+    TSC_Z2      = (0x83 | 0x40 | 0x04),
+    TSC_X       = (0x83 | 0x50 | 0x04),
+    TSC_AUX     = (0x83 | 0x60 | 0x00),
+    TSC_TEMP1   = (0x83 | 0x70 | 0x00),
+    TSC_DIFFX   = (0x81 | 0x50 | 0x00),
+    TSC_DIFFY   = (0x81 | 0x10 | 0x00),
+    TSC_DIFFZ1  = (0x81 | 0x30 | 0x00),
+    TSC_DIFFZ2  = (0x81 | 0x40 | 0x00),
+    TSC_START   = (0x82 | 0x00 | 0x00),
+    TSC_STOP    = (0x81 | 0x00 | 0x00)
 } mxc_ts_touch_cmd_t;
 
 /************************************************************************************/
 /**
  * @brief      Initialize the touchscreen and display
- * 
+ *
+ * @param      ts_spi           The SPI instance the touchscreen controller is connected to
+ * @param      ss_idx           The SSEL index to use when communicating with the touchscreen controller
+ * @param      reset_ctrl       The GPIO pin configuration for the touchscreen controller's interrupt pin
+ * @param      bl_ctrl          The GPIO pin configuration for the touchscreen controller's busy pin
+ *
  * @return     See \ref MXC_Error_Codes for a list of return codes.
  */
-int MXC_TS_Init( void );
+int MXC_TS_Init(mxc_spi_regs_t* ts_spi, int ss_idx,  mxc_gpio_cfg_t* int_pin, mxc_gpio_cfg_t* busy_pin);
 
 /**
  * @brief      Enables touch interrupts
- * 
+ *
  */
-void MXC_TS_Start( void );
+void MXC_TS_Start(void);
 
 /**
  * @brief      Disables touch interrupts
- * 
+ *
  */
-void MXC_TS_Stop( void );
+void MXC_TS_Stop(void);
 
 /**
  * @brief      Register a button
@@ -104,7 +111,7 @@ void MXC_TS_RemoveAllButton(void);
 
 /**
  * @brief      Read pressed key
- * 
+ *
  */
 int MXC_TS_GetKey(void);
 

@@ -40,9 +40,9 @@
 #include <stddef.h>
 
 /* **** Functions **** */
-int MXC_GPIO_RevA_Config (const mxc_gpio_cfg_t *cfg, uint8_t psMask)
+int MXC_GPIO_RevA_Config(const mxc_gpio_cfg_t* cfg, uint8_t psMask)
 {
-    mxc_gpio_regs_t *gpio = cfg->port;
+    mxc_gpio_regs_t* gpio = cfg->port;
     
     // Set the GPIO type
     switch (cfg->func) {
@@ -93,25 +93,31 @@ int MXC_GPIO_RevA_Config (const mxc_gpio_cfg_t *cfg, uint8_t psMask)
     case MXC_GPIO_PAD_NONE:
         gpio->padctrl0 &= ~cfg->mask;
         gpio->padctrl1 &= ~cfg->mask;
-        if(psMask == MXC_GPIO_PS_PULL_SELECT){
+        
+        if (psMask == MXC_GPIO_PS_PULL_SELECT) {
             gpio->ps &= ~cfg->mask;
         }
+        
         break;
         
     case MXC_GPIO_PAD_PULL_UP:
         gpio->padctrl0 |=  cfg->mask;
         gpio->padctrl1 &= ~cfg->mask;
-        if(psMask == MXC_GPIO_PS_PULL_SELECT){
+        
+        if (psMask == MXC_GPIO_PS_PULL_SELECT) {
             gpio->ps |= cfg->mask;
         }
+        
         break;
         
     case MXC_GPIO_PAD_PULL_DOWN:
         gpio->padctrl0 &= ~cfg->mask;
         gpio->padctrl1 |=  cfg->mask;
-        if(psMask == MXC_GPIO_PS_PULL_SELECT){
+        
+        if (psMask == MXC_GPIO_PS_PULL_SELECT) {
             gpio->ps &= ~cfg->mask;
         }
+        
         break;
         
     default:
@@ -119,44 +125,44 @@ int MXC_GPIO_RevA_Config (const mxc_gpio_cfg_t *cfg, uint8_t psMask)
     }
     
     // Configure the vssel
-    MXC_GPIO_SetVSSEL (gpio, cfg->vssel, cfg->mask);
+    MXC_GPIO_SetVSSEL(gpio, cfg->vssel, cfg->mask);
     
     return E_NO_ERROR;
 }
 
-uint32_t MXC_GPIO_RevA_InGet (mxc_gpio_regs_t* port, uint32_t mask)
+uint32_t MXC_GPIO_RevA_InGet(mxc_gpio_regs_t* port, uint32_t mask)
 {
     return (port->in & mask);
 }
 
-void MXC_GPIO_RevA_OutSet (mxc_gpio_regs_t* port, uint32_t mask)
+void MXC_GPIO_RevA_OutSet(mxc_gpio_regs_t* port, uint32_t mask)
 {
     port->out_set = mask;
 }
 
-void MXC_GPIO_RevA_OutClr (mxc_gpio_regs_t* port, uint32_t mask)
+void MXC_GPIO_RevA_OutClr(mxc_gpio_regs_t* port, uint32_t mask)
 {
     port->out_clr = mask;
 }
 
-uint32_t MXC_GPIO_RevA_OutGet (mxc_gpio_regs_t* port, uint32_t mask)
+uint32_t MXC_GPIO_RevA_OutGet(mxc_gpio_regs_t* port, uint32_t mask)
 {
     return (port->out & mask);
 }
 
-void MXC_GPIO_RevA_OutPut (mxc_gpio_regs_t* port, uint32_t mask, uint32_t val)
+void MXC_GPIO_RevA_OutPut(mxc_gpio_regs_t* port, uint32_t mask, uint32_t val)
 {
     port->out = (port->out & ~mask) | (val & mask);
 }
 
-void MXC_GPIO_RevA_OutToggle (mxc_gpio_regs_t* port, uint32_t mask)
+void MXC_GPIO_RevA_OutToggle(mxc_gpio_regs_t* port, uint32_t mask)
 {
     port->out ^= mask;
 }
 
-int MXC_GPIO_RevA_IntConfig (const mxc_gpio_cfg_t *cfg, mxc_gpio_int_pol_t pol)
+int MXC_GPIO_RevA_IntConfig(const mxc_gpio_cfg_t* cfg, mxc_gpio_int_pol_t pol)
 {
-    mxc_gpio_regs_t *gpio = cfg->port;
+    mxc_gpio_regs_t* gpio = cfg->port;
     
     switch (pol) {
     case MXC_GPIO_INT_HIGH:
@@ -195,27 +201,27 @@ int MXC_GPIO_RevA_IntConfig (const mxc_gpio_cfg_t *cfg, mxc_gpio_int_pol_t pol)
     return E_NO_ERROR;
 }
 
-void MXC_GPIO_RevA_EnableInt (mxc_gpio_regs_t* port, uint32_t mask)
+void MXC_GPIO_RevA_EnableInt(mxc_gpio_regs_t* port, uint32_t mask)
 {
     port->inten_set = mask;
 }
 
-void MXC_GPIO_RevA_DisableInt (mxc_gpio_regs_t* port, uint32_t mask)
+void MXC_GPIO_RevA_DisableInt(mxc_gpio_regs_t* port, uint32_t mask)
 {
     port->inten_clr = mask;
 }
 
-void MXC_GPIO_RevA_ClearFlags (mxc_gpio_regs_t* port, uint32_t flags)
+void MXC_GPIO_RevA_ClearFlags(mxc_gpio_regs_t* port, uint32_t flags)
 {
     port->intfl_clr = flags;
 }
 
-uint32_t MXC_GPIO_RevA_GetFlags (mxc_gpio_regs_t* port)
+uint32_t MXC_GPIO_RevA_GetFlags(mxc_gpio_regs_t* port)
 {
     return port->intfl;
 }
 
-int MXC_GPIO_RevA_SetVSSEL (mxc_gpio_regs_t* port, mxc_gpio_vssel_t vssel, uint32_t mask)
+int MXC_GPIO_RevA_SetVSSEL(mxc_gpio_regs_t* port, mxc_gpio_vssel_t vssel, uint32_t mask)
 {
     // Configure the vssel
     switch (vssel) {

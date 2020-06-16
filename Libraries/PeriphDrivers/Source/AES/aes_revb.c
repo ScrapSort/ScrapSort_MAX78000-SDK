@@ -45,48 +45,48 @@
 #include "aes_revb.h"
 
 /* **** Variable Declaration **** */
-typedef struct{
+typedef struct {
     uint8_t enc;
     uint8_t channelRX;
     uint8_t channelTX;
-    uint32_t remain;    
+    uint32_t remain;
     uint32_t* inputText;
     uint32_t* outputText;
-}mxc_aes_dma_req_t;
+} mxc_aes_dma_req_t;
 
 static mxc_aes_dma_req_t dma_state;
 
-int MXC_AES_RevB_Init ()
+int MXC_AES_RevB_Init()
 {
     MXC_AES->ctrl = 0x00;
-
-	MXC_AES_RevB_GenerateKey();
     
-    while(MXC_AES_IsBusy() != E_NO_ERROR);
+    MXC_AES_RevB_GenerateKey();
+    
+    while (MXC_AES_IsBusy() != E_NO_ERROR);
+    
     MXC_AES->ctrl |= MXC_F_AES_CTRL_EN;
-
+    
     return E_NO_ERROR;
 }
 
-int MXC_AES_RevB_Shutdown ()
+int MXC_AES_RevB_Shutdown()
 {
     MXC_AES_RevB_FlushInputFIFO();
-	MXC_AES_RevB_FlushOutputFIFO();
-
-    while(MXC_AES_IsBusy() != E_NO_ERROR) ;
+    MXC_AES_RevB_FlushOutputFIFO();
+    
+    while (MXC_AES_IsBusy() != E_NO_ERROR) ;
     
     MXC_AES->ctrl = 0x00;
-
+    
     return E_NO_ERROR;
 }
 
-int MXC_AES_RevB_IsBusy ()
+int MXC_AES_RevB_IsBusy()
 {
-    if(MXC_AES->status & MXC_F_AES_STATUS_BUSY)
-    {
+    if (MXC_AES->status & MXC_F_AES_STATUS_BUSY) {
         return E_BUSY;
     }
-
+    
     return E_NO_ERROR;
 }
 
@@ -94,12 +94,14 @@ void MXC_AES_RevB_GenerateKey()
 {
     //Generate AES Key
     MXC_TRNG->ctrl |= MXC_F_TRNG_CTRL_KEYGEN;
-    while(MXC_TRNG->ctrl & MXC_F_TRNG_CTRL_KEYGEN);
+    
+    while (MXC_TRNG->ctrl & MXC_F_TRNG_CTRL_KEYGEN);
 }
 
 void MXC_AES_RevB_SetKeySize(mxc_aes_keys_t key)
 {
-    while(MXC_AES_IsBusy() != E_NO_ERROR);
+    while (MXC_AES_IsBusy() != E_NO_ERROR);
+    
     MXC_AES->ctrl |= key;
 }
 
@@ -110,26 +112,29 @@ mxc_aes_keys_t MXC_AES_RevB_GetKeySize()
 
 void MXC_AES_RevB_FlushInputFIFO()
 {
-    while(MXC_AES_IsBusy() != E_NO_ERROR);
+    while (MXC_AES_IsBusy() != E_NO_ERROR);
+    
     MXC_AES->ctrl |= MXC_F_AES_CTRL_INPUT_FLUSH;
 }
 
 void MXC_AES_RevB_FlushOutputFIFO()
 {
-    while(MXC_AES_IsBusy() != E_NO_ERROR);
+    while (MXC_AES_IsBusy() != E_NO_ERROR);
+    
     MXC_AES->ctrl |= MXC_F_AES_CTRL_OUTPUT_FLUSH;
 }
 
 void MXC_AES_RevB_Start()
 {
-    while(MXC_AES_IsBusy() != E_NO_ERROR);  
-    MXC_AES->ctrl |= MXC_F_AES_CTRL_START;  
+    while (MXC_AES_IsBusy() != E_NO_ERROR);
+    
+    MXC_AES->ctrl |= MXC_F_AES_CTRL_START;
 }
 
-void MXC_AES_RevB_IntEnable (uint32_t interrupt)
+void MXC_AES_RevB_IntEnable(uint32_t interrupt)
 {
     MXC_AES->inten |= (interrupt & (MXC_F_AES_INTEN_DONE | MXC_F_AES_INTEN_KEY_CHANGE | \
-                        MXC_F_AES_INTEN_KEY_ZERO | MXC_F_AES_INTEN_OV));
+                                    MXC_F_AES_INTEN_KEY_ZERO | MXC_F_AES_INTEN_OV));
 }
 
 uint32_t MXC_AES_RevB_GetFlags()
@@ -140,66 +145,67 @@ uint32_t MXC_AES_RevB_GetFlags()
 void MXC_AES_RevB_ClearFlags(uint32_t flags)
 {
     MXC_AES->intfl = (flags & (MXC_F_AES_INTFL_DONE | MXC_F_AES_INTFL_KEY_CHANGE | \
-                        MXC_F_AES_INTFL_KEY_ZERO | MXC_F_AES_INTFL_OV));
+                               MXC_F_AES_INTFL_KEY_ZERO | MXC_F_AES_INTFL_OV));
 }
 
 int MXC_AES_RevB_Generic(mxc_aes_req_t* req)
 {
     int i;
     int remain = req->length;
-
-    if(req == NULL){
+    
+    if (req == NULL) {
         return E_NULL_PTR;
     }
-
-    if(req->inputData==NULL || req->resultData==NULL){
+    
+    if (req->inputData == NULL || req->resultData == NULL) {
         return E_NULL_PTR;
     }
-
-    if(req->length == 0){
+    
+    if (req->length == 0) {
         return E_BAD_PARAM;
     }
-
-    MXC_AES_RevB_FlushInputFIFO();
-	MXC_AES_RevB_FlushOutputFIFO();
-
-    MXC_AES_RevB_SetKeySize(req->keySize);
-
-    while(MXC_AES_IsBusy() != E_NO_ERROR);
     
-    MXC_SETFIELD (MXC_AES->ctrl, MXC_F_AES_CTRL_TYPE, req->encryption << MXC_F_AES_CTRL_TYPE_POS);
-
-    while(remain/4)
-    {
-        for(i=0; i<4; i++){
-            MXC_AES->fifo = *(req->inputData++);
+    MXC_AES_RevB_FlushInputFIFO();
+    MXC_AES_RevB_FlushOutputFIFO();
+    
+    MXC_AES_RevB_SetKeySize(req->keySize);
+    
+    while (MXC_AES_IsBusy() != E_NO_ERROR);
+    
+    MXC_SETFIELD(MXC_AES->ctrl, MXC_F_AES_CTRL_TYPE, req->encryption << MXC_F_AES_CTRL_TYPE_POS);
+    
+    while (remain / 4) {
+        for (i = 0; i < 4; i++) {
+            MXC_AES->fifo = * (req->inputData++);
         }
-
-        while(!(MXC_AES->intfl & MXC_F_AES_INTFL_DONE));
+        
+        while (!(MXC_AES->intfl & MXC_F_AES_INTFL_DONE));
+        
         MXC_AES->intfl |= MXC_F_AES_INTFL_DONE;
-
-        for(i=0; i<4; i++){
-            *(req->resultData++) = MXC_AES->fifo;
+        
+        for (i = 0; i < 4; i++) {
+            * (req->resultData++) = MXC_AES->fifo;
         }
-
+        
         remain -= 4;
     }
-    if(remain%4)
-    {
-        for(i=0; i<remain; i++){
-            MXC_AES->fifo = *(req->inputData++);
+    
+    if (remain % 4) {
+        for (i = 0; i < remain; i++) {
+            MXC_AES->fifo = * (req->inputData++);
         }
-
+        
         MXC_AES_RevB_Start();
-
-        while(!(MXC_AES->intfl & MXC_F_AES_INTFL_DONE));
+        
+        while (!(MXC_AES->intfl & MXC_F_AES_INTFL_DONE));
+        
         MXC_AES->intfl |= MXC_F_AES_INTFL_DONE;
-
-        for(i=0; i<4; i++){
-            *(req->resultData++) = MXC_AES->fifo;
+        
+        for (i = 0; i < 4; i++) {
+            * (req->resultData++) = MXC_AES->fifo;
         }
     }
-
+    
     return E_NO_ERROR;
 }
 
@@ -213,27 +219,25 @@ int MXC_AES_RevB_Decrypt(mxc_aes_req_t* req)
     return MXC_AES_Generic(req);
 }
 
-int MXC_AES_RevB_TXDMAConfig(void *src_addr, int len)
+int MXC_AES_RevB_TXDMAConfig(void* src_addr, int len)
 {
     uint8_t channel;
     mxc_dma_config_t config;
     mxc_dma_srcdst_t srcdst;
-
-    if(src_addr == NULL)
-    {
+    
+    if (src_addr == NULL) {
         return E_NULL_PTR;
     }
-
-    if(len == 0)
-    {
+    
+    if (len == 0) {
         return E_BAD_PARAM;
     }
-
+    
     MXC_DMA_Init();
-
+    
     channel = MXC_DMA_AcquireChannel();
     dma_state.channelTX = channel;
-
+    
     config.reqsel = MXC_DMA_REQUEST_AESTX;
     
     config.ch = channel;
@@ -247,47 +251,45 @@ int MXC_AES_RevB_TXDMAConfig(void *src_addr, int len)
     srcdst.ch = channel;
     srcdst.source = src_addr;
     
-    if(dma_state.enc == 1){
+    if (dma_state.enc == 1) {
         srcdst.len = 4;
     }
-    else if(len > 4){
+    else if (len > 4) {
         srcdst.len = 4;
     }
-    else{
+    else {
         srcdst.len = len;
     }
-
-    MXC_DMA_ConfigChannel (config,srcdst);
-    MXC_DMA_SetCallback (channel, MXC_AES_RevB_DMACallback);
     
-    MXC_DMA_EnableInt (channel);
-    MXC_DMA_Start (channel);
+    MXC_DMA_ConfigChannel(config, srcdst);
+    MXC_DMA_SetCallback(channel, MXC_AES_RevB_DMACallback);
+    
+    MXC_DMA_EnableInt(channel);
+    MXC_DMA_Start(channel);
     MXC_DMA->ch[channel].ctrl |= MXC_F_DMA_CTRL_CTZ_IE;
-
+    
     return E_NO_ERROR;
 }
 
-int MXC_AES_RevB_RXDMAConfig(void *dest_addr, int len)
+int MXC_AES_RevB_RXDMAConfig(void* dest_addr, int len)
 {
-    if(dest_addr == NULL)
-    {
+    if (dest_addr == NULL) {
         return E_NULL_PTR;
     }
-
-    if(len == 0)
-    {
+    
+    if (len == 0) {
         return E_BAD_PARAM;
     }
-
+    
     uint8_t channel;
     mxc_dma_config_t config;
     mxc_dma_srcdst_t srcdst;
-
+    
     MXC_DMA_Init();
-
+    
     channel = MXC_DMA_AcquireChannel();
     dma_state.channelRX = channel;
-
+    
     config.reqsel = MXC_DMA_REQUEST_AESRX;
     
     config.ch = channel;
@@ -300,96 +302,100 @@ int MXC_AES_RevB_RXDMAConfig(void *dest_addr, int len)
     
     srcdst.ch = channel;
     srcdst.dest = dest_addr;
-
-    if(dma_state.enc == 0){
+    
+    if (dma_state.enc == 0) {
         srcdst.len = 4;
     }
-    else if(len > 4){
+    else if (len > 4) {
         srcdst.len = 4;
     }
-    else{
+    else {
         srcdst.len = len;
     }
     
-    MXC_DMA_ConfigChannel (config,srcdst);
-    MXC_DMA_SetCallback (channel, MXC_AES_RevB_DMACallback);
+    MXC_DMA_ConfigChannel(config, srcdst);
+    MXC_DMA_SetCallback(channel, MXC_AES_RevB_DMACallback);
     
-    MXC_DMA_EnableInt (channel);
-    MXC_DMA_Start (channel);
+    MXC_DMA_EnableInt(channel);
+    MXC_DMA_Start(channel);
     MXC_DMA->ch[channel].ctrl |= MXC_F_DMA_CTRL_CTZ_IE;
-
+    
     return E_NO_ERROR;
 }
 
 int MXC_AES_RevB_GenericAsync(mxc_aes_req_t* req, uint8_t enc)
 {
-    if(req==NULL){
+    if (req == NULL) {
         return E_NULL_PTR;
     }
-
-    if(req->inputData==NULL || req->resultData==NULL){
+    
+    if (req->inputData == NULL || req->resultData == NULL) {
         return E_NULL_PTR;
     }
-
-    if(req->length == 0){
+    
+    if (req->length == 0) {
         return E_BAD_PARAM;
     }
-
+    
     MXC_AES_FlushInputFIFO();
-	MXC_AES_FlushOutputFIFO();
-
+    MXC_AES_FlushOutputFIFO();
+    
     MXC_AES_SetKeySize(req->keySize);
-
+    
     MXC_AES_IsBusy();
-    MXC_SETFIELD (MXC_AES->ctrl, MXC_F_AES_CTRL_TYPE, req->encryption << MXC_F_AES_CTRL_TYPE_POS);
-
-    dma_state.enc = enc;   
+    MXC_SETFIELD(MXC_AES->ctrl, MXC_F_AES_CTRL_TYPE, req->encryption << MXC_F_AES_CTRL_TYPE_POS);
+    
+    dma_state.enc = enc;
     dma_state.remain = req->length;
     dma_state.inputText = req->inputData;
     dma_state.outputText = req->resultData;
-
-    MXC_AES->ctrl |= MXC_F_AES_CTRL_DMA_RX_EN;              //Enable AES DMA    
-    MXC_AES->ctrl |= MXC_F_AES_CTRL_DMA_TX_EN;              //Enable AES DMA    
-
-    if(MXC_AES_RevB_TXDMAConfig(dma_state.inputText, dma_state.remain) != E_NO_ERROR){
+    
+    MXC_AES->ctrl |= MXC_F_AES_CTRL_DMA_RX_EN;              //Enable AES DMA
+    MXC_AES->ctrl |= MXC_F_AES_CTRL_DMA_TX_EN;              //Enable AES DMA
+    
+    if (MXC_AES_RevB_TXDMAConfig(dma_state.inputText, dma_state.remain) != E_NO_ERROR) {
         return E_BAD_PARAM;
     }
-
+    
     return E_NO_ERROR;
 }
- 
+
 int MXC_AES_RevB_EncryptAsync(mxc_aes_req_t* req)
 {
-    return MXC_AES_RevB_GenericAsync(req,0);
+    return MXC_AES_RevB_GenericAsync(req, 0);
 }
 
 int MXC_AES_RevB_DecryptAsync(mxc_aes_req_t* req)
 {
-    return MXC_AES_RevB_GenericAsync(req,1);
+    return MXC_AES_RevB_GenericAsync(req, 1);
 }
 
-void MXC_AES_RevB_DMACallback (int ch, int error)
+void MXC_AES_RevB_DMACallback(int ch, int error)
 {
-    if(error != E_NO_ERROR){
-
+    if (error != E_NO_ERROR) {
+    
     }
-    else{
-        if(dma_state.channelTX == ch){   
-            MXC_DMA_ReleaseChannel (dma_state.channelTX);
-            if (dma_state.remain < 4){
-                MXC_AES_RevB_Start();        
-            }        
-            MXC_AES_RevB_RXDMAConfig(dma_state.outputText, dma_state.remain); 
+    else {
+        if (dma_state.channelTX == ch) {
+            MXC_DMA_ReleaseChannel(dma_state.channelTX);
+            
+            if (dma_state.remain < 4) {
+                MXC_AES_RevB_Start();
+            }
+            
+            MXC_AES_RevB_RXDMAConfig(dma_state.outputText, dma_state.remain);
         }
-        else if(dma_state.channelRX == ch){
-            if(dma_state.remain > 4){
+        else if (dma_state.channelRX == ch) {
+            if (dma_state.remain > 4) {
                 dma_state.remain -= 4;
             }
-            else if(dma_state.remain > 0){
+            else if (dma_state.remain > 0) {
                 dma_state.remain = 0;
             }
-            MXC_DMA_ReleaseChannel (dma_state.channelRX);
-            if(dma_state.remain > 0){
+            
+            MXC_DMA_ReleaseChannel(dma_state.channelRX);
+            
+            if (dma_state.remain > 0) {
                 MXC_AES_RevB_TXDMAConfig(dma_state.inputText, dma_state.remain);
             }
         }

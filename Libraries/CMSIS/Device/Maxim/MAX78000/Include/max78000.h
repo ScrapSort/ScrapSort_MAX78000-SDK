@@ -510,6 +510,8 @@ typedef enum {
 
 #define MXC_BASE_ICC1                   ((uint32_t)0x4002A800UL)
 #define MXC_ICC1                        ((mxc_icc_regs_t*)MXC_BASE_ICC1)
+
+#define MXC_ICC MXC_ICC0
 // ICC1 is the RISC-V cache
 
 #define MXC_ICC MXC_ICC0

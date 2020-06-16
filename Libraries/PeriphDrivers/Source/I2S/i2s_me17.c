@@ -52,79 +52,95 @@
 #include "i2s_reva.h"
 #include "i2s_regs.h"
 
-int MXC_I2S_Init(mxc_i2s_req_t *req) {
+int MXC_I2S_Init(mxc_i2s_req_t* req)
+{
     MXC_I2S_Shutdown();
-
+    
 #ifdef MXC_SYS_CLOCK_ERFO // ME17 only
     MXC_SYS_ClockSourceEnable(MXC_SYS_CLOCK_ERFO);
 #endif
     MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_I2S);
-    MXC_GPIO_Config (&gpio_cfg_i2s0);
-
-    return MXC_I2S_RevA_Init (req);
+    MXC_GPIO_Config(&gpio_cfg_i2s0);
+    
+    return MXC_I2S_RevA_Init(req);
 }
 
-int MXC_I2S_Shutdown(void) {
+int MXC_I2S_Shutdown(void)
+{
     MXC_I2S_RevA_Shutdown();
-
-    MXC_SYS_ClockDisable (MXC_SYS_PERIPH_CLOCK_I2S);
+    
+    MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_I2S);
     MXC_SYS_Reset_Periph(MXC_SYS_RESET1_I2S);
-
+    
     return E_NO_ERROR;
 }
 
-int MXC_I2S_ConfigData(mxc_i2s_req_t *req) {
+int MXC_I2S_ConfigData(mxc_i2s_req_t* req)
+{
     return MXC_I2S_RevA_ConfigData(req);
 }
 
-void MXC_I2S_TXEnable() {
+void MXC_I2S_TXEnable()
+{
     MXC_I2S_RevA_TXEnable();
 }
 
-void MXC_I2S_TXDisable() {
+void MXC_I2S_TXDisable()
+{
     MXC_I2S_RevA_TXDisable();
 }
 
-void MXC_I2S_RXEnable() {
+void MXC_I2S_RXEnable()
+{
     MXC_I2S_RevA_RXEnable();
 }
 
-void MXC_I2S_RXDisable() {
+void MXC_I2S_RXDisable()
+{
     MXC_I2S_RevA_RXDisable();
 }
 
-int MXC_I2S_SetRXThreshold(uint8_t threshold){
+int MXC_I2S_SetRXThreshold(uint8_t threshold)
+{
     return MXC_I2S_RevA_SetRXThreshold(threshold);
 }
 
-int MXC_I2S_SetFrequency(mxc_i2s_ch_mode_t mode, uint16_t clkdiv) {
-    return MXC_I2S_RevA_SetFrequency(mode,clkdiv);
+int MXC_I2S_SetFrequency(mxc_i2s_ch_mode_t mode, uint16_t clkdiv)
+{
+    return MXC_I2S_RevA_SetFrequency(mode, clkdiv);
 }
 
-void MXC_I2S_Flush(void) {
+void MXC_I2S_Flush(void)
+{
     MXC_I2S_RevA_Flush();
 }
 
-void MXC_I2S_IntEnable(uint32_t flags){
+void MXC_I2S_IntEnable(uint32_t flags)
+{
     MXC_I2S_RevA_IntEnable(flags);
 }
 
-void MXC_I2S_IntDisable(uint32_t flags){
+void MXC_I2S_IntDisable(uint32_t flags)
+{
     MXC_I2S_RevA_IntDisable(flags);
 }
 
-int MXC_I2S_GetFlags(){
+int MXC_I2S_GetFlags()
+{
     return MXC_I2S_RevA_GetFlags();
 }
 
-void MXC_I2S_ClearFlags(uint32_t flags) {
+void MXC_I2S_ClearFlags(uint32_t flags)
+{
     MXC_I2S_RevA_ClearFlags(flags);
 }
 
-void MXC_I2S_TXDMAConfig(void *src_addr, int len) {
+void MXC_I2S_TXDMAConfig(void* src_addr, int len)
+{
     MXC_I2S_RevA_TXDMAConfig(src_addr, len);
 }
 
-void MXC_I2S_RXDMAConfig(void *dest_addr, int len) {
+void MXC_I2S_RXDMAConfig(void* dest_addr, int len)
+{
     MXC_I2S_RevA_RXDMAConfig(dest_addr, len);
 }

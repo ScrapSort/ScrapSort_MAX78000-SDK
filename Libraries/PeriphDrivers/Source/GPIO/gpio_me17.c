@@ -49,127 +49,130 @@
 /* **** Globals **** */
 
 /* **** Functions **** */
-int MXC_GPIO_Init (uint32_t portmask)
+int MXC_GPIO_Init(uint32_t portmask)
 {
-    int retval = MXC_GPIO_Common_Init (portmask);
-
+    int retval = MXC_GPIO_Common_Init(portmask);
+    
     if (portmask & 0x1) {
-        MXC_SYS_ClockEnable (MXC_SYS_PERIPH_CLOCK_GPIO0);
+        MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_GPIO0);
     }
     
     if (portmask & 0x2) {
-        MXC_SYS_ClockEnable (MXC_SYS_PERIPH_CLOCK_GPIO1);
+        MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_GPIO1);
     }
     
-    return MXC_GPIO_Common_Init (portmask) + retval;
+    return MXC_GPIO_Common_Init(portmask) + retval;
 }
 
-int MXC_GPIO_Shutdown (uint32_t portmask)
+int MXC_GPIO_Shutdown(uint32_t portmask)
 {
     if (portmask & 0x1) {
-        MXC_SYS_ClockDisable (MXC_SYS_PERIPH_CLOCK_GPIO0);
+        MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_GPIO0);
     }
     
     if (portmask & 0x2) {
-        MXC_SYS_ClockDisable (MXC_SYS_PERIPH_CLOCK_GPIO1);
+        MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_GPIO1);
     }
     
     return E_NO_ERROR;
 }
 
-int MXC_GPIO_Reset (uint32_t portmask)
+int MXC_GPIO_Reset(uint32_t portmask)
 {
     if (portmask & 0x1) {
-        MXC_SYS_Reset_Periph (MXC_SYS_RESET0_GPIO0);
+        MXC_SYS_Reset_Periph(MXC_SYS_RESET0_GPIO0);
     }
     
     if (portmask & 0x2) {
-        MXC_SYS_Reset_Periph (MXC_SYS_RESET0_GPIO1);
+        MXC_SYS_Reset_Periph(MXC_SYS_RESET0_GPIO1);
     }
-
+    
     return E_NO_ERROR;
 }
 
-int MXC_GPIO_Config (const mxc_gpio_cfg_t *cfg)
+int MXC_GPIO_Config(const mxc_gpio_cfg_t* cfg)
 {
-    return MXC_GPIO_RevA_Config (cfg, MXC_GPIO_PS_PULL_SELECT);
+    int gpio;
+    gpio = MXC_GPIO_GET_IDX(cfg->port);
+    MXC_GPIO_Init(1 << gpio);
+    return MXC_GPIO_RevA_Config(cfg, MXC_GPIO_PS_PULL_SELECT);
 }
 
 /* ************************************************************************** */
-uint32_t MXC_GPIO_InGet (mxc_gpio_regs_t* port, uint32_t mask)
+uint32_t MXC_GPIO_InGet(mxc_gpio_regs_t* port, uint32_t mask)
 {
-    return MXC_GPIO_RevA_InGet (port, mask);
+    return MXC_GPIO_RevA_InGet(port, mask);
 }
 
 /* ************************************************************************** */
-void MXC_GPIO_OutSet (mxc_gpio_regs_t* port, uint32_t mask)
+void MXC_GPIO_OutSet(mxc_gpio_regs_t* port, uint32_t mask)
 {
-    MXC_GPIO_RevA_OutSet (port, mask);
+    MXC_GPIO_RevA_OutSet(port, mask);
 }
 
 /* ************************************************************************** */
-void MXC_GPIO_OutClr (mxc_gpio_regs_t* port, uint32_t mask)
+void MXC_GPIO_OutClr(mxc_gpio_regs_t* port, uint32_t mask)
 {
-    MXC_GPIO_RevA_OutClr (port, mask);
+    MXC_GPIO_RevA_OutClr(port, mask);
 }
 
 /* ************************************************************************** */
-uint32_t MXC_GPIO_OutGet (mxc_gpio_regs_t* port, uint32_t mask)
+uint32_t MXC_GPIO_OutGet(mxc_gpio_regs_t* port, uint32_t mask)
 {
-    return MXC_GPIO_RevA_OutGet (port, mask);
+    return MXC_GPIO_RevA_OutGet(port, mask);
 }
 
 /* ************************************************************************** */
-void MXC_GPIO_OutPut (mxc_gpio_regs_t* port, uint32_t mask, uint32_t val)
+void MXC_GPIO_OutPut(mxc_gpio_regs_t* port, uint32_t mask, uint32_t val)
 {
-    MXC_GPIO_RevA_OutPut (port, mask, val);
+    MXC_GPIO_RevA_OutPut(port, mask, val);
 }
 
 /* ************************************************************************** */
-void MXC_GPIO_OutToggle (mxc_gpio_regs_t* port, uint32_t mask)
+void MXC_GPIO_OutToggle(mxc_gpio_regs_t* port, uint32_t mask)
 {
-    MXC_GPIO_RevA_OutToggle (port, mask);
+    MXC_GPIO_RevA_OutToggle(port, mask);
 }
 
 /* ************************************************************************** */
-int MXC_GPIO_IntConfig (const mxc_gpio_cfg_t *cfg, mxc_gpio_int_pol_t pol)
+int MXC_GPIO_IntConfig(const mxc_gpio_cfg_t* cfg, mxc_gpio_int_pol_t pol)
 {
-    return MXC_GPIO_RevA_IntConfig (cfg, pol);
+    return MXC_GPIO_RevA_IntConfig(cfg, pol);
 }
 
 /* ************************************************************************** */
-void MXC_GPIO_EnableInt (mxc_gpio_regs_t* port, uint32_t mask)
+void MXC_GPIO_EnableInt(mxc_gpio_regs_t* port, uint32_t mask)
 {
-    MXC_GPIO_RevA_EnableInt (port, mask);
+    MXC_GPIO_RevA_EnableInt(port, mask);
 }
 
 /* ************************************************************************** */
-void MXC_GPIO_DisableInt (mxc_gpio_regs_t* port, uint32_t mask)
+void MXC_GPIO_DisableInt(mxc_gpio_regs_t* port, uint32_t mask)
 {
-    MXC_GPIO_RevA_DisableInt (port, mask);
+    MXC_GPIO_RevA_DisableInt(port, mask);
 }
 
 /* ************************************************************************** */
-void MXC_GPIO_RegisterCallback (const mxc_gpio_cfg_t *cfg, mxc_gpio_callback_fn func, void *cbdata)
+void MXC_GPIO_RegisterCallback(const mxc_gpio_cfg_t* cfg, mxc_gpio_callback_fn func, void* cbdata)
 {
-    MXC_GPIO_Common_RegisterCallback (cfg, func, cbdata);
+    MXC_GPIO_Common_RegisterCallback(cfg, func, cbdata);
 }
 
 /* ************************************************************************** */
-void MXC_GPIO_Handler (unsigned int port)
+void MXC_GPIO_Handler(unsigned int port)
 {
-    MXC_GPIO_Common_Handler (port);
+    MXC_GPIO_Common_Handler(port);
 }
 
-void MXC_GPIO_ClearFlags (mxc_gpio_regs_t* port, uint32_t flags)
+void MXC_GPIO_ClearFlags(mxc_gpio_regs_t* port, uint32_t flags)
 {
-    MXC_GPIO_RevA_ClearFlags (port, flags);
+    MXC_GPIO_RevA_ClearFlags(port, flags);
 }
-uint32_t MXC_GPIO_GetFlags (mxc_gpio_regs_t* port)
+uint32_t MXC_GPIO_GetFlags(mxc_gpio_regs_t* port)
 {
-    return MXC_GPIO_RevA_GetFlags (port);
+    return MXC_GPIO_RevA_GetFlags(port);
 }
-int MXC_GPIO_SetVSSEL (mxc_gpio_regs_t* port, mxc_gpio_vssel_t vssel, uint32_t mask)
+int MXC_GPIO_SetVSSEL(mxc_gpio_regs_t* port, mxc_gpio_vssel_t vssel, uint32_t mask)
 {
-    return MXC_GPIO_RevA_SetVSSEL (port, vssel, mask);
+    return MXC_GPIO_RevA_SetVSSEL(port, vssel, mask);
 }

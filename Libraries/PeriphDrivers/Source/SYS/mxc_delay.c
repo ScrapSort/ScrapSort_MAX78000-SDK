@@ -46,20 +46,21 @@ static uint32_t endtick;
 static uint32_t ctrl_save;
 static mxc_delay_complete_t cbFunc;
 
-static void MXC_DelayInit (unsigned long us);
-extern void SysTick_Handler (void);
+static void MXC_DelayInit(unsigned long us);
+extern void SysTick_Handler(void);
 #endif // __riscv
 
 /* ************************************************************************** */
-__weak void SysTick_Handler (void)
+__weak void SysTick_Handler(void)
 {
     MXC_DelayHandler();
 }
 
 /* ************************************************************************** */
-void MXC_DelayHandler (void)
+void MXC_DelayHandler(void)
 {
 #ifndef __riscv
+
     // Check and clear overflow flag
     if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) {
         // Decrement overflow flag if delay is still ongoing
@@ -70,17 +71,18 @@ void MXC_DelayHandler (void)
             MXC_DelayAbort();
             
             if (cbFunc != NULL) {
-                cbFunc (E_NO_ERROR);
+                cbFunc(E_NO_ERROR);
                 cbFunc = NULL;
             }
         }
     }
+    
 #endif // __riscv
 }
 
 #ifndef __riscv
 /* ************************************************************************** */
-static void MXC_DelayInit (unsigned long us)
+static void MXC_DelayInit(unsigned long us)
 {
     uint32_t starttick, reload, ticks, lastticks;
     
@@ -91,7 +93,7 @@ static void MXC_DelayInit (unsigned long us)
     ctrl_save = SysTick->CTRL & ~SysTick_CTRL_COUNTFLAG_Msk;
     
     // If the SysTick is not running, configure and start it
-    if (! (SysTick->CTRL & SysTick_CTRL_ENABLE_Msk)) {
+    if (!(SysTick->CTRL & SysTick_CTRL_ENABLE_Msk)) {
         SysTick->LOAD = SysTick_LOAD_RELOAD_Msk;
         SysTick->VAL = SysTick_VAL_CURRENT_Msk;
         SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
@@ -103,7 +105,7 @@ static void MXC_DelayInit (unsigned long us)
     }
     
     // Calculate the total number of ticks to delay
-    ticks = (uint32_t) ( ( (uint64_t) us * (uint64_t) SystemCoreClock) / 1000000);
+    ticks = (uint32_t)(((uint64_t) us * (uint64_t) SystemCoreClock) / 1000000);
     
     // How many overflows of the SysTick will occur
     overflows = ticks / reload;
@@ -123,7 +125,7 @@ static void MXC_DelayInit (unsigned long us)
 #endif // __riscv
 
 /* ************************************************************************** */
-int MXC_DelayAsync (unsigned long us, mxc_delay_complete_t callback)
+int MXC_DelayAsync(unsigned long us, mxc_delay_complete_t callback)
 {
 #ifndef __riscv
     cbFunc = callback;
@@ -139,7 +141,7 @@ int MXC_DelayAsync (unsigned long us, mxc_delay_complete_t callback)
     }
     
     // Calculate the necessary delay and start the timer
-    MXC_DelayInit (us);
+    MXC_DelayInit(us);
     
     // Enable SysTick interrupt if necessary
     if (overflows > 0) {
@@ -151,13 +153,14 @@ int MXC_DelayAsync (unsigned long us, mxc_delay_complete_t callback)
 }
 
 /* ************************************************************************** */
-int MXC_DelayCheck (void)
+int MXC_DelayCheck(void)
 {
 #ifndef __riscv
+
     // Check if timeout currently ongoing
     if (overflows < 0) {
         if (cbFunc != NULL) {
-            cbFunc (E_NO_ERROR);
+            cbFunc(E_NO_ERROR);
             cbFunc = NULL;
         }
         
@@ -165,11 +168,11 @@ int MXC_DelayCheck (void)
     }
     
     // Check the global values
-    if ( (overflows == 0) && (SysTick->VAL <= endtick)) {
+    if ((overflows == 0) && (SysTick->VAL <= endtick)) {
         MXC_DelayAbort();
         
         if (cbFunc != NULL) {
-            cbFunc (E_NO_ERROR);
+            cbFunc(E_NO_ERROR);
             cbFunc = NULL;
         }
         
@@ -181,11 +184,12 @@ int MXC_DelayCheck (void)
 }
 
 /* ************************************************************************** */
-void MXC_DelayAbort (void)
+void MXC_DelayAbort(void)
 {
 #ifndef __riscv
+
     if (cbFunc != NULL) {
-        cbFunc (E_ABORT);
+        cbFunc(E_ABORT);
         cbFunc = NULL;
     }
     
@@ -195,9 +199,10 @@ void MXC_DelayAbort (void)
 }
 
 /* ************************************************************************** */
-int MXC_Delay (unsigned long us)
+int MXC_Delay(unsigned long us)
 {
 #ifndef __riscv
+
     // Check if timeout currently ongoing
     if (overflows > 0) {
         return E_BUSY;
@@ -209,7 +214,7 @@ int MXC_Delay (unsigned long us)
     }
     
     // Calculate the necessary delay and start the timer
-    MXC_DelayInit (us);
+    MXC_DelayInit(us);
     
     // Wait for the number of overflows
     while (overflows > 0) {

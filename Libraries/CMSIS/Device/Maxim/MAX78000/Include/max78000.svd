@@ -2289,7 +2289,7 @@
        <bitWidth>1</bitWidth>
       </field>
       <field>
-       <name>ISOPD</name>
+       <name>ISO_PD</name>
        <description>60 MHz power down. This bit selects the 60 MHz clock power state in DEEPSLEEP mode.</description>
        <bitOffset>15</bitOffset>
        <bitWidth>1</bitWidth>
@@ -2306,14 +2306,14 @@
         </enumeratedValue>
        </enumeratedValues>
       </field>
-      <field derivedFrom="ISOPD">
-       <name>IPOPD</name>
+      <field derivedFrom="ISO_PD">
+       <name>IPO_PD</name>
        <description>100 MHz power down. This bit selects 100 MHz clock power state in DEEPSLEEP mode. </description>
        <bitOffset>16</bitOffset>
        <bitWidth>1</bitWidth>
       </field>
-      <field derivedFrom="ISOPD">
-       <name>IBROPD</name>
+      <field derivedFrom="ISO_PD">
+       <name>IBRO_PD</name>
        <description>7.3725 MHz power down. This bit selects 7.3725 MHz clock power state in DEEPSLEEP mode. </description>
        <bitOffset>17</bitOffset>
        <bitWidth>1</bitWidth>
@@ -2512,7 +2512,7 @@
      <addressOffset>0x2C</addressOffset>
      <fields>
       <field>
-       <name>SRAM0</name>
+       <name>RAM0</name>
        <description>System RAM Block 0 Zeroization.</description>
        <bitOffset>0</bitOffset>
        <bitWidth>1</bitWidth>
@@ -2529,25 +2529,25 @@
         </enumeratedValue>
        </enumeratedValues>
       </field>
-      <field derivedFrom="SRAM0">
-       <name>SRAM1</name>
+      <field derivedFrom="RAM0">
+       <name>RAM1</name>
        <description>System RAM Block 1 Zeroization.</description>
        <bitOffset>1</bitOffset>
        <bitWidth>1</bitWidth>
       </field>
-      <field derivedFrom="SRAM0">
-       <name>SRAM2</name>
+      <field derivedFrom="RAM0">
+       <name>RAM2</name>
        <description>System RAM Block 2 Zeroization.</description>
        <bitOffset>2</bitOffset>
        <bitWidth>1</bitWidth>
       </field>
-      <field derivedFrom="SRAM0">
-       <name>SRAM3</name>
+      <field derivedFrom="RAM0">
+       <name>RAM3</name>
        <description>System RAM Block 3 Zeroization.</description>
        <bitOffset>3</bitOffset>
        <bitWidth>1</bitWidth>
       </field>
-      <field derivedFrom="SRAM0Z">
+      <field derivedFrom="RAM0">
        <name>ICC1</name>
        <description>Instruction Cachei 1 Zeroization.</description>
        <bitOffset>14</bitOffset>
@@ -2561,7 +2561,7 @@
      <addressOffset>0x40</addressOffset>
      <fields>
       <field>
-       <name>ICECLOCK</name>
+       <name>ICELOCK</name>
        <description>ARM ICE Lock Status.</description>
        <bitOffset>0</bitOffset>
        <bitWidth>1</bitWidth>
@@ -2715,7 +2715,7 @@
        <bitWidth>1</bitWidth>
       </field>
       <field derivedFrom="UART2">
-       <name>OWIRE</name>
+       <name>OWM</name>
        <description>One-Wire Clock Disable.</description>
        <bitOffset>13</bitOffset>
        <bitWidth>1</bitWidth>
@@ -2848,7 +2848,7 @@
      </fields>
     </register>
     <register>
-     <name>ECCNDED</name>
+     <name>ECCCED</name>
      <description>ECC Not Double Error Detect Register</description>
      <addressOffset>0x68</addressOffset>
      <fields>

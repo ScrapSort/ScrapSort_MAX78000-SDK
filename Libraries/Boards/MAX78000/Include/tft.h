@@ -40,70 +40,77 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <spi.h>
+#include <gpio.h>
 
 #include "touchscreen.h"
 
 /************************************************************************************/
 
-typedef struct
-{
-	uint16_t	x;
-	uint16_t	y;
-	uint16_t	w;
-	uint16_t	h;
+typedef struct {
+    uint16_t    x;
+    uint16_t    y;
+    uint16_t    w;
+    uint16_t    h;
 } area_t;
 
-typedef struct
-{
-	char	*data;
-	int	len;
+typedef struct {
+    char*    data;
+    int len;
 } text_t;
 
 /************************************************************************************/
 
 /**
  * @brief      Initialize the touchscreen and display
- * 
+ *
+ * @param      tft_spi          The SPI instance the TFT is connected to
+ * @param      ss_idx           The SSEL index to use when communicating with the attached TFT
+ * @param      reset_ctrl       The GPIO pin configuration for the TFT's reset pin.  Use NULL if
+ *                              the reset pin of the TFT is not connected to the microcontroller.
+ * @param      bl_ctrl          The GPIO pin configuration for the backlight enable pin.  Use NULL if
+ *                              the microcontroller does not have control of the backlight enable.
+ *
  * @return     See \ref MXC_Error_Codes for a list of return codes.
  */
-int MXC_TFT_Init( void );
+int MXC_TFT_Init(mxc_spi_regs_t* tft_spi, int ss_idx, mxc_gpio_cfg_t* reset_ctrl, mxc_gpio_cfg_t* bl_ctrl);
 
 /**
  * @brief      Turns backlight on or off
- * 
+ *
  * @param      on           Zero to turn off, nonzero for on
  */
-void MXC_TFT_Backlight( int on );
+void MXC_TFT_Backlight(int on);
 
 /**
  * @brief      Fills screen with background color
- * 
+ *
  */
-void MXC_TFT_ClearScreen( void );
+void MXC_TFT_ClearScreen(void);
 
 /**
  * @brief      Draw a rectangle
- * 
+ *
  * @param      area   Location and size of rectangle
  * @param      color  Palette index of rectangle color
  */
-void MXC_TFT_FillRect( area_t *area, int color);
+void MXC_TFT_FillRect(area_t* area, int color);
 
 /**
  * @brief      Draw a bitmap
- * 
+ *
  * @param      x0           x location of image
  * @param      y0           y location of image
- * @param      id			Bitmap number
+ * @param      id           Bitmap number
  */
-void MXC_TFT_ShowImage( int x0, int y0, int id );
+void MXC_TFT_ShowImage(int x0, int y0, int id);
 
 /**
  * @brief      Fills screen with one color
- * 
+ *
  * @param      index_color  Palette index of screen color
  */
-void MXC_TFT_SetBackGroundColor( unsigned int index_color );
+void MXC_TFT_SetBackGroundColor(unsigned int index_color);
 
 /**
  * @brief      Set bounds of printf
@@ -117,58 +124,58 @@ int MXC_TFT_SetPalette(int img_id);
  *
  * @param      area   Location of printf outputs
  */
-void MXC_TFT_ConfigPrintf( area_t *area );
+void MXC_TFT_ConfigPrintf(area_t* area);
 
 /**
- * @brief		Change font
+ * @brief       Change font
  *
- * @param		font_id   		Font id
+ * @param       font_id         Font id
  */
 void MXC_TFT_SetFont(int font_id);
 
 /**
  * @brief      Printf out to display
- * 
+ *
  * @param      format  Char array formatted like printf
  *             NOTE: up to 3 additional arguments are supported
  */
-void MXC_TFT_Printf( const char* format, ... );
+void MXC_TFT_Printf(const char* format, ...);
 
 /**
  * @brief      Reset cursor to top left corner of printf bounds
- * 
+ *
  */
-void MXC_TFT_ResetCursor( void );
+void MXC_TFT_ResetCursor(void);
 
 /**
  * @brief      Print string with selected font
  *
- * @param      	x0          	x location on screen
- * @param      	y0          	y location on screen
- * @param      	fon_id			Font number
- * @param		str				String which will be display
- * @param		area   			Location of printf outputs
+ * @param       x0              x location on screen
+ * @param       y0              y location on screen
+ * @param       fon_id          Font number
+ * @param       str             String which will be display
+ * @param       area            Location of printf outputs
  */
-void MXC_TFT_PrintFont(int x0, int y0, int font_id, text_t *str, area_t *area);
+void MXC_TFT_PrintFont(int x0, int y0, int font_id, text_t* str, area_t* area);
 
 /**
  * @brief      Print string with current font
  *
- * @param      	x0          	x location on screen
- * @param      	y0          	y location on screen
- * @param      	fon_id			Font number
- * @param		str				String which will be display
- * @param		area   			Location of printf outputs
+ * @param       x0              x location on screen
+ * @param       y0              y location on screen
+ * @param       fon_id          Font number
+ * @param       str             String which will be display
+ * @param       area            Location of printf outputs
  */
-void MXC_TFT_Print(int x0, int y0, text_t *str, area_t *area);
+void MXC_TFT_Print(int x0, int y0, text_t* str, area_t* area);
 
 /**
- * @brief		Celar area on display
+ * @brief       Celar area on display
  *
- * @param		area			Location on display
- * @param		color   		Palette index of rectangle color
+ * @param       area            Location on display
+ * @param       color           Palette index of rectangle color
  */
-void MXC_TFT_ClearArea(area_t *area, int color);
+void MXC_TFT_ClearArea(area_t* area, int color);
 
 #endif /* _TFT_H_ */
 
