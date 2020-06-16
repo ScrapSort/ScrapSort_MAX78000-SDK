@@ -38,7 +38,8 @@
 /* ************************************************************************* */
 
 int MXC_TRNG_RevB_Init(void);
-void MXC_TRNG_RevB_IntEnable();
+void MXC_TRNG_RevB_EnableInt();
+void MXC_TRNG_RevB_DisableInt();
 int MXC_TRNG_RevB_Shutdown(void);
 void MXC_TRNG_RevB_Handler(void);
 int MXC_TRNG_RevB_RandomInt(void);

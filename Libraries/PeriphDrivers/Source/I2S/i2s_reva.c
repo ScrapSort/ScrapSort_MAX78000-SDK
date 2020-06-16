@@ -82,7 +82,7 @@ int MXC_I2S_RevA_Init(mxc_i2s_req_t* req)
 
 int MXC_I2S_RevA_Shutdown(void)
 {
-    MXC_I2S_IntDisable(0xFF);
+    MXC_I2S_DisableInt(0xFF);
     
     //Disable I2S TX and RX channel
     MXC_I2S_TXDisable();
@@ -293,12 +293,12 @@ void MXC_I2S_RevA_Flush(void)
     while (MXC_I2S->ctrl0ch0 & MXC_F_I2S_CTRL0CH0_FLUSH);
 }
 
-void MXC_I2S_RevA_IntEnable(uint32_t flags)
+void MXC_I2S_RevA_EnableInt(uint32_t flags)
 {
     MXC_I2S->inten |= flags;
 }
 
-void MXC_I2S_RevA_IntDisable(uint32_t flags)
+void MXC_I2S_RevA_DisableInt(uint32_t flags)
 {
     MXC_I2S->inten &= ~flags;
 }

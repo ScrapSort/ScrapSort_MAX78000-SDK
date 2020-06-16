@@ -36,7 +36,7 @@
 
 /* ************************************************************************* */
 
-unsigned int MXC_CTB_Common_Hash_GetBlockSize (mxc_ctb_hash_func_t function)
+unsigned int MXC_CTB_Common_Hash_GetBlockSize(mxc_ctb_hash_func_t function)
 {
     // Block size in bytes indexed by hash function
     switch (function) {
@@ -63,7 +63,7 @@ unsigned int MXC_CTB_Common_Hash_GetBlockSize (mxc_ctb_hash_func_t function)
     return 0;
 }
 
-unsigned int MXC_CTB_Common_Hash_GetDigestSize (mxc_ctb_hash_func_t function)
+unsigned int MXC_CTB_Common_Hash_GetDigestSize(mxc_ctb_hash_func_t function)
 {
     // Digest length in bytes indexed by hash function
     switch (function) {
@@ -90,7 +90,7 @@ unsigned int MXC_CTB_Common_Hash_GetDigestSize (mxc_ctb_hash_func_t function)
     return 0;
 }
 
-unsigned int MXC_CTB_Common_Cipher_GetKeySize (mxc_ctb_cipher_t cipher)
+unsigned int MXC_CTB_Common_Cipher_GetKeySize(mxc_ctb_cipher_t cipher)
 {
     switch (cipher) {
     case MXC_CTB_CIPHER_DIS:
@@ -116,7 +116,7 @@ unsigned int MXC_CTB_Common_Cipher_GetKeySize (mxc_ctb_cipher_t cipher)
     return 0;
 }
 
-unsigned int MXC_CTB_Common_Cipher_GetBlockSize (mxc_ctb_cipher_t cipher)
+unsigned int MXC_CTB_Common_Cipher_GetBlockSize(mxc_ctb_cipher_t cipher)
 {
     switch (cipher) {
     case MXC_CTB_CIPHER_DIS:

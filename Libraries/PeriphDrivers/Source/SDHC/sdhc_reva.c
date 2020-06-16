@@ -47,35 +47,35 @@
 mxc_sdhc_callback_fn  sdhc_callback = NULL;
 
 /* **** Functions **** */
-static void MXC_SDHC_FreeCallback (int error);
-static int MXC_SDHC_TransSetup (mxc_sdhc_cmd_cfg_t* sd_cmd_cfg);
+static void MXC_SDHC_FreeCallback(int error);
+static int MXC_SDHC_TransSetup(mxc_sdhc_cmd_cfg_t* sd_cmd_cfg);
 
 /* ************************************************************************** */
-void MXC_SDHC_RevA_Set_Clock_Config (unsigned int clk_div)
+void MXC_SDHC_RevA_Set_Clock_Config(unsigned int clk_div)
 {
     MXC_SDHC->clk_cn = 0;
     /* clk_div is split across two fields in the register.  Break it up accordingly */
     MXC_SDHC->clk_cn = (clk_div & 0xff) << MXC_F_SDHC_CLK_CN_SDCLK_FREQ_SEL_POS;
-    MXC_SDHC->clk_cn |= ( (clk_div & 0x300) >> 8) << MXC_F_SDHC_CLK_CN_UPPER_SDCLK_FREQ_SEL_POS;
+    MXC_SDHC->clk_cn |= ((clk_div & 0x300) >> 8) << MXC_F_SDHC_CLK_CN_UPPER_SDCLK_FREQ_SEL_POS;
     MXC_SDHC->clk_cn |= MXC_F_SDHC_CLK_CN_INTERNAL_CLK_EN;
     
-    while (! (MXC_SDHC->clk_cn & MXC_F_SDHC_CLK_CN_INTERNAL_CLK_STABLE));
+    while (!(MXC_SDHC->clk_cn & MXC_F_SDHC_CLK_CN_INTERNAL_CLK_STABLE));
     
     MXC_SDHC->clk_cn |= MXC_F_SDHC_CLK_CN_SD_CLK_EN;
 }
 
 /* ************************************************************************** */
-unsigned int MXC_SDHC_RevA_Get_Clock_Config (void)
+unsigned int MXC_SDHC_RevA_Get_Clock_Config(void)
 {
     /* clk_div is split across two fields in the register.  Build it up accordingly */
-    return ( ( ( (MXC_SDHC->clk_cn >> MXC_F_SDHC_CLK_CN_UPPER_SDCLK_FREQ_SEL_POS) << 8) & 0x300) |
-             ( (MXC_SDHC->clk_cn >> MXC_F_SDHC_CLK_CN_SDCLK_FREQ_SEL_POS) & 0xff));
+    return ((((MXC_SDHC->clk_cn >> MXC_F_SDHC_CLK_CN_UPPER_SDCLK_FREQ_SEL_POS) << 8) & 0x300) |
+            ((MXC_SDHC->clk_cn >> MXC_F_SDHC_CLK_CN_SDCLK_FREQ_SEL_POS) & 0xff));
 }
 
 /* ************************************************************************** */
-int MXC_SDHC_RevA_Init (const mxc_sdhc_cfg_t *cfg)
+int MXC_SDHC_RevA_Init(const mxc_sdhc_cfg_t* cfg)
 {
-    MXC_ASSERT (cfg);
+    MXC_ASSERT(cfg);
     
     if (cfg->clk_div > 0x3FF) {
         return E_BAD_PARAM;
@@ -90,7 +90,7 @@ int MXC_SDHC_RevA_Init (const mxc_sdhc_cfg_t *cfg)
     
     MXC_SDHC->host_cn_1 = 0x00;
     
-    MXC_SDHC_Set_Clock_Config (cfg->clk_div);
+    MXC_SDHC_Set_Clock_Config(cfg->clk_div);
     
     /* Set TO to max until we know better */
     MXC_SDHC->to = MXC_F_SDHC_TO_DATA_COUNT_VALUE;
@@ -104,19 +104,19 @@ int MXC_SDHC_RevA_Init (const mxc_sdhc_cfg_t *cfg)
 }
 
 /* ************************************************************************** */
-void MXC_SDHC_RevA_PowerUp (void)
+void MXC_SDHC_RevA_PowerUp(void)
 {
     MXC_SDHC->pwr |= MXC_F_SDHC_PWR_BUS_POWER;
 }
 
 /* ************************************************************************** */
-void MXC_SDHC_RevA_PowerDown (void)
+void MXC_SDHC_RevA_PowerDown(void)
 {
     MXC_SDHC->pwr &= ~MXC_F_SDHC_PWR_BUS_POWER;
 }
 
 /* ************************************************************************** */
-int MXC_SDHC_RevA_Shutdown (void)
+int MXC_SDHC_RevA_Shutdown(void)
 {
     /* Disable and clear interrupts */
     MXC_SDHC->int_en = 0;
@@ -125,14 +125,14 @@ int MXC_SDHC_RevA_Shutdown (void)
     MXC_SDHC->er_int_stat = MXC_SDHC->er_int_stat;
     
     if (sdhc_callback != NULL) {
-        MXC_SDHC_FreeCallback (E_SHUTDOWN);
+        MXC_SDHC_FreeCallback(E_SHUTDOWN);
     }
     
     return E_NO_ERROR;
 }
 
 /* ************************************************************************** */
-static int  MXC_SDHC_TransSetup (mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
+static int  MXC_SDHC_TransSetup(mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
 {
     if (!MXC_SDHC_Card_Inserted()) {
         return E_NO_DEVICE;
@@ -150,8 +150,8 @@ static int  MXC_SDHC_TransSetup (mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
     uint32_t hc1 = sd_cmd_cfg->host_control_1;
     
     if (sd_cmd_cfg->direction == MXC_SDHC_DIRECTION_WRITE || sd_cmd_cfg->direction == MXC_SDHC_DIRECTION_READ) {
-        hc1 &= ~ (MXC_F_SDHC_HOST_CN_1_DMA_SELECT |
-                  MXC_F_SDHC_HOST_CN_1_CARD_DETECT_SIGNAL);
+        hc1 &= ~(MXC_F_SDHC_HOST_CN_1_DMA_SELECT |
+                 MXC_F_SDHC_HOST_CN_1_CARD_DETECT_SIGNAL);
     }
     
     MXC_SDHC->host_cn_1 = hc1;
@@ -170,13 +170,13 @@ static int  MXC_SDHC_TransSetup (mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
         }
         
         if (sd_cmd_cfg->direction == MXC_SDHC_DIRECTION_WRITE) {
-            MXC_SDHC->trans &= ~ (MXC_F_SDHC_TRANS_READ_WRITE);
+            MXC_SDHC->trans &= ~(MXC_F_SDHC_TRANS_READ_WRITE);
         }
         else {
             MXC_SDHC->trans |= MXC_F_SDHC_TRANS_READ_WRITE;
         }
         
-        MXC_SDHC->blk_size =  MXC_F_SDHC_BLK_SIZE_HOST_BUFF | ( (sd_cmd_cfg->block_size << MXC_F_SDHC_BLK_SIZE_TRANS_POS) & MXC_F_SDHC_BLK_SIZE_TRANS);
+        MXC_SDHC->blk_size =  MXC_F_SDHC_BLK_SIZE_HOST_BUFF | ((sd_cmd_cfg->block_size << MXC_F_SDHC_BLK_SIZE_TRANS_POS) & MXC_F_SDHC_BLK_SIZE_TRANS);
         
         /* Determine transfer size and options */
         if (sd_cmd_cfg->block_count > 1) {
@@ -197,11 +197,11 @@ static int  MXC_SDHC_TransSetup (mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
 }
 
 /* ************************************************************************** */
-int MXC_SDHC_RevA_SendCommand (mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
+int MXC_SDHC_RevA_SendCommand(mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
 {
     int err;
     
-    if ( (err = MXC_SDHC_TransSetup (sd_cmd_cfg)) != E_NO_ERROR) {
+    if ((err = MXC_SDHC_TransSetup(sd_cmd_cfg)) != E_NO_ERROR) {
         return err;
     }
     
@@ -211,12 +211,12 @@ int MXC_SDHC_RevA_SendCommand (mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
     /* Block on completion */
     if (sd_cmd_cfg->direction == MXC_SDHC_DIRECTION_CFG) {
         /* No data transfer, just command */
-        while (! (MXC_SDHC->int_stat & MXC_F_SDHC_INT_STAT_CMD_COMP) &&
-                ! (MXC_SDHC->int_stat & MXC_F_SDHC_INT_STAT_ERR_INTR));
+        while (!(MXC_SDHC->int_stat & MXC_F_SDHC_INT_STAT_CMD_COMP) &&
+                !(MXC_SDHC->int_stat & MXC_F_SDHC_INT_STAT_ERR_INTR));
     }
     else {
-        while (! (MXC_SDHC->int_stat & MXC_F_SDHC_INT_STAT_TRANS_COMP) &&
-                ! (MXC_SDHC->int_stat & MXC_F_SDHC_INT_STAT_ERR_INTR));
+        while (!(MXC_SDHC->int_stat & MXC_F_SDHC_INT_STAT_TRANS_COMP) &&
+                !(MXC_SDHC->int_stat & MXC_F_SDHC_INT_STAT_ERR_INTR));
     }
     
     /* Determine if transfer was successful or not */
@@ -235,11 +235,11 @@ int MXC_SDHC_RevA_SendCommand (mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
 }
 
 /* ************************************************************************** */
-int MXC_SDHC_RevA_SendCommandAsync (mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
+int MXC_SDHC_RevA_SendCommandAsync(mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
 {
     int err;
     
-    if ( (err = MXC_SDHC_TransSetup (sd_cmd_cfg)) != E_NO_ERROR) {
+    if ((err = MXC_SDHC_TransSetup(sd_cmd_cfg)) != E_NO_ERROR) {
         return err;
     }
     
@@ -259,7 +259,7 @@ int MXC_SDHC_RevA_SendCommandAsync (mxc_sdhc_cmd_cfg_t* sd_cmd_cfg)
 }
 
 /* ************************************************************************** */
-void MXC_SDHC_RevA_Handler (void)
+void MXC_SDHC_RevA_Handler(void)
 {
     int signal = MXC_SDHC->int_signal;
     int flag = MXC_SDHC_GetFlags() & signal;
@@ -271,52 +271,52 @@ void MXC_SDHC_RevA_Handler (void)
     }
     
     // Command complete interrupt
-    if ( (signal & MXC_F_SDHC_INT_SIGNAL_CMD_COMP) && (flag & MXC_F_SDHC_INT_STAT_CMD_COMP)) {
-        MXC_SDHC_ClearFlags (MXC_F_SDHC_INT_STAT_CMD_COMP);
+    if ((signal & MXC_F_SDHC_INT_SIGNAL_CMD_COMP) && (flag & MXC_F_SDHC_INT_STAT_CMD_COMP)) {
+        MXC_SDHC_ClearFlags(MXC_F_SDHC_INT_STAT_CMD_COMP);
         MXC_SDHC->int_signal &= ~MXC_F_SDHC_INT_SIGNAL_CMD_COMP;
-        MXC_SDHC_FreeCallback (E_NO_ERROR);
+        MXC_SDHC_FreeCallback(E_NO_ERROR);
         return;
     }
     
     // Transfer complete interrupt
-    if ( (signal & MXC_F_SDHC_INT_SIGNAL_TRANS_COMP) && (flag & MXC_F_SDHC_INT_STAT_TRANS_COMP)) {
-        MXC_SDHC_ClearFlags (MXC_F_SDHC_INT_STAT_TRANS_COMP);
+    if ((signal & MXC_F_SDHC_INT_SIGNAL_TRANS_COMP) && (flag & MXC_F_SDHC_INT_STAT_TRANS_COMP)) {
+        MXC_SDHC_ClearFlags(MXC_F_SDHC_INT_STAT_TRANS_COMP);
         MXC_SDHC->int_signal &= ~MXC_F_SDHC_INT_SIGNAL_TRANS_COMP;
-        MXC_SDHC_FreeCallback (E_NO_ERROR);
+        MXC_SDHC_FreeCallback(E_NO_ERROR);
         return;
     }
     
-    MXC_SDHC_ClearFlags (flag);
+    MXC_SDHC_ClearFlags(flag);
     MXC_SDHC->int_signal = 0;
-    MXC_SDHC_FreeCallback (E_UNKNOWN);
+    MXC_SDHC_FreeCallback(E_UNKNOWN);
 }
 
 /* ************************************************************************** */
-void MXC_SDHC_RevA_ClearFlags (uint32_t mask)
+void MXC_SDHC_RevA_ClearFlags(uint32_t mask)
 {
     MXC_SDHC->int_stat = mask;
 }
 
 /* ************************************************************************** */
-unsigned MXC_SDHC_RevA_GetFlags (void)
+unsigned MXC_SDHC_RevA_GetFlags(void)
 {
     return MXC_SDHC->int_stat;
 }
 
 /* ************************************************************************** */
-int MXC_SDHC_RevA_Card_Inserted (void)
+int MXC_SDHC_RevA_Card_Inserted(void)
 {
     unsigned int detect, inserted, stable;
     
-    detect = !! (MXC_SDHC->present & MXC_F_SDHC_PRESENT_CARD_DETECT);
-    inserted = !! (MXC_SDHC->present & MXC_F_SDHC_PRESENT_CARD_INSERTED);
-    stable = !! (MXC_SDHC->present & MXC_F_SDHC_PRESENT_CARD_STATE);
+    detect = !!(MXC_SDHC->present & MXC_F_SDHC_PRESENT_CARD_DETECT);
+    inserted = !!(MXC_SDHC->present & MXC_F_SDHC_PRESENT_CARD_INSERTED);
+    stable = !!(MXC_SDHC->present & MXC_F_SDHC_PRESENT_CARD_STATE);
     
     return (detect & inserted & stable);
 }
 
 /* ************************************************************************** */
-void MXC_SDHC_RevA_Reset (void)
+void MXC_SDHC_RevA_Reset(void)
 {
     MXC_SDHC->sw_reset = MXC_F_SDHC_SW_RESET_RESET_ALL;
     
@@ -325,7 +325,7 @@ void MXC_SDHC_RevA_Reset (void)
 }
 
 /* ************************************************************************** */
-void MXC_SDHC_RevA_Reset_CMD_DAT (void)
+void MXC_SDHC_RevA_Reset_CMD_DAT(void)
 {
     MXC_SDHC->sw_reset = MXC_F_SDHC_SW_RESET_RESET_CMD | MXC_F_SDHC_SW_RESET_RESET_DAT;
     
@@ -334,35 +334,35 @@ void MXC_SDHC_RevA_Reset_CMD_DAT (void)
 }
 
 /* ************************************************************************** */
-int MXC_SDHC_RevA_Card_Busy (void)
+int MXC_SDHC_RevA_Card_Busy(void)
 {
     /* Response type 1b uses the DAT[0] line low to indicate busy */
-    return (! ( (MXC_SDHC->present >> MXC_F_SDHC_PRESENT_DAT_SIGNAL_LEVEL_POS) & 1));
+    return (!((MXC_SDHC->present >> MXC_F_SDHC_PRESENT_DAT_SIGNAL_LEVEL_POS) & 1));
 }
 
 /* ************************************************************************** */
-unsigned int MXC_SDHC_RevA_Get_Host_Cn_1 (void)
+unsigned int MXC_SDHC_RevA_Get_Host_Cn_1(void)
 {
     return MXC_SDHC->host_cn_1;
 }
 
 /* ************************************************************************** */
-uint32_t MXC_SDHC_RevA_Get_Response32 (void)
+uint32_t MXC_SDHC_RevA_Get_Response32(void)
 {
     return MXC_SDHC->resp[0];
 }
 
 /* ************************************************************************** */
-uint32_t MXC_SDHC_RevA_Get_Response32_Auto (void)
+uint32_t MXC_SDHC_RevA_Get_Response32_Auto(void)
 {
     /* The response for auto commands get set at idx 3 */
     return MXC_SDHC->resp[3];
 }
 
 /* ************************************************************************** */
-void MXC_SDHC_RevA_Get_Response128 (unsigned char *response)
+void MXC_SDHC_RevA_Get_Response128(unsigned char* response)
 {
-    uint32_t *p = (uint32_t *) response;
+    uint32_t* p = (uint32_t*) response;
     
     *p++ = MXC_SDHC->resp[0];
     *p++ = MXC_SDHC->resp[1];
@@ -372,13 +372,13 @@ void MXC_SDHC_RevA_Get_Response128 (unsigned char *response)
 
 
 /* ************************************************************************** */
-static void MXC_SDHC_FreeCallback (int error)
+static void MXC_SDHC_FreeCallback(int error)
 {
     /* Save the request so the callback can be NULLed out and still be called. */
     mxc_sdhc_callback_fn temp_callback = sdhc_callback;
     
     sdhc_callback = NULL;
     
-    temp_callback (error);
+    temp_callback(error);
     
 }

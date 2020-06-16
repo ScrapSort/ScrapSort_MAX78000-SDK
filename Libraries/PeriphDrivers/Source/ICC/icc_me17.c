@@ -54,22 +54,22 @@
 Maxim Internal Use
  * ****************************************************************************** */
 
-int MXC_ICC_ID (mxc_icc_regs_t* icc, mxc_icc_info_t cid)
+int MXC_ICC_ID(mxc_icc_regs_t* icc, mxc_icc_info_t cid)
 {
-    return MXC_ICC_RevA_ID (icc, cid);
+    return MXC_ICC_RevA_ID(icc, cid);
 }
 
-void MXC_ICC_Enable (mxc_icc_regs_t* icc)
+void MXC_ICC_Enable(mxc_icc_regs_t* icc)
 {
-    MXC_ICC_RevA_Enable (icc);
+    MXC_ICC_RevA_Enable(icc);
 }
 
-void MXC_ICC_Disable (mxc_icc_regs_t* icc)
+void MXC_ICC_Disable(mxc_icc_regs_t* icc)
 {
-    MXC_ICC_RevA_Disable (icc);
+    MXC_ICC_RevA_Disable(icc);
 }
 
-void MXC_ICC_Flush (mxc_icc_regs_t* icc)
+void MXC_ICC_Flush(mxc_icc_regs_t* icc)
 {
     MXC_ICC_Disable(icc);
     MXC_ICC_Enable(icc);

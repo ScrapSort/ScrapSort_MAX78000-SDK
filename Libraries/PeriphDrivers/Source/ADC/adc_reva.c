@@ -77,8 +77,6 @@ int MXC_ADC_RevA_Init(void)
     MXC_ADC->ctrl |= MXC_F_ADC_CTRL_PWR;
     //turn on reference buffer power
     MXC_ADC->ctrl |= MXC_F_ADC_CTRL_REFBUF_PWR;
-    //turn on charge pump enable
-    MXC_ADC->ctrl |= MXC_F_ADC_CTRL_CHGPUMP_PWR;
     
     //wait until hardware set adc_intr.ref_ready_if to 1
     while (!(MXC_ADC->intr & MXC_F_ADC_INTR_REF_READY_IF));
@@ -104,8 +102,6 @@ int MXC_ADC_RevA_Shutdown(void)
     MXC_ADC->ctrl &= ~MXC_F_ADC_CTRL_PWR;
     // Disable Reference Buffer Power
     MXC_ADC->ctrl &= ~MXC_F_ADC_CTRL_REFBUF_PWR;
-    // Disable ADC Charge Pump
-    MXC_ADC->ctrl &= ~MXC_F_ADC_CTRL_CHGPUMP_PWR;
     // Disable ADC Clock
     MXC_ADC->ctrl &= ~MXC_F_ADC_CTRL_CLK_EN;
     

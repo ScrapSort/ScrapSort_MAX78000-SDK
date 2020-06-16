@@ -62,9 +62,9 @@
 #if IAR_PRAGMAS
 #pragma section=".flashprog"
 #else
-__attribute__ ( (section (".flashprog")))
+__attribute__((section(".flashprog")))
 #endif
-int MXC_busy_flc (mxc_flc_regs_t *flc)
+int MXC_busy_flc(mxc_flc_regs_t* flc)
 {
     return (flc->ctrl & (MXC_F_FLC_CTRL_WR | MXC_F_FLC_CTRL_ME | MXC_F_FLC_CTRL_PGE));
 }
@@ -73,12 +73,12 @@ int MXC_busy_flc (mxc_flc_regs_t *flc)
 #if IAR_PRAGMAS
 #pragma section=".flashprog"
 #else
-__attribute__ ( (section (".flashprog")))
+__attribute__((section(".flashprog")))
 #endif
-int MXC_prepare_flc (mxc_flc_regs_t *flc)
+int MXC_prepare_flc(mxc_flc_regs_t* flc)
 {
     /* Check if the flash controller is busy */
-    if (MXC_busy_flc (flc)) {
+    if (MXC_busy_flc(flc)) {
         return E_BUSY;
     }
     
@@ -100,17 +100,17 @@ int MXC_prepare_flc (mxc_flc_regs_t *flc)
 #if IAR_PRAGMAS
 #pragma section=".flashprog"
 #else
-__attribute__ ( (section (".flashprog")))
+__attribute__((section(".flashprog")))
 #endif
-int MXC_FLC_RevA_Busy (void)
+int MXC_FLC_RevA_Busy(void)
 {
     uint32_t flc_cn = 0;
     int i;
-    mxc_flc_regs_t *flc;
+    mxc_flc_regs_t* flc;
     
     for (i = 0; i < MXC_FLC_INSTANCES; i++) {
-        flc = MXC_FLC_GET_FLC (i);
-        flc_cn = MXC_busy_flc (flc);
+        flc = MXC_FLC_GET_FLC(i);
+        flc_cn = MXC_busy_flc(flc);
         
         if (flc_cn != 0) {
             break;
@@ -123,13 +123,13 @@ int MXC_FLC_RevA_Busy (void)
 #if IAR_PRAGMAS
 #pragma section=".flashprog"
 #else
-__attribute__ ( (section (".flashprog")))
+__attribute__((section(".flashprog")))
 #endif
-int MXC_FLC_RevA_MassErase (mxc_flc_regs_t *flc)
+int MXC_FLC_RevA_MassErase(mxc_flc_regs_t* flc)
 {
     int err;
     
-    if ( (err = MXC_prepare_flc (flc)) != E_NO_ERROR) {
+    if ((err = MXC_prepare_flc(flc)) != E_NO_ERROR) {
         return err;
     }
     
@@ -140,7 +140,7 @@ int MXC_FLC_RevA_MassErase (mxc_flc_regs_t *flc)
     flc->ctrl |= MXC_F_FLC_CTRL_ME;
     
     /* Wait until flash operation is complete */
-    while (MXC_busy_flc (flc));
+    while (MXC_busy_flc(flc));
     
     /* Lock flash */
     flc->ctrl &= ~MXC_F_FLC_CTRL_UNLOCK;
@@ -158,9 +158,9 @@ int MXC_FLC_RevA_MassErase (mxc_flc_regs_t *flc)
 #if IAR_PRAGMAS
 #pragma section=".flashprog"
 #else
-__attribute__ ( (section (".flashprog")))
+__attribute__((section(".flashprog")))
 #endif
-int MXC_FLC_RevA_PageErase (mxc_flc_regs_t *flc,uint32_t addr)
+int MXC_FLC_RevA_PageErase(mxc_flc_regs_t* flc, uint32_t addr)
 {
     /* Write page erase code */
     flc->ctrl = (flc->ctrl & ~MXC_F_FLC_CTRL_ERASE_CODE) | MXC_S_FLC_CTRL_ERASE_CODE_ERASEPAGE;
@@ -189,23 +189,23 @@ int MXC_FLC_RevA_PageErase (mxc_flc_regs_t *flc,uint32_t addr)
 #if IAR_PRAGMAS
 #pragma section=".flashprog"
 #else
-__attribute__ ( (section (".flashprog")))
+__attribute__((section(".flashprog")))
 #endif
 // make sure to disable ICC with ICC_Disable(); before Running this function
-int MXC_FLC_RevA_Write32 (mxc_flc_regs_t* flc, uint32_t logicAddr, uint32_t data, uint32_t physicalAddr)
+int MXC_FLC_RevA_Write32(mxc_flc_regs_t* flc, uint32_t logicAddr, uint32_t data, uint32_t physicalAddr)
 {
-    int err, i=0;
+    int err, i = 0;
     uint32_t byte;
-    volatile uint32_t * ptr;
-    uint32_t current_data[4] = {0,0,0,0};
+    volatile uint32_t* ptr;
+    uint32_t current_data[4] = {0, 0, 0, 0};
     
     // Address checked if it is byte addressable
     if (logicAddr & 0x3) {
         return E_BAD_PARAM;
     }
-
+    
     // Check if the location trying to be written has 1's in to be written to 0's
-    if ((*(uint32_t *)logicAddr & data) != data) { 
+    if ((* (uint32_t*) logicAddr & data) != data) {
         return E_BAD_STATE;
     }
     
@@ -214,12 +214,12 @@ int MXC_FLC_RevA_Write32 (mxc_flc_regs_t* flc, uint32_t logicAddr, uint32_t data
     // Align address to 128-bit word
     logicAddr = logicAddr & 0xfffffff0;
     
-    if ( (err = MXC_prepare_flc (flc)) != E_NO_ERROR) {
+    if ((err = MXC_prepare_flc(flc)) != E_NO_ERROR) {
         return err;
     }
     
     // Get current data stored in flash
-    for (ptr = (uint32_t*) logicAddr; ptr < (uint32_t*) (logicAddr + 16); ptr++, i++) {
+    for (ptr = (uint32_t*) logicAddr; ptr < (uint32_t*)(logicAddr + 16); ptr++, i++) {
         current_data[i] = *ptr;
     }
     
@@ -239,17 +239,17 @@ int MXC_FLC_RevA_Write32 (mxc_flc_regs_t* flc, uint32_t logicAddr, uint32_t data
         current_data[3] = data;
     }
     
-    return MXC_FLC_Write128 (logicAddr,current_data);
+    return MXC_FLC_Write128(logicAddr, current_data);
 }
 
 //******************************************************************************
 #if IAR_PRAGMAS
 #pragma section=".flashprog"
 #else
-__attribute__ ( (section (".flashprog")))
+__attribute__((section(".flashprog")))
 #endif
 // make sure to disable ICC with ICC_Disable(); before Running this function
-int MXC_FLC_RevA_Write128 (mxc_flc_regs_t *flc, uint32_t addr, uint32_t *data)
+int MXC_FLC_RevA_Write128(mxc_flc_regs_t* flc, uint32_t addr, uint32_t* data)
 {
     int err;
     
@@ -258,7 +258,7 @@ int MXC_FLC_RevA_Write128 (mxc_flc_regs_t *flc, uint32_t addr, uint32_t *data)
         return E_BAD_PARAM;
     }
     
-    if ( (err = MXC_prepare_flc (flc)) != E_NO_ERROR) {
+    if ((err = MXC_prepare_flc(flc)) != E_NO_ERROR) {
         return err;
     }
     
@@ -274,7 +274,7 @@ int MXC_FLC_RevA_Write128 (mxc_flc_regs_t *flc, uint32_t addr, uint32_t *data)
     flc->ctrl |= MXC_F_FLC_CTRL_WR;
     
     /* Wait until flash operation is complete */
-    while (MXC_busy_flc (flc));
+    while (MXC_busy_flc(flc));
     
     /* Lock flash */
     flc->ctrl &= ~MXC_F_FLC_CTRL_UNLOCK;
@@ -289,7 +289,7 @@ int MXC_FLC_RevA_Write128 (mxc_flc_regs_t *flc, uint32_t addr, uint32_t *data)
 }
 
 //******************************************************************************
-int MXC_FLC_RevA_EnableInt (uint32_t mask)
+int MXC_FLC_RevA_EnableInt(uint32_t mask)
 {
     mask &= (MXC_F_FLC_INTR_DONEIE |  MXC_F_FLC_INTR_AFIE);
     
@@ -305,7 +305,7 @@ int MXC_FLC_RevA_EnableInt (uint32_t mask)
 }
 
 //******************************************************************************
-int MXC_FLC_RevA_DisableInt (uint32_t mask)
+int MXC_FLC_RevA_DisableInt(uint32_t mask)
 {
     mask &= (MXC_F_FLC_INTR_DONEIE |  MXC_F_FLC_INTR_AFIE);
     
@@ -321,13 +321,13 @@ int MXC_FLC_RevA_DisableInt (uint32_t mask)
 }
 
 //******************************************************************************
-int MXC_FLC_RevA_GetFlags (void)
+int MXC_FLC_RevA_GetFlags(void)
 {
     return (MXC_FLC0->intr & (MXC_F_FLC_INTR_DONE | MXC_F_FLC_INTR_AF));
 }
 
 //******************************************************************************
-int MXC_FLC_RevA_ClearFlags (uint32_t mask)
+int MXC_FLC_RevA_ClearFlags(uint32_t mask)
 {
     mask &= (MXC_F_FLC_INTR_DONE | MXC_F_FLC_INTR_AF);
     
@@ -343,9 +343,9 @@ int MXC_FLC_RevA_ClearFlags (uint32_t mask)
 }
 
 //******************************************************************************
-int MXC_FLC_RevA_UnlockInfoBlock (mxc_flc_regs_t *flc,uint32_t address)
+int MXC_FLC_RevA_UnlockInfoBlock(mxc_flc_regs_t* flc, uint32_t address)
 {
-    if ( (address < MXC_INFO_MEM_BASE) || (address >= (MXC_INFO_MEM_BASE + (MXC_INFO_MEM_SIZE * 2)))) {
+    if ((address < MXC_INFO_MEM_BASE) || (address >= (MXC_INFO_MEM_BASE + (MXC_INFO_MEM_SIZE * 2)))) {
         return E_BAD_PARAM;
     }
     
@@ -356,9 +356,9 @@ int MXC_FLC_RevA_UnlockInfoBlock (mxc_flc_regs_t *flc,uint32_t address)
 }
 
 //******************************************************************************
-int MXC_FLC_RevA_LockInfoBlock (mxc_flc_regs_t *flc, uint32_t address)
+int MXC_FLC_RevA_LockInfoBlock(mxc_flc_regs_t* flc, uint32_t address)
 {
-    if ( (address < MXC_INFO_MEM_BASE) || (address >= (MXC_INFO_MEM_BASE + (MXC_INFO_MEM_SIZE * 2)))) {
+    if ((address < MXC_INFO_MEM_BASE) || (address >= (MXC_INFO_MEM_BASE + (MXC_INFO_MEM_SIZE * 2)))) {
         return E_BAD_PARAM;
     }
     

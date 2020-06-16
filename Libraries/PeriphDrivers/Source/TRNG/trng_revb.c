@@ -55,45 +55,50 @@ static uint8_t* TRNG_data;
 /* Global Control/Configuration functions                                    */
 /* ************************************************************************* */
 
-int MXC_TRNG_RevB_Init (void)
+int MXC_TRNG_RevB_Init(void)
 {
     return E_NO_ERROR;
 }
 
-void MXC_TRNG_RevB_IntEnable ()
+void MXC_TRNG_RevB_EnableInt()
 {
     MXC_TRNG->ctrl |= MXC_F_TRNG_CTRL_RND_IE;
 }
 
-int MXC_TRNG_RevB_Shutdown (void)
+void MXC_TRNG_RevB_DisableInt()
+{
+    MXC_TRNG->ctrl &= ~ MXC_F_TRNG_CTRL_RND_IE;
+}
+
+int MXC_TRNG_RevB_Shutdown(void)
 {
     return E_NO_ERROR;
 }
 
-void MXC_TRNG_RevB_Handler (void)
+void MXC_TRNG_RevB_Handler(void)
 {
     uint32_t temp;
     mxc_trng_complete_t cb;
     
     // if this is last block, disable interrupt before reading MXC_TRNG->data
-    if (TRNG_maxLength <= TRNG_count+4) {
+    if (TRNG_maxLength <= TRNG_count + 4) {
         MXC_TRNG->ctrl &= ~MXC_F_TRNG_CTRL_RND_IE;
     }
     
     temp = MXC_TRNG->data;
     
-    if ( (TRNG_count+3) < TRNG_maxLength) {
-        memcpy (& (TRNG_data[TRNG_count]), (uint8_t*) (&temp), 4);
+    if ((TRNG_count + 3) < TRNG_maxLength) {
+        memcpy(& (TRNG_data[TRNG_count]), (uint8_t*)(&temp), 4);
         TRNG_count += 4;
     }
     else {
-        memcpy (& (TRNG_data[TRNG_count]), (uint8_t*) (&temp), TRNG_maxLength & 0x03);
+        memcpy(& (TRNG_data[TRNG_count]), (uint8_t*)(&temp), TRNG_maxLength & 0x03);
         TRNG_count += (TRNG_maxLength & 0x03);
     }
     
     if (TRNG_maxLength == TRNG_count) {
         cb = MXC_TRNG_Callback;
-        cb (0, 0);
+        cb(0, 0);
     }
 }
 
@@ -101,14 +106,14 @@ void MXC_TRNG_RevB_Handler (void)
 /* True Random Number Generator (TRNG) functions                             */
 /* ************************************************************************* */
 
-int MXC_TRNG_RevB_RandomInt (void)
+int MXC_TRNG_RevB_RandomInt(void)
 {
-    while (! (MXC_TRNG->status & MXC_F_TRNG_STATUS_RDY));
+    while (!(MXC_TRNG->status & MXC_F_TRNG_STATUS_RDY));
     
     return (int) MXC_TRNG->data;
 }
 
-int MXC_TRNG_RevB_Random (uint8_t* data, uint32_t len)
+int MXC_TRNG_RevB_Random(uint8_t* data, uint32_t len)
 {
     unsigned int i, temp;
     
@@ -116,27 +121,27 @@ int MXC_TRNG_RevB_Random (uint8_t* data, uint32_t len)
         return E_NULL_PTR;
     }
     
-    for (i = 0; i+3 < len; i+=4) {
+    for (i = 0; i + 3 < len; i += 4) {
         temp = MXC_TRNG_RandomInt();
-        memcpy (& (data[i]), (uint8_t*) (&temp), 4);
+        memcpy(& (data[i]), (uint8_t*)(&temp), 4);
     }
     
     if (len & 0x03) {
         temp = MXC_TRNG_RandomInt();
-        memcpy (& (data[i]), (uint8_t*) (&temp), len & 0x03);
+        memcpy(& (data[i]), (uint8_t*)(&temp), len & 0x03);
     }
     
     return E_NO_ERROR;
 }
 
-void MXC_TRNG_RevB_RandomAsync (uint8_t* data, uint32_t len, mxc_trng_complete_t callback)
+void MXC_TRNG_RevB_RandomAsync(uint8_t* data, uint32_t len, mxc_trng_complete_t callback)
 {
-    MXC_ASSERT (data && callback);
+    MXC_ASSERT(data && callback);
     
     if (len == 0) {
         return;
     }
-        
+    
     TRNG_data = data;
     TRNG_count = 0;
     TRNG_maxLength = len;

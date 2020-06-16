@@ -35,25 +35,25 @@
 #include"srcc_reva.h"
 
 
-uint32_t MXC_SRCC_RevA_ID (mxc_srcc_cache_id_t id)
+uint32_t MXC_SRCC_RevA_ID(mxc_srcc_cache_id_t id)
 {
     switch (id) {
     case SRCC_CACHE_ID_RELNUM:
-        return ( ( (MXC_SRCC->cache_id) & MXC_F_SRCC_CACHE_ID_RELNUM)) >> MXC_F_SRCC_CACHE_ID_RELNUM_POS;
+        return (((MXC_SRCC->cache_id) & MXC_F_SRCC_CACHE_ID_RELNUM)) >> MXC_F_SRCC_CACHE_ID_RELNUM_POS;
         
     case SRCC_CACHE_ID_PARTNUM:
-        return ( ( (MXC_SRCC->cache_id) & MXC_F_SRCC_CACHE_ID_PARTNUM)) >> MXC_F_SRCC_CACHE_ID_PARTNUM_POS;
+        return (((MXC_SRCC->cache_id) & MXC_F_SRCC_CACHE_ID_PARTNUM)) >> MXC_F_SRCC_CACHE_ID_PARTNUM_POS;
         
     case SRCC_CACHE_ID_CCHID:
     default:
-        return ( ( (MXC_SRCC->cache_id) & MXC_F_SRCC_CACHE_ID_CCHID)) >> MXC_F_SRCC_CACHE_ID_CCHID_POS;
+        return (((MXC_SRCC->cache_id) & MXC_F_SRCC_CACHE_ID_CCHID)) >> MXC_F_SRCC_CACHE_ID_CCHID_POS;
     }
     
 }
 
 uint32_t MXC_SRCC_RevA_CacheSize()
 {
-    return ( ( (MXC_SRCC->memcfg) & MXC_F_SRCC_MEMCFG_CCHSZ)) >> MXC_F_SRCC_MEMCFG_CCHSZ_POS;
+    return (((MXC_SRCC->memcfg) & MXC_F_SRCC_MEMCFG_CCHSZ)) >> MXC_F_SRCC_MEMCFG_CCHSZ_POS;
 }
 
 uint32_t MXC_SRCC_RevA_MemSize()

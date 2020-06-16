@@ -34,7 +34,8 @@
 #include "aes.h"
 
 int MXC_AES_RevB_Init ();
-void MXC_AES_RevB_IntEnable (uint32_t interrupt);
+void MXC_AES_RevB_EnableInt (uint32_t interrupt);
+void MXC_AES_RevB_DisableInt (uint32_t interrupt);
 int MXC_AES_RevB_IsBusy ();
 int MXC_AES_RevB_Shutdown ();
 void MXC_AES_RevB_GenerateKey();

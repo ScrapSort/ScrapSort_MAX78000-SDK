@@ -51,15 +51,15 @@
 #if IAR_PRAGMAS
 #pragma section=".flashprog"
 #else
-__attribute__ ( (section (".flashprog")))
+__attribute__((section(".flashprog")))
 #endif
 // Length is number of 32-bit words
-int MXC_FLC_Com_VerifyData (uint32_t address, uint32_t length, uint32_t * data)
+int MXC_FLC_Com_VerifyData(uint32_t address, uint32_t length, uint32_t* data)
 {
-    volatile uint32_t * ptr;
+    volatile uint32_t* ptr;
     
     
-    for (ptr = (uint32_t*) address; ptr < ( ( (uint32_t*) (address)) + length); ptr++, data++) {
+    for (ptr = (uint32_t*) address; ptr < (((uint32_t*)(address)) + length); ptr++, data++) {
         if (*ptr != *data) {
             return E_BAD_STATE;
         }
@@ -72,15 +72,15 @@ int MXC_FLC_Com_VerifyData (uint32_t address, uint32_t length, uint32_t * data)
 #if IAR_PRAGMAS
 #pragma section=".flashprog"
 #else
-__attribute__ ( (section (".flashprog")))
+__attribute__((section(".flashprog")))
 #endif
 // make sure to disable ICC with ICC_Disable(); before Running this function
-int MXC_FLC_Com_Write (uint32_t address, uint32_t length, uint32_t *buffer)
+int MXC_FLC_Com_Write(uint32_t address, uint32_t length, uint32_t* buffer)
 {
     int err;
     uint32_t bytes_written;
     uint8_t current_data[4];
-    uint32_t *current_data_32 = (uint32_t *) current_data;
+    uint32_t* current_data_32 = (uint32_t*) current_data;
     
     // Align the address to a word boundary and read/write if we have to
     if (address & 0x3) {
@@ -89,13 +89,13 @@ int MXC_FLC_Com_Write (uint32_t address, uint32_t length, uint32_t *buffer)
         bytes_written = 4 - (address & 0x3);
         
         // Save the data currently in the flash
-        memcpy (current_data, (void*) (address & (~0x3)), 4);
+        memcpy(current_data, (void*)(address & (~0x3)), 4);
         
         // Modify current_data to insert the data from buffer
-        memcpy (&current_data[4-bytes_written], buffer, bytes_written);
+        memcpy(&current_data[4 - bytes_written], buffer, bytes_written);
         
         // Write the modified data
-        if ( (err = MXC_FLC_Write32 (address - (address % 4), *current_data_32)) != E_NO_ERROR) {
+        if ((err = MXC_FLC_Write32(address - (address % 4), *current_data_32)) != E_NO_ERROR) {
             return err;
         }
         
@@ -103,14 +103,14 @@ int MXC_FLC_Com_Write (uint32_t address, uint32_t length, uint32_t *buffer)
         length -= bytes_written;
         
         //Align the uint32_t buffer with the new address
-        uint8_t *buffer_unaligned = (uint8_t *) buffer;
+        uint8_t* buffer_unaligned = (uint8_t*) buffer;
         buffer_unaligned += bytes_written;
-        buffer = (uint32_t *) buffer_unaligned;
+        buffer = (uint32_t*) buffer_unaligned;
     }
     
     // Align the address to a 4-word (128bit) boundary
-    while ( (length >= 4) && ( (address & 0xF) != 0)) {
-        if ( (err = MXC_FLC_Write32 (address, *buffer)) != E_NO_ERROR) {
+    while ((length >= 4) && ((address & 0xF) != 0)) {
+        if ((err = MXC_FLC_Write32(address, *buffer)) != E_NO_ERROR) {
             return err;
         }
         
@@ -121,7 +121,7 @@ int MXC_FLC_Com_Write (uint32_t address, uint32_t length, uint32_t *buffer)
     
     if (length >= 16) {
         while (length >= 16) {
-            if ( (err = MXC_FLC_Write128 (address, buffer)) != E_NO_ERROR) {
+            if ((err = MXC_FLC_Write128(address, buffer)) != E_NO_ERROR) {
                 return err;
             }
             
@@ -133,7 +133,7 @@ int MXC_FLC_Com_Write (uint32_t address, uint32_t length, uint32_t *buffer)
     }
     
     while (length >= 4) {
-        if ( (err = MXC_FLC_Write32 (address, *buffer)) != E_NO_ERROR) {
+        if ((err = MXC_FLC_Write32(address, *buffer)) != E_NO_ERROR) {
             return err;
         }
         
@@ -144,12 +144,12 @@ int MXC_FLC_Com_Write (uint32_t address, uint32_t length, uint32_t *buffer)
     
     if (length > 0) {
         // Save the data currently in the flash
-        memcpy (current_data, (void*) (address), 4);
+        memcpy(current_data, (void*)(address), 4);
         
         // Modify current_data to insert the data from buffer
-        memcpy (current_data, buffer, length);
+        memcpy(current_data, buffer, length);
         
-        if ( (err = MXC_FLC_Write32 (address, *current_data_32)) != E_NO_ERROR) {
+        if ((err = MXC_FLC_Write32(address, *current_data_32)) != E_NO_ERROR) {
             return err;
         }
     }
@@ -162,9 +162,9 @@ int MXC_FLC_Com_Write (uint32_t address, uint32_t length, uint32_t *buffer)
 #if IAR_PRAGMAS
 #pragma section=".flashprog"
 #else
-__attribute__ ( (section (".flashprog")))
+__attribute__((section(".flashprog")))
 #endif
-void MXC_FLC_Com_Read (int address, void* buffer, int len)
+void MXC_FLC_Com_Read(int address, void* buffer, int len)
 {
-    memcpy (buffer, (void*) address, len);
+    memcpy(buffer, (void*) address, len);
 }

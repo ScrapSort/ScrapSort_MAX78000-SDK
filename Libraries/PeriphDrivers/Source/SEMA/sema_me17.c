@@ -39,32 +39,32 @@
 
 /* ***** Functions ***** */
 
-int MXC_SEMA_Init (void)
+int MXC_SEMA_Init(void)
 {
     return E_NO_ERROR;
 }
 
-int MXC_SEMA_GetSema (unsigned sema)
+int MXC_SEMA_GetSema(unsigned sema)
 {
-    return MXC_SEMA_RevA_GetSema (sema);
+    return MXC_SEMA_RevA_GetSema(sema);
 }
 
-int MXC_SEMA_CheckSema (unsigned sema)
+int MXC_SEMA_CheckSema(unsigned sema)
 {
-    return MXC_SEMA_RevA_CheckSema (sema);
+    return MXC_SEMA_RevA_CheckSema(sema);
 }
 
-uint32_t MXC_SEMA_Status (void)
+uint32_t MXC_SEMA_Status(void)
 {
     return MXC_SEMA_RevA_Status();
 }
 
-void MXC_SEMA_FreeSema (unsigned sema)
+void MXC_SEMA_FreeSema(unsigned sema)
 {
-    MXC_SEMA_RevA_FreeSema (sema);
+    MXC_SEMA_RevA_FreeSema(sema);
 }
 
-int MXC_SEMA_Shutdown (void)
+int MXC_SEMA_Shutdown(void)
 {
     return E_NO_ERROR;
 }

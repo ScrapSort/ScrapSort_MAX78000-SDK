@@ -50,13 +50,13 @@
 
 /* ************************************************************************** */
 void MXC_WUT_Init(mxc_wut_pres_t pres)
-{   
-    MXC_SYS_ClockSourceEnable(MXC_SYS_CLOCK_ERTCO);    
+{
+    MXC_SYS_ClockSourceEnable(MXC_SYS_CLOCK_ERTCO);
     MXC_WUT_RevA_Init(MXC_WUT, pres);
 }
 
 void MXC_WUT_Shutdown(void)
-{   
+{
     MXC_WUT_RevA_Shutdown(MXC_WUT);
 }
 
@@ -73,7 +73,7 @@ void MXC_WUT_Disable(void)
 }
 
 /* ************************************************************************** */
-void MXC_WUT_Config(const mxc_wut_cfg_t *cfg)
+void MXC_WUT_Config(const mxc_wut_cfg_t* cfg)
 {
     MXC_WUT_RevA_Config(MXC_WUT, cfg);
 }
@@ -121,13 +121,13 @@ void MXC_WUT_SetCount(uint32_t cnt)
 }
 
 /* ************************************************************************* */
-int MXC_WUT_GetTicks(uint32_t time, mxc_wut_unit_t units, uint32_t *ticks)
+int MXC_WUT_GetTicks(uint32_t time, mxc_wut_unit_t units, uint32_t* ticks)
 {
     return MXC_WUT_RevA_GetTicks(MXC_WUT, ERTCO_FREQ, time, units, ticks);
 }
 
 /* ************************************************************************* */
-int MXC_WUT_GetTime(uint32_t ticks, uint32_t *time, mxc_wut_unit_t *units)
+int MXC_WUT_GetTime(uint32_t ticks, uint32_t* time, mxc_wut_unit_t* units)
 {
     return MXC_WUT_RevA_GetTime(MXC_WUT, ERTCO_FREQ, ticks, time, units);
 }

@@ -65,7 +65,7 @@ int MXC_SFE_RevA_SetFlashAddress(uint32_t lowerAdd, uint32_t upperAdd)
     MXC_SFE->flash_sba = lowerAdd;
     MXC_SFE->flash_sta = upperAdd;
     MXC_SFE->sfdp_sba  = 0x10008000;        // FLash base address
-
+    
     return E_NO_ERROR;
 }
 
@@ -73,7 +73,7 @@ int MXC_SFE_RevA_SetRAMAddress(uint32_t lowerAdd, uint32_t upperAdd)
 {
     MXC_SFE->ram_sba = lowerAdd;
     MXC_SFE->ram_sta = upperAdd;
-
+    
     return E_NO_ERROR;
 }
 
@@ -81,6 +81,6 @@ int MXC_SFE_RevA_SetHostAddress(uint32_t RAMAdd, uint32_t FLASHAdd)
 {
     MXC_SFE->hfsa = FLASHAdd;
     MXC_SFE->hrsa = RAMAdd;
-
+    
     return E_NO_ERROR;
 }

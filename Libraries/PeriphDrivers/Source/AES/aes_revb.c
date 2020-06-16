@@ -131,9 +131,15 @@ void MXC_AES_RevB_Start()
     MXC_AES->ctrl |= MXC_F_AES_CTRL_START;
 }
 
-void MXC_AES_RevB_IntEnable(uint32_t interrupt)
+void MXC_AES_RevB_EnableInt(uint32_t interrupt)
 {
     MXC_AES->inten |= (interrupt & (MXC_F_AES_INTEN_DONE | MXC_F_AES_INTEN_KEY_CHANGE | \
+                                    MXC_F_AES_INTEN_KEY_ZERO | MXC_F_AES_INTEN_OV));
+}
+
+void MXC_AES_RevB_DisableInt(uint32_t interrupt)
+{
+    MXC_AES->inten &= ~(interrupt & (MXC_F_AES_INTEN_DONE | MXC_F_AES_INTEN_KEY_CHANGE | \
                                     MXC_F_AES_INTEN_KEY_ZERO | MXC_F_AES_INTEN_OV));
 }
 

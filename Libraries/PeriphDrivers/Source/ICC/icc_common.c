@@ -38,7 +38,7 @@
 #include "mxc_sys.h"
 #include "icc.h"
 
-void MXC_ICC_Com_Flush (void)
+void MXC_ICC_Com_Flush(void)
 {
     MXC_ICC_Disable();
     MXC_ICC_Enable();

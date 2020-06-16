@@ -41,100 +41,100 @@
 
 /* **** Functions **** */
 
-int MXC_WDT_Init (mxc_wdt_regs_t* wdt, mxc_wdt_cfg_t *cfg)
+int MXC_WDT_Init(mxc_wdt_regs_t* wdt, mxc_wdt_cfg_t* cfg)
 {
     if (wdt == MXC_WDT0) {
-        MXC_SYS_ClockEnable (MXC_SYS_PERIPH_CLOCK_WDT0);
+        MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_WDT0);
     }
     else if (wdt == MXC_WDT1) {
-            // This clock is always on #TODO CHECK IF THIS IS TRUE
+        // This clock is always on #TODO CHECK IF THIS IS TRUE
     }
     else {
         return E_BAD_PARAM;
     }
-
+    
     MXC_WDT_RevB_Init(wdt, cfg);
-
+    
     return E_NO_ERROR;
 }
 
-int MXC_WDT_Shutdown (mxc_wdt_regs_t* wdt)
+int MXC_WDT_Shutdown(mxc_wdt_regs_t* wdt)
 {
     if (wdt == MXC_WDT0) {
-        MXC_SYS_ClockDisable (MXC_SYS_PERIPH_CLOCK_WDT0);
+        MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_WDT0);
     }
     else if (wdt == MXC_WDT1) {
-            // This clock is always on #TODO CHECK IF THIS IS TRUE
-       
+        // This clock is always on #TODO CHECK IF THIS IS TRUE
+        
     }
     else {
         return E_BAD_PARAM;
     }
-
+    
     return E_NO_ERROR;
 }
 
-void MXC_WDT_SetIntPeriod (mxc_wdt_regs_t* wdt, mxc_wdt_cfg_t *cfg)
+void MXC_WDT_SetIntPeriod(mxc_wdt_regs_t* wdt, mxc_wdt_cfg_t* cfg)
 {
-    MXC_WDT_RevB_SetIntPeriod (wdt,cfg);
+    MXC_WDT_RevB_SetIntPeriod(wdt, cfg);
 }
 
-void MXC_WDT_SetResetPeriod (mxc_wdt_regs_t* wdt, mxc_wdt_cfg_t *cfg)
+void MXC_WDT_SetResetPeriod(mxc_wdt_regs_t* wdt, mxc_wdt_cfg_t* cfg)
 {
-    MXC_WDT_RevB_SetResetPeriod (wdt,cfg);
+    MXC_WDT_RevB_SetResetPeriod(wdt, cfg);
 }
 
-void MXC_WDT_Enable (mxc_wdt_regs_t* wdt)
+void MXC_WDT_Enable(mxc_wdt_regs_t* wdt)
 {
-    MXC_WDT_RevB_Enable (wdt);
+    MXC_WDT_RevB_Enable(wdt);
 }
 
-void MXC_WDT_Disable (mxc_wdt_regs_t* wdt)
+void MXC_WDT_Disable(mxc_wdt_regs_t* wdt)
 {
-    MXC_WDT_RevB_Disable (wdt);
+    MXC_WDT_RevB_Disable(wdt);
 }
 
-void MXC_WDT_EnableInt (mxc_wdt_regs_t* wdt)
+void MXC_WDT_EnableInt(mxc_wdt_regs_t* wdt)
 {
-    MXC_WDT_RevB_EnableInt (wdt, MXC_WDT_ENABLE);
+    MXC_WDT_RevB_EnableInt(wdt, MXC_WDT_ENABLE);
 }
 
-void MXC_WDT_DisableInt (mxc_wdt_regs_t* wdt)
+void MXC_WDT_DisableInt(mxc_wdt_regs_t* wdt)
 {
-    MXC_WDT_RevB_EnableInt (wdt, MXC_WDT_DISABLE);
+    MXC_WDT_RevB_EnableInt(wdt, MXC_WDT_DISABLE);
 }
 
-void MXC_WDT_EnableReset (mxc_wdt_regs_t* wdt)
+void MXC_WDT_EnableReset(mxc_wdt_regs_t* wdt)
 {
-    MXC_WDT_RevB_EnableReset (wdt, MXC_WDT_ENABLE);
+    MXC_WDT_RevB_EnableReset(wdt, MXC_WDT_ENABLE);
 }
 
-void MXC_WDT_DisableReset (mxc_wdt_regs_t* wdt)
+void MXC_WDT_DisableReset(mxc_wdt_regs_t* wdt)
 {
-    MXC_WDT_RevB_EnableReset (wdt, MXC_WDT_DISABLE);
+    MXC_WDT_RevB_EnableReset(wdt, MXC_WDT_DISABLE);
 }
 
-void MXC_WDT_ResetTimer (mxc_wdt_regs_t* wdt)
+void MXC_WDT_ResetTimer(mxc_wdt_regs_t* wdt)
 {
-    MXC_WDT_RevB_ResetTimer (wdt);
+    MXC_WDT_RevB_ResetTimer(wdt);
 }
 
-int MXC_WDT_GetResetFlag (mxc_wdt_regs_t* wdt)
+int MXC_WDT_GetResetFlag(mxc_wdt_regs_t* wdt)
 {
-    return MXC_WDT_RevB_GetResetFlag (wdt);
+    return MXC_WDT_RevB_GetResetFlag(wdt);
 }
 
-void MXC_WDT_ClearResetFlag (mxc_wdt_regs_t* wdt)
+void MXC_WDT_ClearResetFlag(mxc_wdt_regs_t* wdt)
 {
-    MXC_WDT_RevB_ClearResetFlag (wdt);
+    MXC_WDT_RevB_ClearResetFlag(wdt);
 }
 
-int MXC_WDT_GetIntFlag (mxc_wdt_regs_t* wdt)
+int MXC_WDT_GetIntFlag(mxc_wdt_regs_t* wdt)
 {
-    return MXC_WDT_RevB_GetIntFlag (wdt);
+    return MXC_WDT_RevB_GetIntFlag(wdt);
 }
 
-void MXC_WDT_ClearIntFlag (mxc_wdt_regs_t* wdt)
+void MXC_WDT_ClearIntFlag(mxc_wdt_regs_t* wdt)
 {
-    MXC_WDT_RevB_ClearIntFlag (wdt);
+    MXC_WDT_RevB_ClearIntFlag(wdt);
 }

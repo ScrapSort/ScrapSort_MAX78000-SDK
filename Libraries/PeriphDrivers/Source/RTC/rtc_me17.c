@@ -46,76 +46,76 @@
 /* Maxim Function Mapping                   */
 /********************************************/
 
-int MXC_RTC_EnableInt (uint32_t mask)
+int MXC_RTC_EnableInt(uint32_t mask)
 {
-    return MXC_RTC_RevA_EnableInt (MXC_RTC, mask);
+    return MXC_RTC_RevA_EnableInt(MXC_RTC, mask);
 }
 
-int MXC_RTC_DisableInt (uint32_t mask)
+int MXC_RTC_DisableInt(uint32_t mask)
 {
-    return MXC_RTC_RevA_DisableInt (MXC_RTC, mask);
+    return MXC_RTC_RevA_DisableInt(MXC_RTC, mask);
 }
 
-int MXC_RTC_SetTimeofdayAlarm (uint32_t ras)
+int MXC_RTC_SetTimeofdayAlarm(uint32_t ras)
 {
-    return MXC_RTC_RevA_SetTimeofdayAlarm (MXC_RTC, ras);
+    return MXC_RTC_RevA_SetTimeofdayAlarm(MXC_RTC, ras);
 }
 
-int MXC_RTC_SetSubsecondAlarm (uint32_t rssa)
+int MXC_RTC_SetSubsecondAlarm(uint32_t rssa)
 {
-    return MXC_RTC_RevA_SetSubsecondAlarm (MXC_RTC, rssa);
+    return MXC_RTC_RevA_SetSubsecondAlarm(MXC_RTC, rssa);
 }
 
-int MXC_RTC_Start (void)
+int MXC_RTC_Start(void)
 {
-    return MXC_RTC_RevA_Start (MXC_RTC);
+    return MXC_RTC_RevA_Start(MXC_RTC);
 }
 
-int MXC_RTC_Stop (void)
+int MXC_RTC_Stop(void)
 {
-    return MXC_RTC_RevA_Stop (MXC_RTC);
+    return MXC_RTC_RevA_Stop(MXC_RTC);
 }
 
-int MXC_RTC_Init (uint32_t sec, uint8_t ssec)
+int MXC_RTC_Init(uint32_t sec, uint8_t ssec)
 {
     MXC_GCR->clkctrl |= MXC_F_GCR_CLKCTRL_ERTCO_EN;
     
-    return MXC_RTC_RevA_Init (MXC_RTC, sec, ssec);
+    return MXC_RTC_RevA_Init(MXC_RTC, sec, ssec);
 }
 
-int MXC_RTC_SquareWave (mxc_rtc_sqwave_en_t sqe, mxc_rtc_freq_sel_t ft)
+int MXC_RTC_SquareWave(mxc_rtc_sqwave_en_t sqe, mxc_rtc_freq_sel_t ft)
 {
-    MXC_GPIO_Config (&gpio_cfg_rtcsqw);
+    MXC_GPIO_Config(&gpio_cfg_rtcsqw);
     
-    return MXC_RTC_RevA_SquareWave (MXC_RTC, sqe, ft);
+    return MXC_RTC_RevA_SquareWave(MXC_RTC, sqe, ft);
 }
 
-int MXC_RTC_Trim (int8_t trm)
+int MXC_RTC_Trim(int8_t trm)
 {
-    return MXC_RTC_RevA_Trim (MXC_RTC, trm);
+    return MXC_RTC_RevA_Trim(MXC_RTC, trm);
 }
 
-int MXC_RTC_GetFlags (void)
+int MXC_RTC_GetFlags(void)
 {
     return MXC_RTC_RevA_GetFlags();
 }
 
-int MXC_RTC_ClearFlags (int flags)
+int MXC_RTC_ClearFlags(int flags)
 {
-    return MXC_RTC_RevA_ClearFlags (flags);
+    return MXC_RTC_RevA_ClearFlags(flags);
 }
 
-int MXC_RTC_GetSubSecond (void)
+int MXC_RTC_GetSubSecond(void)
 {
     return MXC_RTC_RevA_GetSubSecond();
 }
 
-int MXC_RTC_GetSecond (void)
+int MXC_RTC_GetSecond(void)
 {
     return MXC_RTC_RevA_GetSecond();
 }
 
-int MXC_RTC_GetTime (uint32_t* sec, uint32_t* subsec)
+int MXC_RTC_GetTime(uint32_t* sec, uint32_t* subsec)
 {
-    return MXC_RTC_RevA_GetTime (sec, subsec);
+    return MXC_RTC_RevA_GetTime(sec, subsec);
 }

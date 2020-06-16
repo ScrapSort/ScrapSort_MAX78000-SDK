@@ -38,8 +38,8 @@
 /* ************************************************************************* */
 
 int MXC_CTB_RevA_Init (uint32_t features);
-void MXC_CTB_RevA_IntEnable ();
-void MXC_CTB_RevA_IntDisable ();
+void MXC_CTB_RevA_EnableInt ();
+void MXC_CTB_RevA_DisableInt ();
 int MXC_CTB_RevA_Ready (void);
 void MXC_CTB_RevA_DoneClear (uint32_t features);
 uint32_t MXC_CTB_RevA_Done (void);

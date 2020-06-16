@@ -41,13 +41,13 @@
 #include "ptg_regs.h"
 #include "pt_reva.h"
 
-void MXC_PT_Init (mxc_clk_scale_t clk_scale)
+void MXC_PT_Init(mxc_clk_scale_t clk_scale)
 {
-    MXC_ASSERT (clk_scale <= 128);
-
-    MXC_SYS_ClockEnable (MXC_SYS_PERIPH_CLOCK_PT);
+    MXC_ASSERT(clk_scale <= 128);
     
-    MXC_SYS_Reset_Periph (MXC_SYS_RESET1_PT);
+    MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_PT);
+    
+    MXC_SYS_Reset_Periph(MXC_SYS_RESET1_PT);
     
     //set clock scale
     MXC_GCR->clkctrl &= ~MXC_S_GCR_CLKCTRL_SYSCLK_DIV_DIV128;
@@ -86,101 +86,101 @@ void MXC_PT_Init (mxc_clk_scale_t clk_scale)
         break;
     }
     
-    MXC_PT_RevA_Init (clk_scale);
+    MXC_PT_RevA_Init(clk_scale);
 }
 
-void MXC_PT_Shutdown (uint32_t pts)
+void MXC_PT_Shutdown(uint32_t pts)
 {
-    if (MXC_PT_RevA_Shutdown (pts)) {
-      MXC_SYS_ClockDisable (MXC_SYS_PERIPH_CLOCK_PT);
+    if (MXC_PT_RevA_Shutdown(pts)) {
+        MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_PT);
     }
 }
 
-int MXC_PT_Config (mxc_pt_cfg_t *cfg)
+int MXC_PT_Config(mxc_pt_cfg_t* cfg)
 {
-    MXC_PT_RevA_Config (cfg);
+    MXC_PT_RevA_Config(cfg);
     
     switch (cfg->channel) {
     case 0:
-        MXC_GPIO_Config (&gpio_cfg_pt0);
+        MXC_GPIO_Config(&gpio_cfg_pt0);
         break;
         
     case 1:
-        MXC_GPIO_Config (&gpio_cfg_pt1);
+        MXC_GPIO_Config(&gpio_cfg_pt1);
         break;
         
     case 2:
-        MXC_GPIO_Config (&gpio_cfg_pt2);
+        MXC_GPIO_Config(&gpio_cfg_pt2);
         break;
         
     case 3:
-        MXC_GPIO_Config (&gpio_cfg_pt3);
+        MXC_GPIO_Config(&gpio_cfg_pt3);
         break;
-
+        
     default:
         return E_BAD_PARAM;
-
+        
     }
     
     return E_NO_ERROR;
 }
 
-int MXC_PT_SqrWaveConfig (unsigned channel, uint32_t freq)
+int MXC_PT_SqrWaveConfig(unsigned channel, uint32_t freq)
 {
-    return MXC_PT_RevA_SqrWaveConfig (channel,freq);
+    return MXC_PT_RevA_SqrWaveConfig(channel, freq);
 }
 
-void MXC_PT_Start (unsigned pts)
+void MXC_PT_Start(unsigned pts)
 {
-    MXC_PT_RevA_Start (pts);
+    MXC_PT_RevA_Start(pts);
 }
 
-void MXC_PT_Stop (unsigned pts)
+void MXC_PT_Stop(unsigned pts)
 {
-    MXC_PT_RevA_Stop (pts);
+    MXC_PT_RevA_Stop(pts);
 }
 
-uint32_t MXC_PT_IsActive (uint32_t pts)
+uint32_t MXC_PT_IsActive(uint32_t pts)
 {
-    return  MXC_PT_RevA_IsActive (pts);
+    return  MXC_PT_RevA_IsActive(pts);
 }
 
-void MXC_PT_SetPattern (unsigned pts, uint32_t pattern)
+void MXC_PT_SetPattern(unsigned pts, uint32_t pattern)
 {
-    MXC_PT_RevA_SetPattern (pts, pattern);
+    MXC_PT_RevA_SetPattern(pts, pattern);
 }
 
-void MXC_PT_EnableInt (uint32_t pts)
+void MXC_PT_EnableInt(uint32_t pts)
 {
-    MXC_PT_RevA_EnableInt (pts);
+    MXC_PT_RevA_EnableInt(pts);
 }
 
-void MXC_PT_DisableInt (uint32_t pts)
+void MXC_PT_DisableInt(uint32_t pts)
 {
-    MXC_PT_RevA_DisableInt (pts);
+    MXC_PT_RevA_DisableInt(pts);
 }
 
-uint32_t MXC_PT_GetFlags (void)
+uint32_t MXC_PT_GetFlags(void)
 {
     return MXC_PT_RevA_GetFlags();
 }
 
-void MXC_PT_ClearFlags (uint32_t flags)
+void MXC_PT_ClearFlags(uint32_t flags)
 {
-    MXC_PT_RevA_ClearFlags (flags);
+    MXC_PT_RevA_ClearFlags(flags);
 }
 
-void MXC_PT_EnableRestart (unsigned start, unsigned stop, uint8_t restartIndex)
+void MXC_PT_EnableRestart(unsigned start, unsigned stop, uint8_t restartIndex)
 {
-    MXC_PT_RevA_EnableRestart (start,stop,restartIndex);
+    MXC_PT_RevA_EnableRestart(start, stop, restartIndex);
 }
 
-void MXC_PT_DisableRestart (unsigned channel, uint8_t restartIndex)
+void MXC_PT_DisableRestart(unsigned channel, uint8_t restartIndex)
 {
-    MXC_PT_RevA_DisableRestart (channel, restartIndex);
+    MXC_PT_RevA_DisableRestart(channel, restartIndex);
 }
 
-void MXC_PT_Resync (uint32_t pts)
+void MXC_PT_Resync(uint32_t pts)
 {
-    MXC_PT_RevA_Resync (pts);
+    MXC_PT_RevA_Resync(pts);
 }

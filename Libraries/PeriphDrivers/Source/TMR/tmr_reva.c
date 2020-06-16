@@ -41,7 +41,7 @@
 #include "mxc_lock.h"
 
 /* **** Functions **** */
-void MXC_TMR_RevA_Init (mxc_tmr_regs_t *tmr, mxc_tmr_cfg_t* cfg)
+void MXC_TMR_RevA_Init(mxc_tmr_regs_t* tmr, mxc_tmr_cfg_t* cfg)
 {
     // Clear interrupt flag
     tmr->intr = MXC_F_TMR_INTR_IRQ;
@@ -131,28 +131,28 @@ void MXC_TMR_RevA_Init (mxc_tmr_regs_t *tmr, mxc_tmr_cfg_t* cfg)
     }
 }
 
-void MXC_TMR_RevA_Shutdown (mxc_tmr_regs_t *tmr)
+void MXC_TMR_RevA_Shutdown(mxc_tmr_regs_t* tmr)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     // Disable timer and clear settings
     tmr->cn = 0;
 }
 
-void MXC_TMR_RevA_Start (mxc_tmr_regs_t* tmr)
+void MXC_TMR_RevA_Start(mxc_tmr_regs_t* tmr)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     tmr->cn |= MXC_F_TMR_CN_TEN;
 }
 
-void MXC_TMR_RevA_Stop (mxc_tmr_regs_t* tmr)
+void MXC_TMR_RevA_Stop(mxc_tmr_regs_t* tmr)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     tmr->cn &= ~MXC_F_TMR_CN_TEN;
 }
 
-int MXC_TMR_RevA_SetPWM (mxc_tmr_regs_t* tmr, uint32_t pwm)
+int MXC_TMR_RevA_SetPWM(mxc_tmr_regs_t* tmr, uint32_t pwm)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     
     if (pwm > (tmr->cmp)) {
         return E_BAD_PARAM;
@@ -163,49 +163,49 @@ int MXC_TMR_RevA_SetPWM (mxc_tmr_regs_t* tmr, uint32_t pwm)
     return E_NO_ERROR;
 }
 
-uint32_t MXC_TMR_RevA_GetCompare (mxc_tmr_regs_t* tmr)
+uint32_t MXC_TMR_RevA_GetCompare(mxc_tmr_regs_t* tmr)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     return tmr->cmp;
 }
 
-uint32_t MXC_TMR_RevA_GetCapture (mxc_tmr_regs_t* tmr)
+uint32_t MXC_TMR_RevA_GetCapture(mxc_tmr_regs_t* tmr)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     return tmr->pwm;//check this
 }
 
-uint32_t MXC_TMR_RevA_GetCount (mxc_tmr_regs_t* tmr)
+uint32_t MXC_TMR_RevA_GetCount(mxc_tmr_regs_t* tmr)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     return tmr->cnt;
 }
 
-void MXC_TMR_RevA_ClearFlags (mxc_tmr_regs_t* tmr)
+void MXC_TMR_RevA_ClearFlags(mxc_tmr_regs_t* tmr)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     tmr->intr = MXC_F_TMR_INTR_IRQ;
 }
 
-uint32_t MXC_TMR_RevA_GetFlags (mxc_tmr_regs_t* tmr)
+uint32_t MXC_TMR_RevA_GetFlags(mxc_tmr_regs_t* tmr)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     return tmr->intr;
 }
 
-void MXC_TMR_RevA_SetCompare (mxc_tmr_regs_t *tmr, uint32_t cmp_cnt)
+void MXC_TMR_RevA_SetCompare(mxc_tmr_regs_t* tmr, uint32_t cmp_cnt)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     tmr->cmp = cmp_cnt;
 }
 
-void MXC_TMR_RevA_SetCount (mxc_tmr_regs_t *tmr, uint32_t cnt)
+void MXC_TMR_RevA_SetCount(mxc_tmr_regs_t* tmr, uint32_t cnt)
 {
-    MXC_ASSERT (MXC_TMR_GET_IDX (tmr) >= 0);
+    MXC_ASSERT(MXC_TMR_GET_IDX(tmr) >= 0);
     tmr->cnt = cnt;
 }
 
-void MXC_TMR_RevA_TO_Start (mxc_tmr_regs_t *tmr, unsigned long us)
+void MXC_TMR_RevA_TO_Start(mxc_tmr_regs_t* tmr, unsigned long us)
 {
     uint64_t ticks;
     int clk_shift = 0;
@@ -226,22 +226,22 @@ void MXC_TMR_RevA_TO_Start (mxc_tmr_regs_t *tmr, unsigned long us)
     cfg.cmp_cnt = ticks;
     cfg.pol = 0;
     
-    MXC_TMR_Stop (tmr);
-    MXC_TMR_Init (tmr, &cfg);
-    MXC_TMR_ClearFlags (tmr);
-    MXC_TMR_Start (tmr);
+    MXC_TMR_Stop(tmr);
+    MXC_TMR_Init(tmr, &cfg);
+    MXC_TMR_ClearFlags(tmr);
+    MXC_TMR_Start(tmr);
 }
 
-int MXC_TMR_RevA_GetTime (mxc_tmr_regs_t *tmr, uint32_t ticks, uint32_t *time, mxc_tmr_unit_t *units)
+int MXC_TMR_RevA_GetTime(mxc_tmr_regs_t* tmr, uint32_t ticks, uint32_t* time, mxc_tmr_unit_t* units)
 {
     uint64_t temp_time = 0;
     uint32_t timerClock = PeripheralClock;
-    uint32_t prescale = ( (tmr->cn & MXC_F_TMR_CN_PRES) >> MXC_F_TMR_CN_PRES_POS)
-                        | ( ( (tmr->cn & MXC_F_TMR_CN_PRES3) >> (MXC_F_TMR_CN_PRES3_POS)) <<3);
+    uint32_t prescale = ((tmr->cn & MXC_F_TMR_CN_PRES) >> MXC_F_TMR_CN_PRES_POS)
+                        | (((tmr->cn & MXC_F_TMR_CN_PRES3) >> (MXC_F_TMR_CN_PRES3_POS)) << 3);
                         
     temp_time = (uint64_t) ticks * 1000 * (1 << (prescale & 0xF)) / (timerClock / 1000000);
     
-    if (! (temp_time & 0xffffffff00000000)) {
+    if (!(temp_time & 0xffffffff00000000)) {
         *time = temp_time;
         *units = TMR_UNIT_NANOSEC;
         return E_NO_ERROR;
@@ -249,7 +249,7 @@ int MXC_TMR_RevA_GetTime (mxc_tmr_regs_t *tmr, uint32_t ticks, uint32_t *time, m
     
     temp_time = (uint64_t) ticks * 1000 * (1 << (prescale & 0xF)) / (timerClock / 1000);
     
-    if (! (temp_time & 0xffffffff00000000)) {
+    if (!(temp_time & 0xffffffff00000000)) {
         *time = temp_time;
         *units = TMR_UNIT_MICROSEC;
         return E_NO_ERROR;
@@ -257,7 +257,7 @@ int MXC_TMR_RevA_GetTime (mxc_tmr_regs_t *tmr, uint32_t ticks, uint32_t *time, m
     
     temp_time = (uint64_t) ticks * 1000 * (1 << (prescale & 0xF)) / timerClock;
     
-    if (! (temp_time & 0xffffffff00000000)) {
+    if (!(temp_time & 0xffffffff00000000)) {
         *time = temp_time;
         *units = TMR_UNIT_MILLISEC;
         return E_NO_ERROR;
@@ -265,7 +265,7 @@ int MXC_TMR_RevA_GetTime (mxc_tmr_regs_t *tmr, uint32_t ticks, uint32_t *time, m
     
     temp_time = (uint64_t) ticks * (1 << (prescale & 0xF)) / timerClock;
     
-    if (! (temp_time & 0xffffffff00000000)) {
+    if (!(temp_time & 0xffffffff00000000)) {
         *time = temp_time;
         *units = TMR_UNIT_SEC;
         return E_NO_ERROR;

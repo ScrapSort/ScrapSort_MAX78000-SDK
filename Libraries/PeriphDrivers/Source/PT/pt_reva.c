@@ -40,7 +40,7 @@
 #include "pt_reva.h"
 
 
-void MXC_PT_RevA_Init (mxc_clk_scale_t clk_scale)
+void MXC_PT_RevA_Init(mxc_clk_scale_t clk_scale)
 {
     //disable all pulse trains
     MXC_PTG->enable = 0;
@@ -49,15 +49,15 @@ void MXC_PT_RevA_Init (mxc_clk_scale_t clk_scale)
     MXC_PTG->intfl = MXC_PTG->intfl;
 }
 
-int  MXC_PT_RevA_Shutdown (uint32_t pts)
+int  MXC_PT_RevA_Shutdown(uint32_t pts)
 {
-    MXC_PT_Stop (pts);
-    return (! (MXC_PT_IsActive (MXC_PTG->enable)));
+    MXC_PT_Stop(pts);
+    return (!(MXC_PT_IsActive(MXC_PTG->enable)));
 }
 
-int  MXC_PT_RevA_Config (mxc_pt_cfg_t *cfg)
+int  MXC_PT_RevA_Config(mxc_pt_cfg_t* cfg)
 {
-    uint32_t ptClock,rate;
+    uint32_t ptClock, rate;
     
     if (cfg == NULL || cfg->bps == 0) {
         return E_BAD_PARAM;
@@ -74,7 +74,7 @@ int  MXC_PT_RevA_Config (mxc_pt_cfg_t *cfg)
     }
     
     //disable pulse train
-    MXC_PT_Stop (1 << cfg->channel);
+    MXC_PT_Stop(1 << cfg->channel);
     
     rate = (ptClock / (cfg->bps));
     
@@ -82,24 +82,24 @@ int  MXC_PT_RevA_Config (mxc_pt_cfg_t *cfg)
         rate += 2;
     }
     
-    mxc_pt_regs_t * temp = MXC_PT_GET_PT (cfg->channel);
+    mxc_pt_regs_t* temp = MXC_PT_GET_PT(cfg->channel);
     
-    MXC_ASSERT (temp != NULL);
+    MXC_ASSERT(temp != NULL);
     
     
-    temp->rate_length = ( (rate << MXC_F_PT_RATE_LENGTH_RATE_CONTROL_POS)
-                          & MXC_F_PT_RATE_LENGTH_RATE_CONTROL) |
-                        ( (cfg->ptLength << MXC_F_PT_RATE_LENGTH_MODE_POS)
-                          & MXC_F_PT_RATE_LENGTH_MODE);
-                          
+    temp->rate_length = ((rate << MXC_F_PT_RATE_LENGTH_RATE_CONTROL_POS)
+                         & MXC_F_PT_RATE_LENGTH_RATE_CONTROL) |
+                        ((cfg->ptLength << MXC_F_PT_RATE_LENGTH_MODE_POS)
+                         & MXC_F_PT_RATE_LENGTH_MODE);
+                         
     temp->train = cfg->pattern;
-    temp->loop = ( (cfg->loop << MXC_F_PT_LOOP_COUNT_POS) & MXC_F_PT_LOOP_COUNT) |
-                 ( (cfg->loopDelay << MXC_F_PT_LOOP_DELAY_POS) & MXC_F_PT_LOOP_DELAY);
+    temp->loop = ((cfg->loop << MXC_F_PT_LOOP_COUNT_POS) & MXC_F_PT_LOOP_COUNT) |
+                 ((cfg->loopDelay << MXC_F_PT_LOOP_DELAY_POS) & MXC_F_PT_LOOP_DELAY);
                  
     return E_NO_ERROR;
 }
 
-int  MXC_PT_RevA_SqrWaveConfig (unsigned channel, uint32_t freq)
+int  MXC_PT_RevA_SqrWaveConfig(unsigned channel, uint32_t freq)
 {
     uint32_t rate;
     
@@ -112,70 +112,70 @@ int  MXC_PT_RevA_SqrWaveConfig (unsigned channel, uint32_t freq)
     sqwcfg.loop = 0;
     sqwcfg.loopDelay = 0;
     
-    return MXC_PT_Config (&sqwcfg);
+    return MXC_PT_Config(&sqwcfg);
     
 }
 
-void MXC_PT_RevA_Start (unsigned pts)
+void MXC_PT_RevA_Start(unsigned pts)
 {
 
-    MXC_ASSERT (pts >= 0)
+    MXC_ASSERT(pts >= 0)
     MXC_PTG->enable |= pts;
     
     //wait for PT to start
-    while ( (MXC_PTG->enable & (pts)) != pts);
+    while ((MXC_PTG->enable & (pts)) != pts);
 }
 
-void MXC_PT_RevA_Stop (unsigned pts)
+void MXC_PT_RevA_Stop(unsigned pts)
 {
     MXC_PTG->enable &= ~pts;
 }
 
-uint32_t MXC_PT_RevA_IsActive (uint32_t pts)
+uint32_t MXC_PT_RevA_IsActive(uint32_t pts)
 {
-    return !! (MXC_PTG->enable & pts);
+    return !!(MXC_PTG->enable & pts);
 }
 
-void  MXC_PT_RevA_SetPattern (unsigned pts, uint32_t pattern)
+void  MXC_PT_RevA_SetPattern(unsigned pts, uint32_t pattern)
 {
-    mxc_pt_regs_t * temp;
+    mxc_pt_regs_t* temp;
     uint32_t pt;
     
     for (uint8_t i = 0 ; i < 32 && (pts >> i) > 0 ; i++) {
         pt = 1 << i;
         
         if (pts & pt) {
-            temp = MXC_PT_GET_PT (pt);
-            MXC_ASSERT (temp);
+            temp = MXC_PT_GET_PT(pt);
+            MXC_ASSERT(temp);
             temp->train = pattern;
         }
     }
 }
 
-void  MXC_PT_RevA_EnableInt (uint32_t pts)
+void  MXC_PT_RevA_EnableInt(uint32_t pts)
 {
     MXC_PTG->inten |= pts;
 }
 
-void  MXC_PT_RevA_DisableInt (uint32_t pts)
+void  MXC_PT_RevA_DisableInt(uint32_t pts)
 {
     MXC_PTG->inten &= ~pts;
 }
 
-uint32_t  MXC_PT_RevA_GetFlags (void)
+uint32_t  MXC_PT_RevA_GetFlags(void)
 {
     return MXC_PTG->intfl;
 }
 
-void  MXC_PT_RevA_ClearFlags (uint32_t flags)
+void  MXC_PT_RevA_ClearFlags(uint32_t flags)
 {
     MXC_PTG->intfl = flags;
 }
 
-void  MXC_PT_RevA_EnableRestart (unsigned start, unsigned stop, uint8_t restartIndex)
+void  MXC_PT_RevA_EnableRestart(unsigned start, unsigned stop, uint8_t restartIndex)
 {
-    mxc_pt_regs_t * temp = MXC_PT_GET_PT (start);
-    MXC_ASSERT (temp);
+    mxc_pt_regs_t* temp = MXC_PT_GET_PT(start);
+    MXC_ASSERT(temp);
     
     if (restartIndex) {
         temp->restart |= (stop << MXC_F_PT_RESTART_PT_Y_SELECT_POS) |
@@ -188,10 +188,10 @@ void  MXC_PT_RevA_EnableRestart (unsigned start, unsigned stop, uint8_t restartI
     
 }
 
-void  MXC_PT_RevA_DisableRestart (unsigned channel, uint8_t restartIndex)
+void  MXC_PT_RevA_DisableRestart(unsigned channel, uint8_t restartIndex)
 {
-    mxc_pt_regs_t * temp = MXC_PT_GET_PT (channel);
-    MXC_ASSERT (temp);
+    mxc_pt_regs_t* temp = MXC_PT_GET_PT(channel);
+    MXC_ASSERT(temp);
     
     if (restartIndex) {
         temp->restart &= ~MXC_F_PT_RESTART_ON_PT_Y_LOOP_EXIT;
@@ -201,7 +201,7 @@ void  MXC_PT_RevA_DisableRestart (unsigned channel, uint8_t restartIndex)
     }
 }
 
-void  MXC_PT_RevA_Resync (uint32_t pts)
+void  MXC_PT_RevA_Resync(uint32_t pts)
 {
     // Set the PT to be synced
     MXC_PTG->resync |= pts;

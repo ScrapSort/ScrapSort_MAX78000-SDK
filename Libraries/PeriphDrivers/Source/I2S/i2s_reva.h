@@ -64,9 +64,9 @@ int MXC_I2S_RevA_SetFrequency(mxc_i2s_ch_mode_t mode, uint16_t clkdiv);
 
 void MXC_I2S_RevA_Flush(void);
 
-void MXC_I2S_RevA_IntEnable(uint32_t flags);
+void MXC_I2S_RevA_EnableInt(uint32_t flags);
 
-void MXC_I2S_RevA_IntDisable(uint32_t flags);
+void MXC_I2S_RevA_DisableInt(uint32_t flags);
 
 int MXC_I2S_RevA_GetFlags(void);
 

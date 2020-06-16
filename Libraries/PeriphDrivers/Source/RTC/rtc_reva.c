@@ -41,10 +41,10 @@
 #include "mxc_errors.h"
 #include "rtc_reva.h"
 
-int MXC_RTC_CheckBusy (void)
+int MXC_RTC_CheckBusy(void)
 {
     // Time-out transfer if it takes > BUSY_TIMEOUT microseconds
-    MXC_DelayAsync (MXC_DELAY_USEC (MXC_BUSY_TIMEOUT), NULL);
+    MXC_DelayAsync(MXC_DELAY_USEC(MXC_BUSY_TIMEOUT), NULL);
     
     while (MXC_RTC_IS_BUSY) {
         if (MXC_DelayCheck() != E_BUSY) {
@@ -56,7 +56,7 @@ int MXC_RTC_CheckBusy (void)
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_EnableInt (mxc_rtc_regs_t *rtc, uint32_t mask)
+int MXC_RTC_RevA_EnableInt(mxc_rtc_regs_t* rtc, uint32_t mask)
 {
     mask &= (MXC_RTC_INT_EN_LONG |  MXC_RTC_INT_EN_SHORT | MXC_RTC_INT_EN_READY);
     
@@ -74,7 +74,7 @@ int MXC_RTC_RevA_EnableInt (mxc_rtc_regs_t *rtc, uint32_t mask)
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_DisableInt (mxc_rtc_regs_t *rtc, uint32_t mask)
+int MXC_RTC_RevA_DisableInt(mxc_rtc_regs_t* rtc, uint32_t mask)
 {
     mask &= (MXC_RTC_INT_EN_LONG |  MXC_RTC_INT_EN_SHORT | MXC_RTC_INT_EN_READY);
     
@@ -92,7 +92,7 @@ int MXC_RTC_RevA_DisableInt (mxc_rtc_regs_t *rtc, uint32_t mask)
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_SetTimeofdayAlarm (mxc_rtc_regs_t *rtc, uint32_t ras)
+int MXC_RTC_RevA_SetTimeofdayAlarm(mxc_rtc_regs_t* rtc, uint32_t ras)
 {
     // ras can only be written if BUSY = 0 & (RTCE = 0 or ADE = 0);
     if (MXC_RTC_CheckBusy()) {
@@ -104,7 +104,7 @@ int MXC_RTC_RevA_SetTimeofdayAlarm (mxc_rtc_regs_t *rtc, uint32_t ras)
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_SetSubsecondAlarm (mxc_rtc_regs_t *rtc, uint32_t rssa)
+int MXC_RTC_RevA_SetSubsecondAlarm(mxc_rtc_regs_t* rtc, uint32_t rssa)
 {
     // ras can only be written if BUSY = 0 & (RTCE = 0 or ASE = 0);
     if (MXC_RTC_CheckBusy()) {
@@ -116,7 +116,7 @@ int MXC_RTC_RevA_SetSubsecondAlarm (mxc_rtc_regs_t *rtc, uint32_t rssa)
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_Start (mxc_rtc_regs_t *rtc)
+int MXC_RTC_RevA_Start(mxc_rtc_regs_t* rtc)
 {
     if (MXC_RTC_CheckBusy()) {
         return E_BUSY;
@@ -140,7 +140,7 @@ int MXC_RTC_RevA_Start (mxc_rtc_regs_t *rtc)
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_Stop (mxc_rtc_regs_t *rtc)
+int MXC_RTC_RevA_Stop(mxc_rtc_regs_t* rtc)
 {
     if (MXC_RTC_CheckBusy()) {
         return E_BUSY;
@@ -164,7 +164,7 @@ int MXC_RTC_RevA_Stop (mxc_rtc_regs_t *rtc)
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_Init (mxc_rtc_regs_t *rtc, uint32_t sec, uint8_t ssec)
+int MXC_RTC_RevA_Init(mxc_rtc_regs_t* rtc, uint32_t sec, uint8_t ssec)
 {
     if (MXC_RTC_CheckBusy()) {
         return E_BUSY;
@@ -205,7 +205,7 @@ int MXC_RTC_RevA_Init (mxc_rtc_regs_t *rtc, uint32_t sec, uint8_t ssec)
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_SquareWave (mxc_rtc_regs_t *rtc, mxc_rtc_sqwave_en_t sqe, mxc_rtc_freq_sel_t ft)
+int MXC_RTC_RevA_SquareWave(mxc_rtc_regs_t* rtc, mxc_rtc_sqwave_en_t sqe, mxc_rtc_freq_sel_t ft)
 {
     if (MXC_RTC_CheckBusy()) {
         return E_BUSY;
@@ -270,7 +270,7 @@ int MXC_RTC_RevA_SquareWave (mxc_rtc_regs_t *rtc, mxc_rtc_sqwave_en_t sqe, mxc_r
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_Trim (mxc_rtc_regs_t *rtc, int8_t trim)
+int MXC_RTC_RevA_Trim(mxc_rtc_regs_t* rtc, int8_t trim)
 {
 
     if (MXC_RTC_CheckBusy()) {
@@ -283,7 +283,7 @@ int MXC_RTC_RevA_Trim (mxc_rtc_regs_t *rtc, int8_t trim)
         return E_BUSY;
     }
     
-    MXC_SETFIELD (rtc->trim, MXC_F_RTC_TRIM_TRIM, trim << MXC_F_RTC_TRIM_TRIM_POS);
+    MXC_SETFIELD(rtc->trim, MXC_F_RTC_TRIM_TRIM, trim << MXC_F_RTC_TRIM_TRIM_POS);
     
     if (MXC_RTC_CheckBusy()) {
         return E_BUSY;
@@ -294,43 +294,43 @@ int MXC_RTC_RevA_Trim (mxc_rtc_regs_t *rtc, int8_t trim)
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_GetFlags (void)
+int MXC_RTC_RevA_GetFlags(void)
 {
     return MXC_RTC->ctrl & (MXC_RTC_INT_FL_LONG | MXC_RTC_INT_FL_SHORT | MXC_RTC_INT_FL_READY);
 }
 
-int MXC_RTC_RevA_ClearFlags (int flags)
+int MXC_RTC_RevA_ClearFlags(int flags)
 {
     if (MXC_RTC_CheckBusy()) {
         return E_BUSY;
     }
     
-    MXC_RTC->ctrl &= ~ (flags & (MXC_RTC_INT_FL_LONG | MXC_RTC_INT_FL_SHORT | MXC_RTC_INT_FL_READY));
+    MXC_RTC->ctrl &= ~(flags & (MXC_RTC_INT_FL_LONG | MXC_RTC_INT_FL_SHORT | MXC_RTC_INT_FL_READY));
     
     return E_SUCCESS;
 }
 
-int MXC_RTC_RevA_GetSubSecond (void)
+int MXC_RTC_RevA_GetSubSecond(void)
 {
     return MXC_RTC->ssec;
 }
 
-int MXC_RTC_RevA_GetSecond (void)
+int MXC_RTC_RevA_GetSecond(void)
 {
     return MXC_RTC->sec;
 }
 
-int MXC_RTC_RevA_GetTime (uint32_t* sec, uint32_t* subsec)
+int MXC_RTC_RevA_GetTime(uint32_t* sec, uint32_t* subsec)
 {
     uint32_t temp_sec;
-
-    if(sec == NULL || subsec == NULL) {
+    
+    if (sec == NULL || subsec == NULL) {
         return E_NULL_PTR;
     }
-
+    
     do {
         // Check if an update is about to happen.
-        if (! (MXC_RTC->ctrl & MXC_F_RTC_CTRL_RDY)) {
+        if (!(MXC_RTC->ctrl & MXC_F_RTC_CTRL_RDY)) {
             return E_BUSY;
         }
         
@@ -338,7 +338,7 @@ int MXC_RTC_RevA_GetTime (uint32_t* sec, uint32_t* subsec)
         temp_sec = MXC_RTC_RevA_GetSecond();
         
         // Check if an update is about to happen.
-        if (! (MXC_RTC->ctrl & MXC_F_RTC_CTRL_RDY)) {
+        if (!(MXC_RTC->ctrl & MXC_F_RTC_CTRL_RDY)) {
             return E_BUSY;
         }
         
@@ -346,7 +346,7 @@ int MXC_RTC_RevA_GetTime (uint32_t* sec, uint32_t* subsec)
         *subsec = MXC_RTC_RevA_GetSubSecond();
         
         // Check if an update is about to happen.
-        if (! (MXC_RTC->ctrl & MXC_F_RTC_CTRL_RDY)) {
+        if (!(MXC_RTC->ctrl & MXC_F_RTC_CTRL_RDY)) {
             return E_BUSY;
         }
         
