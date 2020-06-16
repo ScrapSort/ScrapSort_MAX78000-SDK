@@ -53,30 +53,35 @@
 
 /********************************************************/
 
-int MXC_TRNG_Init ()
+int MXC_TRNG_Init()
 {
-    MXC_SYS_ClockEnable (MXC_SYS_PERIPH_CLOCK_TRNG);
-
-    MXC_TRNG_RevB_Init ();
-
+    MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_TRNG);
+    
+    MXC_TRNG_RevB_Init();
+    
     return E_NO_ERROR;
 }
 
-void MXC_TRNG_IntEnable ()
+void MXC_TRNG_EnableInt()
 {
-    MXC_TRNG_RevB_IntEnable ();
+    MXC_TRNG_RevB_EnableInt();
 }
 
-int MXC_TRNG_Shutdown ()
+void MXC_TRNG_DisableInt()
 {
-    int error = MXC_TRNG_RevB_Shutdown ();
+    MXC_TRNG_RevB_DisableInt();
+}
+
+int MXC_TRNG_Shutdown()
+{
+    int error = MXC_TRNG_RevB_Shutdown();
     
-    MXC_SYS_ClockDisable (MXC_SYS_PERIPH_CLOCK_TRNG);
+    MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_TRNG);
     
     return error;
 }
 
-void MXC_TRNG_Handler (void)
+void MXC_TRNG_Handler(void)
 {
     MXC_TRNG_RevB_Handler();
 }
@@ -85,17 +90,17 @@ void MXC_TRNG_Handler (void)
 /* True Random Number Generator (TRNG) functions                             */
 /* ************************************************************************* */
 
-int MXC_TRNG_RandomInt (void)
+int MXC_TRNG_RandomInt(void)
 {
     return MXC_TRNG_RevB_RandomInt();
 }
 
-int MXC_TRNG_Random (uint8_t* data, uint32_t len)
+int MXC_TRNG_Random(uint8_t* data, uint32_t len)
 {
-    return MXC_TRNG_RevB_Random (data, len);
+    return MXC_TRNG_RevB_Random(data, len);
 }
 
-void MXC_TRNG_RandomAsync (uint8_t* data, uint32_t len, mxc_trng_complete_t callback)
+void MXC_TRNG_RandomAsync(uint8_t* data, uint32_t len, mxc_trng_complete_t callback)
 {
-    MXC_TRNG_RevB_RandomAsync (data, len, callback);
+    MXC_TRNG_RevB_RandomAsync(data, len, callback);
 }

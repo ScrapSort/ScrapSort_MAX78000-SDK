@@ -52,41 +52,46 @@
 
 /********************************************************/
 
-int MXC_AES_Init ()
+int MXC_AES_Init()
 {
-    MXC_SYS_ClockEnable (MXC_SYS_PERIPH_CLOCK_AES);
-    MXC_SYS_ClockEnable (MXC_SYS_PERIPH_CLOCK_TRNG);
-
+    MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_AES);
+    MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_TRNG);
+    
     MXC_AES_RevB_Init();
     
     return E_NO_ERROR;
 }
 
-void MXC_AES_IntEnable (uint32_t interrupt)
+void MXC_AES_EnableInt(uint32_t interrupt)
 {
-    MXC_AES_RevB_IntEnable(interrupt);
+    MXC_AES_RevB_EnableInt(interrupt);
 }
 
-int MXC_AES_IsBusy ()
+void MXC_AES_DisableInt(uint32_t interrupt)
+{
+    MXC_AES_RevB_DisableInt(interrupt);
+}
+
+int MXC_AES_IsBusy()
 {
     return MXC_AES_RevB_IsBusy();
 }
 
-int MXC_AES_Shutdown ()
+int MXC_AES_Shutdown()
 {
-    int error = MXC_AES_RevB_Shutdown ();
+    int error = MXC_AES_RevB_Shutdown();
     
-    MXC_SYS_ClockDisable (MXC_SYS_PERIPH_CLOCK_AES);
-
+    MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_AES);
+    
     return error;
 }
 
-void MXC_AES_DMACallback (int ch, int error)
+void MXC_AES_DMACallback(int ch, int error)
 {
     MXC_AES_RevB_DMACallback(ch, error);
 }
 
-void MXC_AES_GenerateKey (void)
+void MXC_AES_GenerateKey(void)
 {
     MXC_AES_RevB_GenerateKey();
 }
@@ -141,19 +146,19 @@ int MXC_AES_Decrypt(mxc_aes_req_t* req)
     return MXC_AES_RevB_Decrypt(req);
 }
 
-int MXC_AES_TXDMAConfig(void *src_addr, int len)
+int MXC_AES_TXDMAConfig(void* src_addr, int len)
 {
-    return MXC_AES_RevB_TXDMAConfig(src_addr,len);
+    return MXC_AES_RevB_TXDMAConfig(src_addr, len);
 }
 
-int MXC_AES_RXDMAConfig(void *dest_addr, int len)
+int MXC_AES_RXDMAConfig(void* dest_addr, int len)
 {
-    return MXC_AES_RevB_RXDMAConfig(dest_addr,len);
+    return MXC_AES_RevB_RXDMAConfig(dest_addr, len);
 }
 
 int MXC_AES_GenericAsync(mxc_aes_req_t* req, uint8_t enc)
 {
-    return MXC_AES_RevB_GenericAsync(req,enc);
+    return MXC_AES_RevB_GenericAsync(req, enc);
 }
 
 int MXC_AES_EncryptAsync(mxc_aes_req_t* req)

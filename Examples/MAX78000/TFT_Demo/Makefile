@@ -73,7 +73,6 @@ export CMSIS_ROOT
 
 # Source files for this test (add path to VPATH below)
 SRCS  = main.c
-#SRCS += sla_header.c
 SRCS += src/state_keypad.c
 SRCS += src/state_home.c
 SRCS += src/state.c
@@ -115,7 +114,7 @@ PROJ_CFLAGS += -DDISABLE_EVKIT_DISPLAY
 #STARTUPFILE=start.S
 
 # Set MXC_OPTIMIZE to override the default optimization level 
-#MXC_OPTIMIZE_CFLAGS=-O1
+MXC_OPTIMIZE_CFLAGS=-O0
 
 # Point this variable to a linker file to override the default file
 LINKER=$(TARGET_LC).ld

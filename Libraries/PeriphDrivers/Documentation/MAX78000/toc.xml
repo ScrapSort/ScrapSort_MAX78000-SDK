@@ -1522,11 +1522,11 @@
       </topic>
       <topic label="MXC_I2S_ClearFlags" href="group__i2s.html#gabb681ef254bf67f6652da18748766c5d"/>
       <topic label="MXC_I2S_ConfigData" href="group__i2s.html#ga5981df9127d06340164cf5f5c2bd68fd"/>
+      <topic label="MXC_I2S_DisableInt" href="group__i2s.html#ga9b2857203f73170c4f07ce710bebff10"/>
+      <topic label="MXC_I2S_EnableInt" href="group__i2s.html#ga0df8528fd2309fda3864a7ec6073b7ca"/>
       <topic label="MXC_I2S_Flush" href="group__i2s.html#gaaaf1ce09b163ac273e4a5b2e9759bdaa"/>
       <topic label="MXC_I2S_GetFlags" href="group__i2s.html#ga3b89677a1edb6d0da0ccbb2c4de23447"/>
       <topic label="MXC_I2S_Init" href="group__i2s.html#ga908d2bb5ebd853ffd32504c963c41f7f"/>
-      <topic label="MXC_I2S_IntDisable" href="group__i2s.html#ga9d8f767ee6e8f64767fccc05cdabb1e2"/>
-      <topic label="MXC_I2S_IntEnable" href="group__i2s.html#ga736ff03287a9c3b52814045c58858fc2"/>
       <topic label="MXC_I2S_RXDisable" href="group__i2s.html#gaf2217c37d934dc84c9f226babe2aa9d4"/>
       <topic label="MXC_I2S_RXDMAConfig" href="group__i2s.html#gac7a5a8366d3950a0052d7fafcbb214b1"/>
       <topic label="MXC_I2S_RXEnable" href="group__i2s.html#ga72d81aa086580679b48ad432ee05d37d"/>
@@ -2770,9 +2770,10 @@
           <topic label="status" href="group__trng__registers.html#a4b79764f6dc9cf227c2ddd91219e8ac9"/>
         </topic>
       </topic>
+      <topic label="MXC_TRNG_DisableInt" href="group__trng.html#gaaa27e6216364d229b9057ca0ec397be6"/>
+      <topic label="MXC_TRNG_EnableInt" href="group__trng.html#ga00879c803aa074d2ad2c35c64c952665"/>
       <topic label="MXC_TRNG_Handler" href="group__trng.html#ga10f51f746ce73e6c8f57a462d9a98c20"/>
       <topic label="MXC_TRNG_Init" href="group__trng.html#ga037c7026df5669c2970ed1a0b33a526b"/>
-      <topic label="MXC_TRNG_IntEnable" href="group__trng.html#gab4e28eb9497013c608b1214769eff7f9"/>
       <topic label="MXC_TRNG_Random" href="group__trng.html#ga92de47260995c00a08df008cf84a2c6b"/>
       <topic label="MXC_TRNG_RandomAsync" href="group__trng.html#ga4c6705e7343a0a70428f5d2f2b4fa608"/>
       <topic label="MXC_TRNG_RandomInt" href="group__trng.html#gaf93dc6f9fcd63bce53c6395253ee2ee4"/>
@@ -3418,8 +3419,6 @@
         <topic label="MXC_F_ADC_CTRL_ADC_DIVSEL_POS" href="group___a_d_c___c_t_r_l.html#ga09911baaba78522f339c33fc49c6ea9a"/>
         <topic label="MXC_F_ADC_CTRL_CH_SEL" href="group___a_d_c___c_t_r_l.html#ga33f494103c02c8c9fa026ee3bf6545bb"/>
         <topic label="MXC_F_ADC_CTRL_CH_SEL_POS" href="group___a_d_c___c_t_r_l.html#gad8befb4d4d7a3f84c410f4f2e68ecc6b"/>
-        <topic label="MXC_F_ADC_CTRL_CHGPUMP_PWR" href="group___a_d_c___c_t_r_l.html#ga24e711dbb856d23da16cf7aa8addbd08"/>
-        <topic label="MXC_F_ADC_CTRL_CHGPUMP_PWR_POS" href="group___a_d_c___c_t_r_l.html#ga448c727c13fc45bd921be7a626e25412"/>
         <topic label="MXC_F_ADC_CTRL_CLK_EN" href="group___a_d_c___c_t_r_l.html#ga11841a2bd76127bf3d6736863319f8a8"/>
         <topic label="MXC_F_ADC_CTRL_CLK_EN_POS" href="group___a_d_c___c_t_r_l.html#ga57e29f91c07ee29ef88bfcf9d6bae49a"/>
         <topic label="MXC_F_ADC_CTRL_DATA_ALIGN" href="group___a_d_c___c_t_r_l.html#gacafbf29a11f14377bc3c61aa1475a1d3"/>
@@ -3428,6 +3427,8 @@
         <topic label="MXC_F_ADC_CTRL_PWR_POS" href="group___a_d_c___c_t_r_l.html#gabee2907ea0428f1b82ff3892e778dd0a"/>
         <topic label="MXC_F_ADC_CTRL_REF_SCALE" href="group___a_d_c___c_t_r_l.html#ga7f7b908980ef53fc96c0f3529162bcaa"/>
         <topic label="MXC_F_ADC_CTRL_REF_SCALE_POS" href="group___a_d_c___c_t_r_l.html#ga8c81aff4ae691ad47b9a47848e46058c"/>
+        <topic label="MXC_F_ADC_CTRL_REF_SEL" href="group___a_d_c___c_t_r_l.html#ga75778b878d3eeda4d498370ec9d99fea"/>
+        <topic label="MXC_F_ADC_CTRL_REF_SEL_POS" href="group___a_d_c___c_t_r_l.html#gad6749789984e533e42231a40a53c08e0"/>
         <topic label="MXC_F_ADC_CTRL_REFBUF_PWR" href="group___a_d_c___c_t_r_l.html#ga9b21c3f811e5ed472156a1a13e6975f7"/>
         <topic label="MXC_F_ADC_CTRL_REFBUF_PWR_POS" href="group___a_d_c___c_t_r_l.html#gab85e1d18d725360f0089441b705ea632"/>
         <topic label="MXC_F_ADC_CTRL_SCALE" href="group___a_d_c___c_t_r_l.html#gae62d77f0be6b47baef735e9c0d726334"/>

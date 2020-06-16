@@ -4,8 +4,13 @@ Refer to [Getting Started with the MAX78000 Evaluation Kit](https://github.com/M
 
 ## Release Notes
 
-May 21, 2020
-* Initial Release
+June 16, 2020
+* Updated the CNN/kws20_demo example application.  The most significant update being the addition of TFT support.
+* Updated the wakeup timer (WUT) example to include deep sleep mode.
+* Modified the TFT and touchscreen code in the board folder to be more board independent.
+* Corrected some misnamed registers in adc_regs.h.
+* Replaced all instances of IntEnable and IntDisable with EnableInt and Disable to maintain consistency across all drivers.
+* Added support for the low-power GPIO pins (P3.0 and P3.1).
 
 June 7, 2020
 * In the Documentation folder of the SDK, added a MAX78000.html file which serves as a single source for all MAX78000 related documents.
@@ -13,6 +18,9 @@ June 7, 2020
 * Added automatic configuration of ADC GPIO pins.
 * Fixed minor GPIO peripheral library bugs.
 * Added optional configuration of TMR GPIO pins.
+
+May 21, 2020
+* Initial Release
 
 ## Known Issues & Upcoming Features
 

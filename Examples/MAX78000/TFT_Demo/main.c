@@ -44,61 +44,56 @@
 
 #include <mxc.h>
 
-#include "keypad.h"
 #include "utils.h"
 #include "state.h"
+#include "tft.h"
 
-/***** Definitions *****/
-
-/***** Globals *****/
-
-/***** Functions *****/
-static int system_init(void)
+int main(void)
 {
+	int key;
+	unsigned int start_time;
+	State *state;
+
+	/* Touch screen controller interrupt signal */
     mxc_gpio_cfg_t int_pin = {MXC_GPIO0, MXC_GPIO_PIN_17, MXC_GPIO_FUNC_IN, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIOH};
+	/* Touch screen controller busy signal */
     mxc_gpio_cfg_t busy_pin = {MXC_GPIO0, MXC_GPIO_PIN_16, MXC_GPIO_FUNC_IN, MXC_GPIO_PAD_NONE, MXC_GPIO_VSSEL_VDDIOH};
     
-    /* Check RTC Status */
+    /* Enable cache */
+    MXC_ICC_Enable(MXC_ICC0);
+
+    /* Set system clock to 100 MHz */
+    MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
+    SystemCoreClockUpdate();
+
+	/* Initialize RTC */
     MXC_RTC_Init(0, 0);
     MXC_RTC_Start();
     
+    /* Initialize TFT display */
     MXC_TFT_Init(MXC_SPI0, 1, NULL, NULL);
     
-    //
+ 	/* Initialize Touch Screen controller */
     MXC_TS_Init(MXC_SPI0, 2, &int_pin, &busy_pin);
     MXC_TS_Start();
     
-    return 0;
-}
-
-/*****************************************************************************/
-int main(void)
-{
-    int key;
-    unsigned int start_time;
-    State* state;
-    
-    system_init();
-    
-    //
+ 	/* Display Home page */
     state_init();
     
-    /* Infinite loop */
+	/* Get current time */
     start_time = utils_get_time_ms();
     
     while (1) {
-    
+		/* Get current screen state */
         state = state_get_current();
         
-        // check touch screen key
+		/* Check pressed touch screen key */
         key = MXC_TS_GetKey();
-        
         if (key > 0) {
             state->prcss_key(key);
             start_time = utils_get_time_ms();
         }
-        
-        // check tick
+		/* Check timer tick */
         if (utils_get_time_ms() >= (start_time + state->timeout)) {
             if (state->tick) {
                 state->tick();

@@ -73,6 +73,7 @@ export CMSIS_ROOT
 SRCS  = main.c
 SRCS += softmax.c
 SRCS += cnn.c
+SRCS += TFT/all_imgs.c
 
 # Where to find source files for this test
 VPATH  = .
@@ -82,6 +83,7 @@ else
 VPATH += /$(subst \,/,$(subst :,,$(MAXIM_PATH))/Examples/$(TARGET)/CNN/Common/)
 endif
 VPATH += $(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source
+VPATH += ./TFT
 # Where to find header files for this test
 IPATH  = .
 ifeq "$(MAXIM_PATH)" ""
@@ -89,6 +91,7 @@ IPATH += ../Common/
 else
 IPATH += /$(subst \,/,$(subst :,,$(MAXIM_PATH))/Examples/$(TARGET)/CNN/Common/)
 endif
+IPATH += TFT
 
 # Enable assertion checking for development
 PROJ_CFLAGS+=-DMXC_ASSERT_ENABLE

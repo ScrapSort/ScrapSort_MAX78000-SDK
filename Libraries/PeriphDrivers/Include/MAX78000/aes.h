@@ -117,7 +117,14 @@ int MXC_AES_Init ();
  * 
  * @param   interrupt interrupt to enable
  */
-void MXC_AES_IntEnable (uint32_t interrupt);
+void MXC_AES_EnableInt (uint32_t interrupt);
+
+/**
+ * @brief   Disable AES Interrupts
+ * 
+ * @param   interrupt interrupt to disable
+ */
+void MXC_AES_DisableInt (uint32_t interrupt);
 
 /**
  * @brief   Checks the global AES Busy Status

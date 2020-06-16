@@ -193,14 +193,14 @@ void MXC_I2S_Flush(void);
  * 
  * @param   flags   Interrupt mask 
  */
-void MXC_I2S_IntEnable(uint32_t flags);
+void MXC_I2S_EnableInt(uint32_t flags);
 
 /**
  * @brief   Disable Interrupt
  * 
  * @param   flags   Interrupt mask
  */
-void MXC_I2S_IntDisable(uint32_t flags);
+void MXC_I2S_DisableInt(uint32_t flags);
 
 /**
  * @brief   Get the set interrupt flags

@@ -45,7 +45,8 @@
 /************************************ DEFINES ********************************/
 #define DISPLAY_WIDTH           320
 #define DISPLAY_HEIGHT          240
-
+#define TFT_SPI_FREQ	12000000 // Hz
+#define TFT_SPI0_PINS 	MXC_GPIO_PIN_5 | MXC_GPIO_PIN_6 | MXC_GPIO_PIN_7 | MXC_GPIO_PIN_11
 //
 #define PALETTE_OFFSET(x)   concat(images_start_addr + images_header.offset2info_palatte  + 1 /* nb_palette */ + (x)*sizeof(unsigned int), 4)
 #define FONT_OFFSET(x)      concat(images_start_addr + images_header.offset2info_font     + 1 /* nb_font    */ + (x)*sizeof(unsigned int), 4)
@@ -168,6 +169,10 @@ static void spi_transmit(void* datain, unsigned int count)
     volatile unsigned short* u16ptrin = (volatile unsigned short*) datain;
     unsigned int             start = 0;
     
+	MXC_SPI_SetFrequency (spi, TFT_SPI_FREQ);
+	MXC_SPI_SetDataSize(spi, 9);
+
+
     // HW requires disabling/renabling SPI block at end of each transaction (when SS is inactive).
     spi->ctrl0 &= ~(MXC_F_SPI_CTRL0_EN);
     
@@ -411,9 +416,9 @@ static void tft_spi_init(void)
 {
     int master = 1;
     int quadMode = 0;
-    int numSlaves = 1;
+	int numSlaves = 2;
     int ssPol = 0;
-    unsigned int tft_hz = 12 * 1000 * 1000;
+	unsigned int tft_hz = TFT_SPI_FREQ;
     
     mxc_spi_pins_t tft_pins;
     
@@ -428,9 +433,9 @@ static void tft_spi_init(void)
     
     MXC_SPI_Init(spi, master, quadMode, numSlaves, ssPol, tft_hz, tft_pins);
     
-    // Set each spi pin to select VDDIOH (3.3V)
-    // TODO - need to set each pin to VDDIOH, SPI driver sets them to VDDIO by default.
     
+	// Set  SPI0 pins to VDDIOH (3.3V) to be compatible with TFT display
+    MXC_GPIO_SetVSSEL(MXC_GPIO0, MXC_GPIO_VSSEL_VDDIOH, TFT_SPI0_PINS);
     MXC_SPI_SetDataSize(spi, 9);
     MXC_SPI_SetWidth(spi, SPI_WIDTH_STANDARD);
 }

@@ -74,9 +74,14 @@ int MXC_TRNG_Init ();
 /**
  * @brief   Enable TRNG Interrupts
  *
- * @param   enable  enable the TRNG interrupt
  */
-void MXC_TRNG_IntEnable ();
+void MXC_TRNG_EnableInt ();
+
+/**
+ * @brief   Disable TRNG Interrupts
+ *
+ */
+void MXC_TRNG_DisableInt ();
 
 /**
  * @brief   Disable and reset portions of the TRNG

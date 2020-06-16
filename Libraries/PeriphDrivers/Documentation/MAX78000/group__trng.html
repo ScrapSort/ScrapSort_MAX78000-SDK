@@ -98,8 +98,12 @@ Modules</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ga037c7026df5669c2970ed1a0b33a526b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trng.html#ga037c7026df5669c2970ed1a0b33a526b">MXC_TRNG_Init</a> ()</td></tr>
 <tr class="separator:ga037c7026df5669c2970ed1a0b33a526b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab4e28eb9497013c608b1214769eff7f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trng.html#gab4e28eb9497013c608b1214769eff7f9">MXC_TRNG_IntEnable</a> ()</td></tr>
-<tr class="separator:gab4e28eb9497013c608b1214769eff7f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga00879c803aa074d2ad2c35c64c952665"><td class="memItemLeft" align="right" valign="top"><a id="ga00879c803aa074d2ad2c35c64c952665"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trng.html#ga00879c803aa074d2ad2c35c64c952665">MXC_TRNG_EnableInt</a> ()</td></tr>
+<tr class="separator:ga00879c803aa074d2ad2c35c64c952665"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaa27e6216364d229b9057ca0ec397be6"><td class="memItemLeft" align="right" valign="top"><a id="gaaa27e6216364d229b9057ca0ec397be6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trng.html#gaaa27e6216364d229b9057ca0ec397be6">MXC_TRNG_DisableInt</a> ()</td></tr>
+<tr class="separator:gaaa27e6216364d229b9057ca0ec397be6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad08a1a7f1c9ac9daf5db0a9d93170713"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trng.html#gad08a1a7f1c9ac9daf5db0a9d93170713">MXC_TRNG_Shutdown</a> ()</td></tr>
 <tr class="separator:gad08a1a7f1c9ac9daf5db0a9d93170713"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga10f51f746ce73e6c8f57a462d9a98c20"><td class="memItemLeft" align="right" valign="top"><a id="ga10f51f746ce73e6c8f57a462d9a98c20"></a>
@@ -131,31 +135,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 
 <p>Enable portions of the TRNG. </p>
 <dl class="section return"><dt>Returns</dt><dd>Success/Fail, see <a class="el" href="group___m_x_c___error___codes.html">Error Codes</a> for a list of return codes. </dd></dl>
-
-</div>
-</div>
-<a id="gab4e28eb9497013c608b1214769eff7f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab4e28eb9497013c608b1214769eff7f9">&#9670;&nbsp;</a></span>MXC_TRNG_IntEnable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void MXC_TRNG_IntEnable </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Enable TRNG Interrupts. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">enable</td><td>enable the TRNG interrupt </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -288,7 +267,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Jun 8 2020 14:12:42 for MAX78000 Peripheral Driver API by
+    <li class="footer">Generated on Tue Jun 16 2020 17:09:41 for MAX78000 Peripheral Driver API by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

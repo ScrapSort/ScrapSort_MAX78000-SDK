@@ -145,10 +145,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 <tr class="memitem:gaaaf1ce09b163ac273e4a5b2e9759bdaa"><td class="memItemLeft" align="right" valign="top"><a id="gaaaf1ce09b163ac273e4a5b2e9759bdaa"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s.html#gaaaf1ce09b163ac273e4a5b2e9759bdaa">MXC_I2S_Flush</a> (void)</td></tr>
 <tr class="separator:gaaaf1ce09b163ac273e4a5b2e9759bdaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga736ff03287a9c3b52814045c58858fc2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s.html#ga736ff03287a9c3b52814045c58858fc2">MXC_I2S_IntEnable</a> (uint32_t flags)</td></tr>
-<tr class="separator:ga736ff03287a9c3b52814045c58858fc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9d8f767ee6e8f64767fccc05cdabb1e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s.html#ga9d8f767ee6e8f64767fccc05cdabb1e2">MXC_I2S_IntDisable</a> (uint32_t flags)</td></tr>
-<tr class="separator:ga9d8f767ee6e8f64767fccc05cdabb1e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0df8528fd2309fda3864a7ec6073b7ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s.html#ga0df8528fd2309fda3864a7ec6073b7ca">MXC_I2S_EnableInt</a> (uint32_t flags)</td></tr>
+<tr class="separator:ga0df8528fd2309fda3864a7ec6073b7ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9b2857203f73170c4f07ce710bebff10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s.html#ga9b2857203f73170c4f07ce710bebff10">MXC_I2S_DisableInt</a> (uint32_t flags)</td></tr>
+<tr class="separator:ga9b2857203f73170c4f07ce710bebff10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3b89677a1edb6d0da0ccbb2c4de23447"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s.html#ga3b89677a1edb6d0da0ccbb2c4de23447">MXC_I2S_GetFlags</a> (void)</td></tr>
 <tr class="separator:ga3b89677a1edb6d0da0ccbb2c4de23447"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabb681ef254bf67f6652da18748766c5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s.html#gabb681ef254bf67f6652da18748766c5d">MXC_I2S_ClearFlags</a> (uint32_t flags)</td></tr>
@@ -229,6 +229,58 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 
 </div>
 </div>
+<a id="ga9b2857203f73170c4f07ce710bebff10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9b2857203f73170c4f07ce710bebff10">&#9670;&nbsp;</a></span>MXC_I2S_DisableInt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MXC_I2S_DisableInt </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>flags</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Disable Interrupt. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">flags</td><td>Interrupt mask </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga0df8528fd2309fda3864a7ec6073b7ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0df8528fd2309fda3864a7ec6073b7ca">&#9670;&nbsp;</a></span>MXC_I2S_EnableInt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MXC_I2S_EnableInt </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>flags</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enable Interrupts. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">flags</td><td>Interrupt mask </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ga3b89677a1edb6d0da0ccbb2c4de23447"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga3b89677a1edb6d0da0ccbb2c4de23447">&#9670;&nbsp;</a></span>MXC_I2S_GetFlags()</h2>
 
@@ -274,58 +326,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Success/Fail, see <a class="el" href="group___m_x_c___error___codes.html">Error Codes</a> for a list of return codes. </dd></dl>
-
-</div>
-</div>
-<a id="ga9d8f767ee6e8f64767fccc05cdabb1e2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga9d8f767ee6e8f64767fccc05cdabb1e2">&#9670;&nbsp;</a></span>MXC_I2S_IntDisable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void MXC_I2S_IntDisable </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>flags</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Disable Interrupt. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">flags</td><td>Interrupt mask </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ga736ff03287a9c3b52814045c58858fc2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga736ff03287a9c3b52814045c58858fc2">&#9670;&nbsp;</a></span>MXC_I2S_IntEnable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void MXC_I2S_IntEnable </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>flags</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Enable Interrupts. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">flags</td><td>Interrupt mask </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -494,7 +494,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Jun 8 2020 14:12:42 for MAX78000 Peripheral Driver API by
+    <li class="footer">Generated on Tue Jun 16 2020 17:09:41 for MAX78000 Peripheral Driver API by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

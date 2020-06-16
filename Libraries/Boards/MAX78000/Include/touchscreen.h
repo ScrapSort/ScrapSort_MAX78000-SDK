@@ -115,10 +115,4 @@ void MXC_TS_RemoveAllButton(void);
  */
 int MXC_TS_GetKey(void);
 
-
-// TODO: Remove below functions
-unsigned int MXC_TS_MakeButton(unsigned int x, unsigned int y, void (*cb)(void), const char* name);
-void MXC_TS_ClearButton(unsigned int button_id);
-void MXC_TS_TouchStart(void);
-
 #endif /* _TOUCHSCREEN_H_ */
