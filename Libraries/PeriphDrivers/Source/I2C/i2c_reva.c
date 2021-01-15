@@ -74,17 +74,17 @@ unsigned int MXC_I2C_SlaveAsyncHandler(mxc_i2c_regs_t* i2c, mxc_i2c_slave_handle
 int MXC_I2C_RevA_Init(mxc_i2c_regs_t* i2c, int masterMode, unsigned int slaveAddr)
 {
     int err;
-        
+
     if (i2c == NULL) {
         return E_NULL_PTR;
     }
-    
+
+    i2c->ctrl |= MXC_F_I2C_CTRL_EN;
+
     if ((err = MXC_I2C_Recover(i2c, 16)) != E_NO_ERROR) {
         return err;
     }
     
-    i2c->ctrl |= MXC_F_I2C_CTRL_EN;
-
     MXC_I2C_ClearRXFIFO(i2c);
     MXC_I2C_ClearTXFIFO(i2c);
     // Set the thresholds here and allow the user to change them as needed

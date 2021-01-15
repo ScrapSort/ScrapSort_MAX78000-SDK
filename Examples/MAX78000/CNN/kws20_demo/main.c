@@ -192,6 +192,10 @@ int main(void)
 
 	mic_processing_state procState = STOP;
 
+#if defined (BOARD_FTHR_REVA)
+	// Wait for PMIC 1.8V to become available, about 180ms after power up.
+	MXC_Delay(200000);
+#endif
 	/* Enable cache */
 	MXC_ICC_Enable(MXC_ICC0);
 
@@ -199,11 +203,12 @@ int main(void)
 	MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
 	SystemCoreClockUpdate();
 
+#ifdef ENABLE_MIC_PROCESSING
 #if defined (BOARD_FTHR_REVA)
     /* Enable microphone power on Feather board */
     Microphone_Power(POWER_ON);
 #endif
-
+#endif
 	/* Reset all domains, restore power to CNN */
 	MXC_BBFC->reg3 = 0xf; // Reset
 	MXC_BBFC->reg1 = 0xf; // Mask

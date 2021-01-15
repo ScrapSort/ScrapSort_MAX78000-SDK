@@ -32,6 +32,7 @@ Navigate directory where KWS20 demo software is located and build the project:
 
 ```bash
 $ cd /Examples/MAX78000/CNN/kws20_demo
+$ make
 ```
 
 If this is the first time after installing tools, or peripheral files have been updated, first clean drivers before rebuilding the project: 
@@ -40,25 +41,31 @@ If this is the first time after installing tools, or peripheral files have been 
 $ make distclean
 ```
 
-Before building firmware you must select the correct value for _BOARD_  in "Makefile", either "EvKit\_V1" or "FTHR\_RevA", depending on hardware you are using to run the example.
-
-Enter the following command to build all of the files needed to run the example.
+To compile code for MAX78000 EVKIT enable **BOARD=EvKit_V1** in Makefile:
 
 ```bash
-$ make
+# Specify the board used
+ifeq "$(BOARD)" ""
+BOARD=EvKit_V1
+#BOARD=FTHR_RevA
+endif
 ```
 
-### Load firmware image to target:
+To compile code for MAX78000 Feather board enable **BOARD=FTHR_RevA** in Makefile:
 
-If using the standard EV Kit (EvKit_V1):
+```bash
+# Specify the board used
+ifeq "$(BOARD)" ""
+#BOARD=EvKit_V1
+BOARD=FTHR_RevA
+endif
+```
 
-- Connect USB cable to CN1 (USB/PWR) and turn ON power switch (SW1).
-- Connect PICO adapter to JH5 SWD header. 
+### Load firmware image to MAX78000 EVKIT
 
+Connect USB cable to CN1 (USB/PWR) and turn ON power switch (SW1).
 
-If using the Feather board (FTHR_RevA):
-
--   Connect a USB cable between the PC and the CN1 (USB/PWR) connector.
+Connect PICO adapter to JH5 SWD header. 
 
 Load firmware image using Openocd. **Make sure to remove PICO adapter once firmware is loaded.**
 
@@ -66,7 +73,7 @@ Load firmware image using Openocd. **Make sure to remove PICO adapter once firmw
 ./openocd -f tcl/interface/cmsis-dap.cfg -f tcl/target/max78000.cfg -c "program build/MAX78000.elf verify reset exit"
 ```
 
-### EVKIT jumper setting:
+### MAX78000 EVKIT jumper setting
 
 Make sure to install jumper at JP20-CLK (INT position) as shown bellow:
 
@@ -74,7 +81,7 @@ Make sure to install jumper at JP20-CLK (INT position) as shown bellow:
 
 Note: On board external oscillator Y3 is used to generate I2S clock. The I2S sample rate is 16kHz to match speech samples of the dataset.
 
-### Operations:
+### MAX78000 EVKIT operations
 
 After power-cycle,  if the TFT display is blank, or not shown properly as below, please press RESET (SW5).
 
@@ -90,9 +97,9 @@ Following words can be detected:
 
  ['**up', 'down', 'left', 'right', 'stop', 'go', 'yes', 'no', 'on', 'off', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'zero**']
 
- The MAX78000 KWS20 firmware recognizes keywords and reports result and confidence level.
+ The MAX78000 KWS20 demo firmware recognizes keywords and reports result and confidence level.
 
-The microphone (U15) is located between JH4 and JH5 headers on EVKIT or between J5 and J7 audio connectors on Feather board.
+The microphone (U15) is located between JH4 and JH5 headers on EVKIT or between J5 and J7 audio connectors on MAX78000 Feather board.
 
 
 
@@ -100,17 +107,33 @@ The microphone (U15) is located between JH4 and JH5 headers on EVKIT or between 
 
 
 
+### Load firmware image to MAX78000 Feather
+
+Connect USB cable to CN1 USB connector.
+
+Load firmware image using Openocd.
+
+```bash
+./openocd -f tcl/interface/cmsis-dap.cfg -f tcl/target/max78000.cfg -c "program build/MAX78000.elf verify reset exit"
+```
+
+### MAX78000 Feather operations
+
+The KWS20 demo starts automatically after power-up or pressing reset button (SW4).
+
+The MAX78000 Feather board is shipped without TFT display.  User should use PC terminal program to observe KWS20 demo result as described below.
+
 ### Using Debug Terminal
 
 Debug terminal shows more information on status and detected words. 
 
-The USB cable connected to CN1 (USB/PWR) provides power and serial communication to MAX78000 EVKIT or Feather board.
+The USB cable connected to CN1 (USB/PWR) provides power and serial communication.
 
 To configure PC terminal program select correct COM port and settings as follow:
 
 ![](/Terminal2.png)
 
-After turning on power switch (SW1) or pressing reset button (SW5)  following message will appear in terminal window:
+After turning on power or pressing reset button the following message will appear in terminal window:
 
 ![](/Terminal1.png)
 
@@ -266,7 +289,7 @@ The ai85-kws20 bare-bone C code is partially used in KWS20 Demo. In particular, 
 KWS20 demo works in two modes:  Using microphone (real-time), or offline processing:
 
 ```c
-#define ENABLE_MIC_PROCESSINGc
+#define ENABLE_MIC_PROCESSING
 ```
 
 ### Microphone Mode
@@ -312,3 +335,8 @@ The CNN requires 1sec worth of samples (128*128) to start processing. This windo
 The CNN related API functions are in **cnn.c**. They are used to load weights and data, start CNN, wait for CNN to complete processing and unload the result. 
 
 If a new network is developed and synthesized, the new weight file and related API functions are needed to be ported from automatically generated ai85-kws20 example project. Furthermore, if the input layer or organization of 128x128 sample sets in the trained network is changed, **AddTranspose()** function should be changed to reflect the new sample data arrangement in CNN memory.
+
+### References
+
+https://github.com/MaximIntegratedAI/MaximAI_Documentation
+
