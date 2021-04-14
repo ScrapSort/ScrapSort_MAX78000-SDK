@@ -87,7 +87,7 @@ int main(void)
     // Initialize DMA for camera interface
     MXC_DMA_Init();
     dma_channel = MXC_DMA_AcquireChannel();
-    
+
     // Initialize the camera driver.
     camera_init(CAMERA_FREQ);
     printf("\n\nCameraIF Example\n");
