@@ -192,7 +192,6 @@ int MXC_I2S_RevA_Shutdown(mxc_spimss_reva_regs_t *spimss)
     spimss->brg = 0;
     spimss->mode = 0;
     spimss->dma = 0;
-    MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_SPI1);  // SPI1 used for SPIMSS
     return MXC_DMA_ReleaseChannel(dma_channel);
 }
 
