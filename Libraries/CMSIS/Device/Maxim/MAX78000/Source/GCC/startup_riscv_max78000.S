@@ -65,7 +65,7 @@ __isr_vector:
   jal x0, RSV00_IRQHandler    
   jal x0, PF_IRQHandler       
   jal x0, WDT0_IRQHandler     
-  jal x0, GPIOWake_IRQHandler 
+  jal x0, GPIOWAKE_IRQHandler 
   jal x0, RTC_IRQHandler      
   jal x0, TMR0_IRQHandler     
   jal x0, TMR1_IRQHandler     
@@ -241,7 +241,7 @@ main_entry:
   def_irq_handler RSV00_IRQHandler    
   def_irq_handler PF_IRQHandler       
   def_irq_handler WDT0_IRQHandler     
-  def_irq_handler GPIOWake_IRQHandler 
+  def_irq_handler GPIOWAKE_IRQHandler 
   def_irq_handler RTC_IRQHandler      
   def_irq_handler TMR0_IRQHandler     
   def_irq_handler TMR1_IRQHandler     

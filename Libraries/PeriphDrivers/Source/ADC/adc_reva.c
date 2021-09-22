@@ -70,6 +70,7 @@ int MXC_ADC_RevA_Init (mxc_adc_reva_regs_t* adc)
     MXC_ADC_SetConversionSpeed (MXC_CONVERSION_SPEED_6MHZ); 
     //clear adc reference ready interrupt flag
     MXC_ADC_RevA_ClearFlags (adc, MXC_F_ADC_REVA_INTR_REF_READY_IF);
+
     //turn on adc
     adc->ctrl |= MXC_F_ADC_REVA_CTRL_PWR;
     //turn on reference buffer power
@@ -190,7 +191,7 @@ void MXC_ADC_RevA_SetExtScale (mxc_adc_reva_regs_t* adc, mxc_adc_scale_t scale)
         adc->ctrl &= ~MXC_F_ADC_REVA_CTRL_REF_SCALE;
         adc->ctrl |= MXC_F_ADC_REVA_CTRL_SCALE;
         break;
-        
+  #if TARGET_NUM != 32650
     case MXC_ADC_SCALE_3:
         //input scale = 0, adc_divsel = 2, ref scale = 0
         adc->ctrl &= ~MXC_F_ADC_REVA_CTRL_REF_SCALE;
@@ -218,7 +219,7 @@ void MXC_ADC_RevA_SetExtScale (mxc_adc_reva_regs_t* adc, mxc_adc_scale_t scale)
         adc->ctrl |= MXC_F_ADC_REVA_CTRL_SCALE;
         adc->ctrl |= MXC_S_ADC_REVA_CTRL_ADC_DIVSEL_DIV4;
         break;
-
+  #endif
     default:
         //input scale = 0, adc_divsel = 0, ref scale = 0
         adc->ctrl &= ~MXC_F_ADC_REVA_CTRL_REF_SCALE;
@@ -297,10 +298,15 @@ int MXC_ADC_RevA_StartConversion (mxc_adc_reva_regs_t* adc, mxc_adc_chsel_t chan
 {
     int data;
     int error;
-    
-    if (channel > MXC_ADC_CH_VREGI) {
+  #if TARGET_NUM != 32650
+    if (channel > AIN16) {
         return E_BAD_PARAM;
-    }   
+    }
+  #else
+    if (channel > AIN12) {
+        return E_BAD_PARAM;
+    }
+  #endif 
     
     //clear selction bits
     adc->ctrl &= ~ (MXC_F_ADC_REVA_CTRL_CH_SEL);
@@ -325,10 +331,15 @@ int MXC_ADC_RevA_StartConversion (mxc_adc_reva_regs_t* adc, mxc_adc_chsel_t chan
 int MXC_ADC_RevA_StartConversionAsync (mxc_adc_reva_regs_t* adc, mxc_adc_chsel_t channel, mxc_adc_complete_cb_t callback)
 {
     //check status call get lock
-    
-    if (channel > MXC_ADC_CH_VREGI || callback == NULL) {
+  #if TARGET_NUM != 32650
+    if (channel > AIN16 || callback == NULL) {
         return E_BAD_PARAM;
     }
+  #else
+    if (channel > AIN12 || callback == NULL) {
+        return E_BAD_PARAM;
+    }
+  #endif
     
     //check lock
     while (MXC_GetLock ((uint32_t*) &async_callback, (uint32_t) callback) != E_NO_ERROR);
@@ -356,10 +367,16 @@ int MXC_ADC_RevA_StartConversionDMA (mxc_adc_reva_regs_t* adc, mxc_adc_chsel_t c
     uint8_t channelDMA;
     mxc_dma_config_t config;
     mxc_dma_srcdst_t srcdst;
-    
-    if (channel > MXC_ADC_CH_VREGI) {
+  
+  #if TARGET_NUM != 32650
+    if (channel > AIN16) {
         return E_BAD_PARAM;
     }
+  #else
+    if (channel > AIN12) {
+        return E_BAD_PARAM;
+    }
+  #endif
     
     if (data == NULL) {
         return E_BAD_PARAM;
@@ -373,9 +390,13 @@ int MXC_ADC_RevA_StartConversionDMA (mxc_adc_reva_regs_t* adc, mxc_adc_chsel_t c
     //clear ADC done interrupt flag
     MXC_ADC_RevA_ClearFlags (adc, MXC_F_ADC_REVA_INTR_DONE_IF);
     
+  #if TARGET_NUM == 32665
+    MXC_DMA_Init(dma);
+    channelDMA = MXC_DMA_AcquireChannel(dma);
+  #else
     MXC_DMA_Init();
-    
     channelDMA = MXC_DMA_AcquireChannel();
+  #endif
     
     config.reqsel = MXC_S_DMA_REVA_CTRL_REQUEST_MEMTOMEM;
     config.ch = channelDMA;
@@ -393,8 +414,11 @@ int MXC_ADC_RevA_StartConversionDMA (mxc_adc_reva_regs_t* adc, mxc_adc_chsel_t c
     
     MXC_DMA_ConfigChannel (config, srcdst);
     MXC_DMA_SetCallback (channelDMA, callback);
-    
     MXC_DMA_EnableInt (channelDMA);
+
+  #if TARGET_NUM == 32665
+    channelDMA %= MXC_DMA_CH_OFFSET;
+  #endif
     ((mxc_dma_reva_regs_t*) dma)->ch[channelDMA].ctrl |= 2<<MXC_F_DMA_REVA_CTRL_BURST_SIZE_POS;
     
     //set start bit
@@ -473,7 +497,7 @@ int  MXC_ADC_RevA_Convert (mxc_adc_reva_regs_t* adc, mxc_adc_conversion_req_t* r
     //set start bit
     adc->ctrl |= MXC_F_ADC_REVA_CTRL_START;
     
-    if ((error =MXC_ADC_GetData (&data)) != E_NO_ERROR) {
+    if ((error = MXC_ADC_GetData(&data)) != E_NO_ERROR) {
         return error;
     }
     req->rawADCValue = data;

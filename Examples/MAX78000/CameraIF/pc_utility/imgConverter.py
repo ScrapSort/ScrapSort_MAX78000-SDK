@@ -197,7 +197,9 @@ def convert(bytesequence, outputfile, xres, yres, pixelformat):
 		imagepixels = rgb888_to_rgb(bytesequence)
 	elif (pixelformat == "GRAYSCALE"): #Black and white yuv422
 		imagepixels = blackAndWhite_to_rgb(bytesequence)
-
+	elif (pixelformat == "BAYER"): #Black and white raw
+		imagepixels = blackAndWhite_to_rgb(bytesequence)
+        
 	offset = 0
 	for i in range(yres):
 		line = []
@@ -223,3 +225,5 @@ def convert(bytesequence, outputfile, xres, yres, pixelformat):
 			if y > (yres - 1):
 				break
 	g_pil_image.save("image-out.png")
+
+

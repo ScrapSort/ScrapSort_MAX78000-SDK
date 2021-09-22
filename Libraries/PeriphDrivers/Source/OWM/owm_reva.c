@@ -109,7 +109,7 @@ int MXC_OWM_RevA_Reset(mxc_owm_reva_regs_t *owm)
     
     while((owm->intfl & MXC_F_OWM_REVA_INTFL_OW_RESET_DONE) == 0); // Wait for reset time slot to complete
     
-    return (!!(owm->ctrl_stat & MXC_F_OWM_REVA_CTRL_STAT_PRESENCE_DETECT)); // Return presence pulse detect status
+    return MXC_OWM_GetPresenceDetect(); // Return presence pulse detect status
 }
 
 /* ************************************************************************* */

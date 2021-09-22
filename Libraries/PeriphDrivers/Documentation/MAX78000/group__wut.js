@@ -4,6 +4,7 @@ var group__wut =
     [ "mxc_wut_cfg_t", "group__wut.html#structmxc__wut__cfg__t", [
       [ "cmp_cnt", "group__wut.html#a8bad5edf8d5b4929b1a5ce52ab78253d", null ]
     ] ],
+    [ "mxc_wut_complete_cb_t", "group__wut.html#ga8fe868484cde39c204e851d9d4b42a3d", null ],
     [ "mxc_wut_mode_t", "group__wut.html#gaf4e99bf4f46ec75686eb695eb722b133", [
       [ "MXC_WUT_MODE_CONTINUOUS", "group__wut.html#ggaf4e99bf4f46ec75686eb695eb722b133afd704e24fa22a6ba29e4614455c9e852", null ],
       [ "MXC_WUT_MODE_COUNTER", "group__wut.html#ggaf4e99bf4f46ec75686eb695eb722b133a6b32025dd8bc9392196b813471c99b66", null ],

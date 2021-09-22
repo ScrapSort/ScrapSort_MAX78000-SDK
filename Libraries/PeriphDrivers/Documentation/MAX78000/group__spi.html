@@ -124,6 +124,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga85d98037b8a7ff2f1d54db8ac7edbf74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4547f7c9aaca4813c2d93b287511ecdb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__spi.html#ga4547f7c9aaca4813c2d93b287511ecdb">MXC_SPI_ReadyForSleep</a> (<a class="el" href="group__spi__registers.html#structmxc__spi__regs__t">mxc_spi_regs_t</a> *spi)</td></tr>
 <tr class="separator:ga4547f7c9aaca4813c2d93b287511ecdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga41228df9f274fb42a12807d40770e3ea"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__spi.html#ga41228df9f274fb42a12807d40770e3ea">MXC_SPI_GetPeripheralClock</a> (<a class="el" href="group__spi__registers.html#structmxc__spi__regs__t">mxc_spi_regs_t</a> *spi)</td></tr>
+<tr class="separator:ga41228df9f274fb42a12807d40770e3ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga040221eafa059cdc505e50e3a64c9b13"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__spi.html#ga040221eafa059cdc505e50e3a64c9b13">MXC_SPI_SetFrequency</a> (<a class="el" href="group__spi__registers.html#structmxc__spi__regs__t">mxc_spi_regs_t</a> *spi, unsigned int hz)</td></tr>
 <tr class="separator:ga040221eafa059cdc505e50e3a64c9b13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga66094aea21801b4d038717eee7151dcc"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__spi.html#ga66094aea21801b4d038717eee7151dcc">MXC_SPI_GetFrequency</a> (<a class="el" href="group__spi__registers.html#structmxc__spi__regs__t">mxc_spi_regs_t</a> *spi)</td></tr>
@@ -790,6 +792,33 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>mxc_spi_mode_t <a class="el" href="group__spi.html#ga60b8dae244994cc57471750e249bc09c">mxc_spi_mode_t</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga41228df9f274fb42a12807d40770e3ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga41228df9f274fb42a12807d40770e3ea">&#9670;&nbsp;</a></span>MXC_SPI_GetPeripheralClock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int MXC_SPI_GetPeripheralClock </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__spi__registers.html#structmxc__spi__regs__t">mxc_spi_regs_t</a> *&#160;</td>
+          <td class="paramname"><em>spi</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the frequency of the clock used as the bit rate generator for a given SPI instance. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">spi</td><td>Pointer to SPI registers (selects the SPI block used.)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Frequency of the clock used as the bit rate generator </dd></dl>
 
 </div>
 </div>
@@ -1707,7 +1736,7 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jun 15 2021 19:40:53 for MAX78000 Peripheral Driver API by
+    <li class="footer">Generated on Mon Sep 20 2021 11:01:47 for MAX78000 Peripheral Driver API by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

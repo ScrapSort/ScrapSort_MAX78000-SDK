@@ -59,8 +59,8 @@
 #define PB2     1
 
 // Parameters for PWM output
-#define OST_CLOCK_SOURCE    MXC_TMR_8K_CLK      // \ref mxc_tmr_clock_t
-#define PWM_CLOCK_SOURCE    MXC_TMR_APB_CLK      // \ref mxc_tmr_clock_t
+#define OST_CLOCK_SOURCE    MXC_TMR_8K_CLK       // \ref mxc_tmr_clock_t
+#define PWM_CLOCK_SOURCE    MXC_TMR_32K_CLK      // \ref mxc_tmr_clock_t
 #define CONT_CLOCK_SOURCE   MXC_TMR_8M_CLK       // \ref mxc_tmr_clock_t
 
 // Parameters for Continuous timer

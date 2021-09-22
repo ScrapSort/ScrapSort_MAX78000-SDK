@@ -37,7 +37,16 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#if defined(CAMERA_HM01B0)
+#include "hm01b0_regs.h"
+#elif defined(CAMERA_HM0360)
+#include "hm0360_regs.h"
+#elif defined(CAMERA_OV5642)
+#include "ov5642_regs.h"
+#elif defined(CAMERA_OV7692)
 #include "ov7692_regs.h"
+#endif
+
 #include "tmr_regs.h"
 
 #define STATUS_OK               (0)
@@ -90,8 +99,13 @@ typedef struct _camera {
     int (*dump_registers)(void);
     int (*reset)(void);
     int (*sleep)(int enable);
+#if defined(CAMERA_HM01B0) || (CAMERA_HM0360) || defined(CAMERA_OV5642)
+    int (*read_reg)(uint16_t reg_addr, uint8_t* reg_data);
+    int (*write_reg)(uint16_t reg_addr, uint8_t reg_data);
+#else  //(CAMERA_OV7692)
     int (*read_reg)(uint8_t reg_addr, uint8_t* reg_data);
     int (*write_reg)(uint8_t reg_addr, uint8_t reg_data);
+#endif
     int (*set_pixformat)(pixformat_t pixformat);
     int (*get_pixformat)(pixformat_t* pixformat);
     int (*set_framesize)(int width, int height);
@@ -137,11 +151,16 @@ int camera_sleep(int enable);
 // Shutdown mode.
 int camera_shutdown(int enable);
 
-// Read a sensor register.
-int camera_read_reg(uint8_t reg_addr, uint8_t* reg_data);
-
+#if defined(CAMERA_HM01B0) || (CAMERA_HM0360) ||defined(CAMERA_OV5642)
+// Write a sensor register.
+int camera_write_reg(uint16_t reg_addr, uint8_t reg_data);
+int camera_read_reg(uint16_t reg_addr, uint8_t* reg_data);
+#else //(CAMERA_OV7692)
 // Write a sensor register.
 int camera_write_reg(uint8_t reg_addr, uint8_t reg_data);
+// Read a sensor register.
+int camera_read_reg(uint8_t reg_addr, uint8_t* reg_data);
+#endif
 
 // Set the sensor frame size and pixel format.
 int camera_set_frame_info(int width, int height, pixformat_t pixformat);

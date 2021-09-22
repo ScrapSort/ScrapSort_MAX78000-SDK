@@ -54,6 +54,17 @@ ifeq "$(BOARD)" ""
 BOARD=EvKit_V1
 endif
 
+# Only Enable if 2.4" TFT is connected and used in the example
+PROJ_CFLAGS += -DENABLE_TFT
+
+# Enable the connected camera
+ifeq "$(CAMERA)" ""
+CAMERA=OV7692
+#CAMERA=OV5642
+#CAMERA=HM01B0
+#CAMERA=HM0360
+endif
+
 # This is the path to the CMSIS root directory
 ifeq "$(MAXIM_PATH)" ""
 LIBS_DIR=../../../Libraries
@@ -106,7 +117,7 @@ PROJ_CFLAGS+=-Wall
 #STARTUPFILE=start.S
 
 # Set MXC_OPTIMIZE to override the default optimization level
-#MXC_OPTIMIZE_CFLAGS=-O1
+MXC_OPTIMIZE_CFLAGS=-O2
 
 # Point this variable to a linker file to override the default file
 LINKER=$(TARGET_LC).ld

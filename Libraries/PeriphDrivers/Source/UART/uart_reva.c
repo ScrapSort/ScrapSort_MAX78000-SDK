@@ -226,9 +226,9 @@ int MXC_UART_RevA_GetFrequency (mxc_uart_reva_regs_t* uart)
     }
 
     uartDiv += decimalDiv / 128.0;
-    uartDiv *= (1 << (7- (uart->baud0 & MXC_F_UART_REVA_BAUD0_FACTOR)));
+    uartDiv *= (1 << (7 - (uart->baud0 & MXC_F_UART_REVA_BAUD0_FACTOR)));
 
-    return (int) ( (float) periphClock/uartDiv);
+    return (int) ( (float) periphClock / uartDiv);
 }
 
 int MXC_UART_RevA_SetDataSize (mxc_uart_reva_regs_t* uart, int dataSize)
@@ -397,7 +397,7 @@ int MXC_UART_RevA_SetClockSource (mxc_uart_reva_regs_t* uart, int usePCLK)
     else {
         MXC_SETFIELD (uart->ctrl, MXC_F_UART_REVA_CTRL_CLKSEL, 1 << MXC_F_UART_REVA_CTRL_CLKSEL_POS);
     }
-    
+
     return MXC_UART_SetFrequency ((mxc_uart_regs_t*) uart, baudRate);
 }
 
@@ -543,7 +543,11 @@ int MXC_UART_RevA_ReadRXFIFODMA (mxc_uart_reva_regs_t* uart, mxc_dma_regs_t* dma
         return E_NULL_PTR;
     }
     
+  #if TARGET_NUM == 32665
+    channel = MXC_DMA_AcquireChannel(dma);
+  #else
     channel = MXC_DMA_AcquireChannel();
+  #endif
     
     config.ch = channel;
     
@@ -606,7 +610,11 @@ unsigned int MXC_UART_RevA_WriteTXFIFODMA (mxc_uart_reva_regs_t* uart, mxc_dma_r
         return E_NULL_PTR;
     }
     
+  #if TARGET_NUM == 32665
+    channel = MXC_DMA_AcquireChannel(dma);
+  #else
     channel = MXC_DMA_AcquireChannel();
+  #endif
     
     config.ch = channel;
     
@@ -906,19 +914,35 @@ int MXC_UART_RevA_TransactionDMA (mxc_uart_reva_req_t* req, mxc_dma_regs_t* dma)
     (req->uart)->dma |= (1 << MXC_F_UART_REVA_DMA_RXDMA_LEVEL_POS);      // Set RX DMA threshold to 1 byte
     (req->uart)->dma |= (2 << MXC_F_UART_REVA_DMA_TXDMA_LEVEL_POS);      // Set TX DMA threshold to 2 bytes
     
+  #if TARGET_NUM == 32665
+    MXC_DMA_Init(dma);
+  #else
     MXC_DMA_Init();
+  #endif
     
     //tx
     if ( (req->txData != NULL) && (req->txLen)) {
+      #if TARGET_NUM == 32665
+        if (MXC_UART_WriteTXFIFODMA ((mxc_uart_regs_t*)(req->uart), dma, req->txData, req->txLen, NULL) != E_NO_ERROR) {
+            return E_BAD_PARAM;
+        }
+      #else
         if (MXC_UART_WriteTXFIFODMA ((mxc_uart_regs_t*)(req->uart), req->txData, req->txLen, NULL) != E_NO_ERROR) {
             return E_BAD_PARAM;
         }
+      #endif
     }
     
     if ( (req->rxData != NULL) && (req->rxLen)) {
+      #if TARGET_NUM == 32665
+        if (MXC_UART_ReadRXFIFODMA ((mxc_uart_regs_t*)(req->uart), dma, req->rxData, req->rxLen, NULL) != E_NO_ERROR) {
+            return E_BAD_PARAM;
+        }
+      #else
         if (MXC_UART_ReadRXFIFODMA ((mxc_uart_regs_t*)(req->uart), req->rxData, req->rxLen, NULL) != E_NO_ERROR) {
             return E_BAD_PARAM;
         }
+      #endif
     }
     
     return E_NO_ERROR;

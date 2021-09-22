@@ -37,6 +37,7 @@
 #include <stdio.h>
 #include "spi.h"
 #include "afe.h"
+#include "mxc_sys.h"
 
 #include "afe_gpio.h"
 #include "gpio.h"
@@ -44,8 +45,13 @@
 #include "gpio_common.h"
 
 // AFE SPI Port Configuration
+#if (TARGET != MAX32675 || TARGET_NUM == 32675)
 #define AFE_SPI_PORT        	MXC_SPI0
-#define AFE_SPI_BAUD        	1000000         // Can only run up to PCLK speed
+#elif (TARGET != MAX32680 || TARGET_NUM == 32680)
+#define AFE_SPI_PORT            MXC_SPI1
+#endif
+
+#define AFE_SPI_BAUD        	100000         // Can only run up to PCLK speed
 #define AFE_SPI_BIT_WIDTH   	8
 #define AFE_SPI_SSEL_PIN		1
 #define AFE_SPI_ADDRESS_LEN 	1
@@ -54,8 +60,13 @@
 // AFE Trim Storage Defines
 //#define DUMP_TRIM_DATA
 
+#if (TARGET != MAX32675 || TARGET_NUM == 32675)
 #define AFE_TRIM_OTP_OFFSET_LOW		0x280
 #define AFE_TRIM_OTP_OFFSET_HIGH	0x288
+#elif (TARGET != MAX32680 || TARGET_NUM == 32680)
+#define AFE_TRIM_OTP_OFFSET_LOW     0x0E10
+#define AFE_TRIM_OTP_OFFSET_HIGH    0x0E18
+#endif
 
 #define AFE_TRIM0_ADC0_MASK			0x7FFFF
 #define AFE_TRIM0_ADC0_BIT_WIDTH	19
@@ -87,7 +98,7 @@
 
 /***** Globals *****/
 uint8_t afe_data[AFE_SPI_MAX_DATA_LEN];
-mxc_spi_regs_t* pSPIm = MXC_SPI0;
+mxc_spi_regs_t* pSPIm = AFE_SPI_PORT;
 int check_done = 0;
 
 typedef struct {
@@ -107,7 +118,11 @@ uint32_t current_register_bank = 0;
 uint32_t adc0_conversion_active = 0;
 uint32_t adc1_conversion_active = 0;
 
+#if (TARGET != MAX32675 || TARGET_NUM == 32675)
 static mxc_gpio_cfg_t gpio_cfg_spi0  =  { MXC_GPIO0, (MXC_GPIO_PIN_2 | MXC_GPIO_PIN_3 | MXC_GPIO_PIN_4 | MXC_GPIO_PIN_5), MXC_GPIO_FUNC_ALT1, MXC_GPIO_PAD_NONE };
+#elif (TARGET != MAX32680 || TARGET_NUM == 32680)
+static mxc_gpio_cfg_t gpio_cfg_spi1  =  { MXC_GPIO0, (MXC_GPIO_PIN_20 | MXC_GPIO_PIN_21 | MXC_GPIO_PIN_22 | MXC_GPIO_PIN_23), MXC_GPIO_FUNC_ALT1, MXC_GPIO_PAD_NONE };
+#endif
 
 /***** Private Prototypes *****/
 static int raw_afe_write_register(uint8_t reg_address, uint32_t value, uint8_t reg_length);
@@ -119,12 +134,24 @@ static int afe_spi_setup(void)
 	int retval = 0;
 
 	// Enable SPI Periph clock, and reset it
+#if (TARGET != MAX32675 || TARGET_NUM == 32675)
     MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_SPI0);
     MXC_SYS_Reset_Periph(MXC_SYS_RESET0_SPI0);
+
     retval = MXC_AFE_GPIO_Config(&gpio_cfg_spi0);
     if (retval != E_NO_ERROR) {
         return retval;
     }
+
+#elif (TARGET != MAX32680 || TARGET_NUM == 32680)
+    MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_SPI1);
+    MXC_SYS_Reset_Periph(MXC_SYS_RESET0_SPI1);
+
+    retval = MXC_AFE_GPIO_Config(&gpio_cfg_spi1);
+    if (retval != E_NO_ERROR) {
+        return retval;
+    }
+#endif
 
     // NOTE: AFE uses SPI Mode 0, which is reset default
 

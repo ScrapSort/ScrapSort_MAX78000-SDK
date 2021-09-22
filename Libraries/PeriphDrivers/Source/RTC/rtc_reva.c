@@ -40,17 +40,21 @@
 #include "mxc_errors.h"
 #include "rtc_reva.h"
 
+#if TARGET_NUM == 32650
+    #include "pwrseq_regs.h"
+#endif
+
 int MXC_RTC_CheckBusy(void)
 {
     // Time-out transfer if it takes > BUSY_TIMEOUT microseconds
     MXC_DelayAsync(MXC_DELAY_USEC(MXC_BUSY_TIMEOUT), NULL);
-    
+
     while (MXC_RTC_REVA_IS_BUSY) {
         if (MXC_DelayCheck() != E_BUSY) {
             return E_BUSY;
         }
     }
-    
+
     MXC_DelayAbort();
     return E_SUCCESS;
 }
@@ -311,7 +315,17 @@ int MXC_RTC_RevA_ClearFlags(int flags)
 
 int MXC_RTC_RevA_GetSubSecond(void)
 {
+#if TARGET_NUM == 32650
+    int ssec;
+    if(ChipRevision > 0xA1){
+        ssec = ((MXC_PWRSEQ->ctrl >> 12)& 0xF00) | (MXC_RTC->ssec & 0xFF);
+    }else{
+        ssec = MXC_RTC->ssec;
+    }
+        return ssec;
+#else
     return MXC_RTC->ssec;
+#endif
 }
 
 int MXC_RTC_RevA_GetSecond(void)

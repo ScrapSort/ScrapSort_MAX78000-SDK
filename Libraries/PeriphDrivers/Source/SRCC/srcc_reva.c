@@ -31,10 +31,10 @@
  *
  *************************************************************************** */
 
-#include"srcc.h"
 #include"srcc_reva.h"
 
-
+#if TARGET_NUM != 32650
+#include"srcc.h"
 uint32_t MXC_SRCC_RevA_ID (mxc_srcc_reva_regs_t *srcc, mxc_srcc_cache_id_t id)
 {
     switch (id) {
@@ -50,6 +50,7 @@ uint32_t MXC_SRCC_RevA_ID (mxc_srcc_reva_regs_t *srcc, mxc_srcc_cache_id_t id)
     }
     
 }
+#endif
 
 uint32_t MXC_SRCC_RevA_CacheSize(mxc_srcc_reva_regs_t *srcc)
 {

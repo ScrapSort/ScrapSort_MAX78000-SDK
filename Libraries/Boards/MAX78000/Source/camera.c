@@ -373,6 +373,9 @@ int camera_setup(int xres, int yres, pixformat_t pixformat, fifomode_t fifo_mode
             bytes_per_pixel = 3;
         }
     }
+    else if (pixformat == PIXFORMAT_BAYER) {
+        bytes_per_pixel = 1;
+    }
 
     // Setup camera resolution and allocate a camera frame buffer.
     g_framesize_width = xres;
@@ -432,7 +435,9 @@ int camera_setup(int xres, int yres, pixformat_t pixformat, fifomode_t fifo_mode
     }
     else {
         // Slow down clock if not using dma
+#if defined(CAMERA_OV7692)
         ret |= camera.write_reg(0x11, 0x4); // clock prescaler
+#endif
         MXC_SETFIELD(MXC_PCIF->ctrl, MXC_F_CAMERAIF_CTRL_RX_DMA, 0x0);
         MXC_PCIF_EnableInt(MXC_F_CAMERAIF_INT_EN_FIFO_THRESH);
     }
@@ -443,6 +448,17 @@ int camera_setup(int xres, int yres, pixformat_t pixformat, fifomode_t fifo_mode
     return ret;
 }
 
+#if defined(CAMERA_HM01B0) || defined(CAMERA_HM0360) || defined(CAMERA_OV5642)
+int camera_read_reg(uint16_t reg_addr, uint8_t* reg_data)
+{
+    return camera.read_reg(reg_addr, reg_data);
+}
+
+int camera_write_reg(uint16_t reg_addr, uint8_t reg_data)
+{
+    return camera.write_reg(reg_addr, reg_data);
+}
+#else //CAMERA_OV7642
 int camera_read_reg(uint8_t reg_addr, uint8_t* reg_data)
 {
     return camera.read_reg(reg_addr, reg_data);
@@ -452,6 +468,7 @@ int camera_write_reg(uint8_t reg_addr, uint8_t reg_data)
 {
     return camera.write_reg(reg_addr, reg_data);
 }
+#endif
 
 int camera_get_slave_address(void)
 {

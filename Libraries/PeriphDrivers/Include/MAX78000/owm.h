@@ -1,8 +1,9 @@
 /**
  * @file    owm.h
- * @brief      Registers, Bit Masks and Bit Positions for the 1-Wire Master
- *             peripheral module.
+ * @brief   Registers, Bit Masks and Bit Positions for the 1-Wire Master
+ *          peripheral module.
  */
+
 /* ****************************************************************************
 * Copyright (C) 2016 Maxim Integrated Products, Inc., All Rights Reserved.
 *
@@ -114,6 +115,13 @@ void MXC_OWM_Shutdown (void);
  * @return  0 if no 1-wire devices reponded during the presence pulse, 1 otherwise
  */
 int MXC_OWM_Reset (void);
+
+/**
+ * @brief   Get the presence pulse detect status.
+ * 
+ * @return  0 if no 1-wire devices reponded during the presence pulse, 1 otherwise
+ */
+int MXC_OWM_GetPresenceDetect(void);
 
 /**
  * @brief   Send and receive one byte of data. Will block until transaction is complete.

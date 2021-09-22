@@ -38,10 +38,11 @@
 #include <string.h>
 
 #include "spi.h"
-#include "uart.h"
 #include "afe.h"
 #include "hart_uart.h"
 #include "mxc_delay.h"
+#include "mxc_sys.h"
+#include "mxc_device.h"
 
 #include "afe_gpio.h"
 #include "gpio.h"
@@ -53,16 +54,23 @@
 #include "mcr_regs.h"
 #include "dma.h"
 
+#if (TARGET != MAX32680 || TARGET_NUM == 32680)
+#include "ptg_regs.h"
+#include "pt_regs.h"
+#endif
+
 // Defines
 #define HART_UART_INSTANCE			MXC_UART2
+// #define HART_CLK_4MHZ_CHECK
 
-#define DECREASE_HART_TX_SLEW_RATE
+// #define DECREASE_HART_TX_SLEW_RATE
 #define HART_TX_SLEW_2_572_KVPS		3
 
 // 20 Preamble, 1 Delimiter, 5 address, 3 Expansion, 1 Command, 1 Byte Count, 255 Max Data, 1 Check Byte
 #define MAX_HART_UART_PACKET_LEN	286
 
 // Note, this is internally bonded, but is Y bonded to MAX32675 package as well, as pin: 51, aka P1.8
+#if (TARGET != MAX32675 || TARGET_NUM == 32675)
 #define HART_RTS_GPIO_PORT          MXC_GPIO1
 #define HART_RTS_GPIO_PIN           MXC_GPIO_PIN_8
 
@@ -77,11 +85,39 @@
 
 #define PCLKDIV_DIV_BY_4			2
 
+#elif (TARGET != MAX32680 || TARGET_NUM == 32680)
+#define HART_RTS_GPIO_PORT          MXC_GPIO0
+#define HART_RTS_GPIO_PIN           MXC_GPIO_PIN_3
+
+#define HART_CD_GPIO_PORT           MXC_GPIO0
+#define HART_CD_GPIO_PIN            MXC_GPIO_PIN_2
+
+#define HART_IN_GPIO_PORT           MXC_GPIO0
+#define HART_IN_GPIO_PIN            MXC_GPIO_PIN_1
+
+#define HART_OUT_GPIO_PORT          MXC_GPIO0
+#define HART_OUT_GPIO_PIN           MXC_GPIO_PIN_0
+
+#define HART_CLK_GPIO_PORT          MXC_GPIO0
+#define HART_CLK_GPIO_PIN           MXC_GPIO_PIN_18
+#define HART_CLK_GPIO_ALT_FUNC	    MXC_GPIO_FUNC_ALT1
+
+#endif
+
 // Globals
 volatile uint8_t hart_receive_buf[MAX_HART_UART_PACKET_LEN];
 volatile uint32_t hart_uart_reception_len = 0;
 volatile int32_t hart_uart_reception_avail = 0;
 volatile uint32_t hart_receive_active = 0;
+
+#if (TARGET != MAX32680 || TARGET_NUM == 32680)
+mxc_pt_regs_t* pPT0 = MXC_PT0;
+mxc_ptg_regs_t* pPTG = MXC_PTG;
+#endif
+
+#ifdef HART_CLK_4MHZ_CHECK
+mxc_pt_regs_t* pPT2 = MXC_PT2;
+#endif
 
 // Prototypes
 void hart_cd_isr(void *cbdata);
@@ -163,6 +199,7 @@ static int setup_rts_pin(void)
     hart_rts.mask = HART_RTS_GPIO_PIN;
     hart_rts.pad  = MXC_GPIO_PAD_NONE;
     hart_rts.func = MXC_GPIO_FUNC_OUT;
+    hart_rts.vssel = MXC_GPIO_VSSEL_VDDIOH;
 
 	retval = MXC_AFE_GPIO_Config(&hart_rts);
 	if (retval != E_NO_ERROR) {
@@ -184,6 +221,7 @@ static int setup_cd_pin(void)
     hart_cd.mask = HART_CD_GPIO_PIN;
     hart_cd.pad  = MXC_GPIO_PAD_NONE;
     hart_cd.func = MXC_GPIO_FUNC_IN;
+    hart_cd.vssel = MXC_GPIO_VSSEL_VDDIOH;
 
 	retval = MXC_AFE_GPIO_Config(&hart_cd);
 	if (retval != E_NO_ERROR) {
@@ -219,6 +257,7 @@ static int setup_hart_in_pin(void)
     hart_in.mask = HART_IN_GPIO_PIN;
     hart_in.pad  = MXC_GPIO_PAD_NONE;
     hart_in.func = MXC_GPIO_FUNC_OUT;
+    hart_in.vssel = MXC_GPIO_VSSEL_VDDIOH;
 
 	retval = MXC_AFE_GPIO_Config(&hart_in);
 	if (retval != E_NO_ERROR) {
@@ -246,8 +285,10 @@ static void hart_rts_receive_mode(void)
 
 static int enable_hart_clock(void)
 {
-	mxc_gpio_cfg_t hart_clk_output;
 	int retval = 0;
+
+#if (TARGET != MAX32675 || TARGET_NUM == 32675)
+	mxc_gpio_cfg_t hart_clk_output;
 
 	// ERFO Crystal is required for the HART device in the AFE
 	retval = MXC_SYS_ClockSourceEnable(MXC_SYS_CLOCK_ERFO);
@@ -261,6 +302,7 @@ static int enable_hart_clock(void)
 	hart_clk_output.mask = HART_CLK_GPIO_PIN;
 	hart_clk_output.pad  = MXC_GPIO_PAD_NONE;
 	hart_clk_output.func = MXC_GPIO_FUNC_ALT4;
+	hart_clk_output.vssel = MXC_GPIO_VSSEL_VDDIOH;
 
     retval = MXC_AFE_GPIO_Config(&hart_clk_output);
 	if (retval != E_NO_ERROR) {
@@ -272,7 +314,101 @@ static int enable_hart_clock(void)
     MXC_GCR->pclkdiv &= ~(MXC_F_GCR_PCLKDIV_DIV_CLK_OUT_CTRL | MXC_F_GCR_PCLKDIV_DIV_CLK_OUT_EN);
     MXC_GCR->pclkdiv |= ((PCLKDIV_DIV_BY_4 << MXC_F_GCR_PCLKDIV_DIV_CLK_OUT_CTRL_POS) & MXC_F_GCR_PCLKDIV_DIV_CLK_OUT_CTRL);
     MXC_GCR->pclkdiv |= MXC_F_GCR_PCLKDIV_DIV_CLK_OUT_EN;
+#elif (TARGET != MAX32680 || TARGET_NUM == 32680)
+    MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_PT);
+    MXC_SYS_Reset_Periph(MXC_SYS_RESET1_PT);
 
+    //set clock scale, DIV1
+    MXC_GCR->clkctrl &= ~MXC_S_GCR_CLKCTRL_SYSCLK_DIV_DIV128;
+    MXC_GCR->clkctrl |= MXC_S_GCR_CLKCTRL_SYSCLK_DIV_DIV1;
+
+    //disable all PT0
+    pPTG->enable = ~0x01;
+
+    //clear PT0 interrupt flag
+    pPTG->intfl = 0x01;
+
+    //enable ISO before enabling ERFO
+    MXC_GCR->btleldoctrl |= (MXC_F_GCR_BTLELDOCTRL_LDOTXEN | MXC_F_GCR_BTLELDOCTRL_LDORXEN |\
+            MXC_F_GCR_BTLELDOCTRL_LDOTXVSEL0 | MXC_F_GCR_BTLELDOCTRL_LDOTXVSEL1 |\
+            MXC_F_GCR_BTLELDOCTRL_LDORXVSEL0 | MXC_F_GCR_BTLELDOCTRL_LDORXVSEL1);
+
+    MXC_GCR->clkctrl |= MXC_F_GCR_CLKCTRL_ISO_EN;
+
+    MXC_SYS_Clock_Timeout(MXC_F_GCR_CLKCTRL_ISO_RDY);
+
+    retval = MXC_SYS_Clock_Timeout(MXC_F_GCR_CLKCTRL_ISO_RDY);
+    if(retval != E_NO_ERROR) {
+        return retval;
+    }
+
+    retval = MXC_SYS_ClockSourceEnable(MXC_SYS_CLOCK_ERFO);
+    if(retval != E_NO_ERROR) {
+        return retval;
+    }
+
+    //change to ERFO before starting PT.
+    retval = MXC_SYS_Clock_Select(MXC_SYS_CLOCK_ERFO);
+    if(retval != E_NO_ERROR) {
+        return retval;
+    }
+
+    MXC_SYS_SetClockDiv(MXC_SYS_CLOCK_DIV_1);
+
+    MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_PT);
+    MXC_SYS_Reset_Periph(MXC_SYS_RESET1_PT);
+
+    //set clock scale, DIV1
+    MXC_GCR->clkctrl &= ~MXC_S_GCR_CLKCTRL_SYSCLK_DIV_DIV128;
+    MXC_GCR->clkctrl |= MXC_S_GCR_CLKCTRL_SYSCLK_DIV_DIV1;
+
+    //disable all PT0
+    pPTG->enable = ~0x01;
+
+    //clear PT0 interrupt flag
+    pPTG->intfl = 0x01;
+
+    //4MHz frequency
+    pPT0->rate_length = ((2 << MXC_F_PT_RATE_LENGTH_RATE_CONTROL_POS) & MXC_F_PT_RATE_LENGTH_RATE_CONTROL) |\
+            ((2 << MXC_F_PT_RATE_LENGTH_MODE_POS) & MXC_F_PT_RATE_LENGTH_MODE);
+
+    //50% duty cycle
+    pPT0->train = 1;
+
+    //number of cycles (infinite)
+    pPT0->loop = ((0 << MXC_F_PT_LOOP_COUNT_POS) & MXC_F_PT_LOOP_COUNT) |\
+            ((0 << MXC_F_PT_LOOP_DELAY_POS) & MXC_F_PT_LOOP_DELAY);
+
+    retval = MXC_AFE_GPIO_Config(&gpio_cfg_pt0);
+    if (retval != E_NO_ERROR) {
+        return retval;
+    }
+
+#ifdef HART_CLK_4MHZ_CHECK
+    //4MHz frequency
+    pPT2->rate_length = ((2 << MXC_F_PT_RATE_LENGTH_RATE_CONTROL_POS) & MXC_F_PT_RATE_LENGTH_RATE_CONTROL) |\
+            ((2 << MXC_F_PT_RATE_LENGTH_MODE_POS) & MXC_F_PT_RATE_LENGTH_MODE);
+
+    //50% duty cycle
+    pPT2->train = 1;
+
+    //number of cycles (infinite) for PT2 (P0_16)
+    pPT2->loop = ((0 << MXC_F_PT_LOOP_COUNT_POS) & MXC_F_PT_LOOP_COUNT) |\
+            ((0 << MXC_F_PT_LOOP_DELAY_POS) & MXC_F_PT_LOOP_DELAY);
+
+    retval = MXC_AFE_GPIO_Config(&gpio_cfg_pt2);
+    if (retval != E_NO_ERROR) {
+        return retval;
+    }
+#endif
+
+    pPTG->enable |= MXC_F_PTG_ENABLE_PT0 | MXC_F_PTG_ENABLE_PT2;
+
+    //wait for PT to start
+    while((pPTG->enable & (MXC_F_PTG_ENABLE_PT0)) != MXC_F_PTG_ENABLE_PT0);
+
+#endif
+    
     return retval;
 }
 
@@ -316,7 +452,6 @@ int hart_uart_disable(void)
 int hart_uart_setup(uint32_t test_mode)
 {
 	int retval = 0;
-	uint32_t read_val = 0;
 
     retval = enable_hart_clock();
     if (retval != E_NO_ERROR) {

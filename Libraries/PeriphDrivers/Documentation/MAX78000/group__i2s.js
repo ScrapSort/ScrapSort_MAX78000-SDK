@@ -16,6 +16,7 @@ var group__i2s =
     [ "MXC_I2S_Flush", "group__i2s.html#gaaaf1ce09b163ac273e4a5b2e9759bdaa", null ],
     [ "MXC_I2S_GetFlags", "group__i2s.html#ga3b89677a1edb6d0da0ccbb2c4de23447", null ],
     [ "MXC_I2S_Init", "group__i2s.html#ga908d2bb5ebd853ffd32504c963c41f7f", null ],
+    [ "MXC_I2S_RegisterDMACallback", "group__i2s.html#gaaf5037c6b75efb9ea52c959bc447d08a", null ],
     [ "MXC_I2S_RXDisable", "group__i2s.html#gaf2217c37d934dc84c9f226babe2aa9d4", null ],
     [ "MXC_I2S_RXDMAConfig", "group__i2s.html#gac7a5a8366d3950a0052d7fafcbb214b1", null ],
     [ "MXC_I2S_RXEnable", "group__i2s.html#ga72d81aa086580679b48ad432ee05d37d", null ],

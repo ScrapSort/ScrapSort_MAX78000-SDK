@@ -343,7 +343,7 @@ int MXC_UART_ReadRXFIFODMA(mxc_uart_regs_t* uart, unsigned char* bytes,
         break;
 
     case 3:
-        config.reqsel = MXC_DMA_REQUEST_UART3TX;
+        config.reqsel = MXC_DMA_REQUEST_UART3RX;
         break;
         
     default:

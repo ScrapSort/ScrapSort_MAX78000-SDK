@@ -241,7 +241,7 @@ uint32_t MXC_TMR_GetPeriod(mxc_tmr_regs_t* tmr, mxc_tmr_clock_t clock, uint32_t 
     
     if (tmr_id > 3) {
         switch (clock) {
-        case MXC_TMR_APB_CLK:
+        case MXC_TMR_8M_CLK:
             clockFrequency = IBRO_FREQ;
             break;
             
@@ -254,6 +254,8 @@ uint32_t MXC_TMR_GetPeriod(mxc_tmr_regs_t* tmr, mxc_tmr_clock_t clock, uint32_t 
             break;
             
         default:
+            MXC_ASSERT(clock == MXC_TMR_8M_CLK || clock == MXC_TMR_32K_CLK || 
+                clock == MXC_TMR_8K_CLK);
             break;
         }
     }
@@ -276,6 +278,8 @@ uint32_t MXC_TMR_GetPeriod(mxc_tmr_regs_t* tmr, mxc_tmr_clock_t clock, uint32_t 
             break;
             
         default:
+            MXC_ASSERT(clock == MXC_TMR_APB_CLK || clock == MXC_TMR_60M_CLK ||
+                clock == MXC_TMR_8M_CLK || clock == MXC_TMR_32K_CLK);
             break;
         }
     }

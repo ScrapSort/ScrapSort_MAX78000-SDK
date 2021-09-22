@@ -142,3 +142,8 @@ void MXC_I2S_RXDMAConfig(void* dest_addr, int len)
 {
     MXC_I2S_RevA_RXDMAConfig((mxc_i2s_reva_regs_t*) MXC_I2S, dest_addr, len);
 }
+
+void MXC_I2S_RegisterDMACallback(void(*callback)(int, int))
+{
+    MXC_I2S_RevA_RegisterDMACallback(callback);
+}

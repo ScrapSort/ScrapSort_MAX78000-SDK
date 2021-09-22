@@ -79,3 +79,5 @@ void MXC_I2S_RevA_ClearFlags(mxc_i2s_reva_regs_t *i2s, uint32_t flags);
 void MXC_I2S_RevA_TXDMAConfig(mxc_i2s_reva_regs_t *i2s, void *src_addr, int len);
 
 void MXC_I2S_RevA_RXDMAConfig(mxc_i2s_reva_regs_t *i2s, void *dest_addr, int len);
+
+void MXC_I2S_RevA_RegisterDMACallback(void(*callback)(int, int));

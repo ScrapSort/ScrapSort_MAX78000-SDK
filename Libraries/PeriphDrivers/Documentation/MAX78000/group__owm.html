@@ -133,6 +133,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 <tr class="separator:ga3fe9006fdcdf20c2a8d9dbec72a88f67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2a2e1fed8ea860ec2aa860c39e93b77e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__owm.html#ga2a2e1fed8ea860ec2aa860c39e93b77e">MXC_OWM_Reset</a> (void)</td></tr>
 <tr class="separator:ga2a2e1fed8ea860ec2aa860c39e93b77e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5a7ee2746c4c5ec3565a9776576369a6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__owm.html#ga5a7ee2746c4c5ec3565a9776576369a6">MXC_OWM_GetPresenceDetect</a> (void)</td></tr>
+<tr class="separator:ga5a7ee2746c4c5ec3565a9776576369a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7bd1f2d4142c2a88a11fc2385f904698"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__owm.html#ga7bd1f2d4142c2a88a11fc2385f904698">MXC_OWM_TouchByte</a> (uint8_t data)</td></tr>
 <tr class="separator:ga7bd1f2d4142c2a88a11fc2385f904698"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf68e5019e22fcd4427ce43cc5bea54f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__owm.html#gaf68e5019e22fcd4427ce43cc5bea54f3">MXC_OWM_WriteByte</a> (uint8_t data)</td></tr>
@@ -590,6 +592,27 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 
 <p>Get interrupt flags. </p>
 <dl class="section return"><dt>Returns</dt><dd>Mask of active flags. </dd></dl>
+
+</div>
+</div>
+<a id="ga5a7ee2746c4c5ec3565a9776576369a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5a7ee2746c4c5ec3565a9776576369a6">&#9670;&nbsp;</a></span>MXC_OWM_GetPresenceDetect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int MXC_OWM_GetPresenceDetect </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the presence pulse detect status. </p>
+<dl class="section return"><dt>Returns</dt><dd>0 if no 1-wire devices reponded during the presence pulse, 1 otherwise </dd></dl>
 
 </div>
 </div>
@@ -1268,7 +1291,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jun 15 2021 19:40:53 for MAX78000 Peripheral Driver API by
+    <li class="footer">Generated on Mon Sep 20 2021 11:01:47 for MAX78000 Peripheral Driver API by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

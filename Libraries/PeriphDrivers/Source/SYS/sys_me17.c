@@ -98,7 +98,6 @@ int MXC_SYS_GetUSN(uint8_t *usn, uint8_t *checksum)
     if(checksum != NULL) {
         uint8_t info_checksum[2];
         uint8_t key[MXC_SYS_USN_CHECKSUM_LEN];
-        int i;
 
         /* Initialize the remainder of the USN and key */
         memset(key, 0, MXC_SYS_USN_CHECKSUM_LEN);
@@ -108,18 +107,12 @@ int MXC_SYS_GetUSN(uint8_t *usn, uint8_t *checksum)
         info_checksum[0] = ((infoblock[3] & 0x7F800000) >> 23);
         info_checksum[1] = ((infoblock[4] & 0x007F8000) >> 15);
 
-        /* Byte swap the USN for the checksum verification */
-        uint8_t temp[MXC_SYS_USN_CHECKSUM_LEN];
-        for(i = 0; i < MXC_SYS_USN_CHECKSUM_LEN; i++) {
-            temp[i] = usn[MXC_SYS_USN_CHECKSUM_LEN-1-i];
-        }
-
         /* Setup the encryption parameters */
         MXC_AES_Init();
 
         mxc_aes_req_t aesReq;
         aesReq.length = MXC_SYS_USN_CHECKSUM_LEN/4;
-        aesReq.inputData = (uint32_t*)temp;
+        aesReq.inputData = (uint32_t*)usn;
         aesReq.resultData = (uint32_t*)checksum;
         aesReq.keySize = MXC_AES_128BITS;
         aesReq.encryption = MXC_AES_ENCRYPT_EXT_KEY;
@@ -129,8 +122,8 @@ int MXC_SYS_GetUSN(uint8_t *usn, uint8_t *checksum)
         MXC_AES_Shutdown();
 
         /* Verify the checksum */
-        if((checksum[MXC_SYS_USN_CHECKSUM_LEN-1] != info_checksum[1]) ||
-            (checksum[MXC_SYS_USN_CHECKSUM_LEN-2] != info_checksum[0])) {
+        if((checksum[1] != info_checksum[0]) ||
+            (checksum[0] != info_checksum[1])) {
 
             MXC_FLC_LockInfoBlock(MXC_INFO0_MEM_BASE);
             return E_UNKNOWN;
@@ -529,10 +522,10 @@ uint32_t MXC_SYS_RiscVClockRate(void)
 {
     // If in LPM mode and the PCLK is selected as the RV32 clock source,
     if(((MXC_GCR->pm & MXC_F_GCR_PM_MODE) == MXC_S_GCR_PM_MODE_LPM) && 
-       ((MXC_PWRSEQ->lpcn & MXC_F_PWRSEQ_LPCN_LPMCLKSEL) == 0)) {
-        return SystemCoreClock / 2;
-    } else {
+       (MXC_PWRSEQ->lpcn & MXC_F_PWRSEQ_LPCN_LPMCLKSEL)) {
         return ISO_FREQ;
+    } else {
+        return PeripheralClock;
     }
 }
 

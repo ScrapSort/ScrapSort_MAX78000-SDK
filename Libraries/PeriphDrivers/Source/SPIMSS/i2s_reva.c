@@ -117,6 +117,9 @@ int MXC_I2S_RevA_Init(mxc_spimss_reva_regs_t *spimss, const mxc_i2s_config_t *co
 
         dma_config.srcwd = MXC_DMA_WIDTH_HALFWORD;
         dma_config.dstwd = MXC_DMA_WIDTH_WORD;
+	  #if TARGET_NUM == 32650
+        dma_config.reqsel = MXC_DMA_REQUEST_SPIMSSTX;
+	  #endif
         
         dma_config.srcinc_en = 1;
         dma_config.dstinc_en = 0;
@@ -154,6 +157,9 @@ int MXC_I2S_RevA_Init(mxc_spimss_reva_regs_t *spimss, const mxc_i2s_config_t *co
         
         dma_config.srcwd = MXC_DMA_WIDTH_WORD;
         dma_config.dstwd = MXC_DMA_WIDTH_HALFWORD;
+	  #if TARGET_NUM == 32650
+        dma_config.reqsel = MXC_DMA_REQUEST_SPIMSSRX;
+	  #endif
 
         dma_config.srcinc_en = 0;
         dma_config.dstinc_en = 1;

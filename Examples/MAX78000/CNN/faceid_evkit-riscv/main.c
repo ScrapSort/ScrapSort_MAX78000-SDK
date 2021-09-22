@@ -152,14 +152,14 @@ static void screen_faceID(void);
 static int init(void);
 static int key_process(int key);
 
+State g_state = {"faceID", init, key_process, NULL, 0 };
+
+#ifdef TFT_ENABLE
 static text_t screen_msg[] = {
     // info
     { (char*) "FACEID DEMO", strlen("FACEID DEMO")},
     { (char*) "Process Time:",  strlen("Process Time:")},
 };
-
-State g_state = {"faceID", init, key_process, NULL, 0 };
-
 #ifdef BOARD_EVKIT_V1
 static int bitmap = logo_white_bg_darkgrey_bmp;
 static int font = urw_gothic_12_grey_bg_white;
@@ -167,6 +167,7 @@ static int font = urw_gothic_12_grey_bg_white;
 #ifdef BOARD_FTHR_REVA
 static int bitmap = (int)& logo_rgb565[0];
 static int font = (int)& SansSerif16x16[0];
+#endif
 #endif
 
 /********************************* Static Functions **************************/

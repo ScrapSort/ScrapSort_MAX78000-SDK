@@ -1828,6 +1828,7 @@
       <topic label="MXC_I2S_Flush" href="group__i2s.html#gaaaf1ce09b163ac273e4a5b2e9759bdaa"/>
       <topic label="MXC_I2S_GetFlags" href="group__i2s.html#ga3b89677a1edb6d0da0ccbb2c4de23447"/>
       <topic label="MXC_I2S_Init" href="group__i2s.html#ga908d2bb5ebd853ffd32504c963c41f7f"/>
+      <topic label="MXC_I2S_RegisterDMACallback" href="group__i2s.html#gaaf5037c6b75efb9ea52c959bc447d08a"/>
       <topic label="MXC_I2S_RXDisable" href="group__i2s.html#gaf2217c37d934dc84c9f226babe2aa9d4"/>
       <topic label="MXC_I2S_RXDMAConfig" href="group__i2s.html#gac7a5a8366d3950a0052d7fafcbb214b1"/>
       <topic label="MXC_I2S_RXEnable" href="group__i2s.html#ga72d81aa086580679b48ad432ee05d37d"/>
@@ -2173,6 +2174,7 @@
       <topic label="MXC_OWM_DisableInt" href="group__owm.html#gab54c7e0f51cd3942a13778a19deb668c"/>
       <topic label="MXC_OWM_EnableInt" href="group__owm.html#ga2bc0bf02a34d65509f00fdf449f1a790"/>
       <topic label="MXC_OWM_GetFlags" href="group__owm.html#gadaed2256b86e3d96aa105f2e50b17198"/>
+      <topic label="MXC_OWM_GetPresenceDetect" href="group__owm.html#ga5a7ee2746c4c5ec3565a9776576369a6"/>
       <topic label="MXC_OWM_Init" href="group__owm.html#ga5dd39b62dc394b6e93b3c58179991522"/>
       <topic label="MXC_OWM_MatchROM" href="group__owm.html#ga3fc1fc26807fe6abb12155d89d1ae327"/>
       <topic label="MXC_OWM_ODMatchROM" href="group__owm.html#ga2dcf481fad2d9c7c9e7d64aae6aa0ffd"/>
@@ -2899,6 +2901,7 @@
       <topic label="MXC_SPI_GetFlags" href="group__spi.html#ga0975fa702566dae897a0a77417129808"/>
       <topic label="MXC_SPI_GetFrequency" href="group__spi.html#ga66094aea21801b4d038717eee7151dcc"/>
       <topic label="MXC_SPI_GetMode" href="group__spi.html#ga569449f07cb8baffe915265c6161ec3c"/>
+      <topic label="MXC_SPI_GetPeripheralClock" href="group__spi.html#ga41228df9f274fb42a12807d40770e3ea"/>
       <topic label="MXC_SPI_GetRXFIFOAvailable" href="group__spi.html#ga575ba2180995296e0a7f5c3bf8b52748"/>
       <topic label="MXC_SPI_GetRXThreshold" href="group__spi.html#gadbc0c35461519d71e09e2dfdc4849423"/>
       <topic label="MXC_SPI_GetSlave" href="group__spi.html#ga0c0e27e72171a55780d097ff2c2ffada"/>
@@ -3862,6 +3865,7 @@
       <topic label="mxc_wut_cfg_t" href="group__wut.html#structmxc__wut__cfg__t">
         <topic label="cmp_cnt" href="group__wut.html#a8bad5edf8d5b4929b1a5ce52ab78253d"/>
       </topic>
+      <topic label="mxc_wut_complete_cb_t" href="group__wut.html#ga8fe868484cde39c204e851d9d4b42a3d"/>
       <topic label="mxc_wut_mode_t" href="group__wut.html#gaf4e99bf4f46ec75686eb695eb722b133">
         <topic label="MXC_WUT_MODE_CONTINUOUS" href="group__wut.html#ggaf4e99bf4f46ec75686eb695eb722b133afd704e24fa22a6ba29e4614455c9e852"/>
         <topic label="MXC_WUT_MODE_COUNTER" href="group__wut.html#ggaf4e99bf4f46ec75686eb695eb722b133a6b32025dd8bc9392196b813471c99b66"/>

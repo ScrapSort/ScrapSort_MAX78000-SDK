@@ -92,6 +92,9 @@ typedef struct {
     __IO uint32_t intfl;                /**< <tt>\b 0x000C:</tt> WUT_REVA INTFL Register */
     __IO uint32_t ctrl;                 /**< <tt>\b 0x0010:</tt> WUT_REVA CTRL Register */
     __IO uint32_t nolcmp;               /**< <tt>\b 0x0014:</tt> WUT_REVA NOLCMP Register */
+    __IO uint32_t preset;               /**< <tt>\b 0x0018:</tt> WUT_REVA PRESET Register */
+    __IO uint32_t reload;               /**< <tt>\b 0x001C:</tt> WUT_REVA RELOAD Register */
+    __IO uint32_t snapshot;             /**< <tt>\b 0x0020:</tt> WUT_REVA SNAPSHOT Register */
 } mxc_wut_reva_regs_t;
 
 /**

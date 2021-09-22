@@ -30,7 +30,6 @@
  * ownership rights.
  *
  *************************************************************************** */
-
 #ifndef __riscv
 #include "mxc_device.h"
 #include "mxc_assert.h"
@@ -133,6 +132,8 @@ void MXC_LP_ClearWakeStatus(void)
     /* Write 1 to clear */
     MXC_PWRSEQ->lpwkst0 = 0xFFFFFFFF;
     MXC_PWRSEQ->lpwkst1 = 0xFFFFFFFF;
+    MXC_PWRSEQ->lpwkst2 = 0xFFFFFFFF;
+    MXC_PWRSEQ->lpwkst3 = 0xFFFFFFFF;
     MXC_PWRSEQ->lppwst  = 0xFFFFFFFF;
 }
 
@@ -147,6 +148,12 @@ void MXC_LP_EnableGPIOWakeup(mxc_gpio_cfg_t* wu_pins)
         
     case MXC_GPIO_PORT_1:
         MXC_PWRSEQ->lpwken1 |= wu_pins->mask;
+		break;
+	case MXC_GPIO_PORT_2:
+        MXC_PWRSEQ->lpwken2 |= wu_pins->mask;
+		break;
+	case MXC_GPIO_PORT_3:
+        MXC_PWRSEQ->lpwken3 |= wu_pins->mask;
     }
 }
 
@@ -159,9 +166,16 @@ void MXC_LP_DisableGPIOWakeup(mxc_gpio_cfg_t* wu_pins)
         
     case MXC_GPIO_PORT_1:
         MXC_PWRSEQ->lpwken1 &= ~wu_pins->mask;
+		break;
+	case MXC_GPIO_PORT_2:
+        MXC_PWRSEQ->lpwken2 &= ~wu_pins->mask;
+		break;
+	case MXC_GPIO_PORT_3:
+        MXC_PWRSEQ->lpwken3 &= ~wu_pins->mask;
+		break;
     }
     
-    if (MXC_PWRSEQ->lpwken1 == 0 && MXC_PWRSEQ->lpwken0 == 0) {
+    if (MXC_PWRSEQ->lpwken3 == 0 && MXC_PWRSEQ->lpwken2 == 0 && MXC_PWRSEQ->lpwken1 == 0 && MXC_PWRSEQ->lpwken0 == 0) {
         MXC_GCR->pm &= ~MXC_F_GCR_PM_GPIO_WE;
     }
 }

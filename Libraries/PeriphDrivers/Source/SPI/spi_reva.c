@@ -99,7 +99,7 @@ int MXC_SPI_RevA_Init (mxc_spi_reva_regs_t* spi, int masterMode, int quadModeUse
         spi->ctrl0 &= ~ (MXC_F_SPI_REVA_CTRL0_MST_MODE);
     }
     
-    MXC_SPI_SetFrequency ((mxc_spi_regs_t*) spi,hz);
+    MXC_SPI_SetFrequency ((mxc_spi_regs_t*) spi, hz);
     
     //set slave select polarity
     spi->ctrl2 |= ( (!!ssPolarity) << MXC_F_SPI_REVA_CTRL2_SS_POL_POS);
@@ -193,7 +193,9 @@ int MXC_SPI_RevA_SetFrequency (mxc_spi_reva_regs_t* spi, unsigned int hz)
     }
     
     // Set the clock high and low
-    freq_div = PeripheralClock / hz;
+    freq_div = MXC_SPI_GetPeripheralClock((mxc_spi_regs_t*) spi);
+    freq_div = (freq_div / hz);
+
     hi_clk = freq_div / 2;
     lo_clk = freq_div / 2;
     scale = 0;
@@ -254,7 +256,7 @@ int MXC_SPI_RevA_SetDataSize (mxc_spi_reva_regs_t* spi, int dataSize)
         // set bit size
         states[spi_num].last_size = dataSize;
         
-        if (dataSize <16) {
+        if (dataSize < 16) {
             MXC_SETFIELD (spi->ctrl2, MXC_F_SPI_REVA_CTRL2_NUMBITS, dataSize << MXC_F_SPI_REVA_CTRL2_NUMBITS_POS);
         }
         
@@ -942,11 +944,20 @@ int MXC_SPI_RevA_MasterTransactionDMA (mxc_spi_reva_req_t* req, int reqselTx, in
         MXC_SPI_SetRXThreshold ((mxc_spi_regs_t*) req->spi, 0);
     }
     
+  #if TARGET_NUM == 32665
+    MXC_DMA_Init(dma);
+  #else
     MXC_DMA_Init();
+  #endif
     
     //tx
     if (req->txData != NULL) {
+      #if TARGET_NUM == 32665
+        channel = MXC_DMA_AcquireChannel(dma);
+      #else
         channel = MXC_DMA_AcquireChannel();
+      #endif
+
         config.reqsel = reqselTx;
         config.ch = channel;
         advConfig.ch = channel;
@@ -989,7 +1000,12 @@ int MXC_SPI_RevA_MasterTransactionDMA (mxc_spi_reva_req_t* req, int reqselTx, in
     }
     
     if (req->rxData != NULL) {
+      #if TARGET_NUM == 32665
+        channel = MXC_DMA_AcquireChannel(dma);
+      #else
         channel = MXC_DMA_AcquireChannel();
+      #endif
+
         config.reqsel = reqselRx;
         config.ch = channel;
         config.srcinc_en = 0;
@@ -1110,14 +1126,23 @@ int MXC_SPI_RevA_SlaveTransactionDMA (mxc_spi_reva_req_t* req, int reqselTx, int
         MXC_SPI_SetRXThreshold ((mxc_spi_regs_t*) req->spi, 0);
     }
     
+  #if TARGET_NUM == 32665
+    MXC_DMA_Init(dma);
+  #else
     MXC_DMA_Init();
+  #endif
     
     spi_num = MXC_SPI_GET_IDX ((mxc_spi_regs_t*)(req->spi));
     MXC_ASSERT (spi_num >= 0);
     
     //tx
     if (req->txData != NULL) {
+      #if TARGET_NUM == 32665
+        channel = MXC_DMA_AcquireChannel(dma);
+      #else
         channel = MXC_DMA_AcquireChannel();
+      #endif
+
         config.reqsel = reqselTx;
         config.ch = channel;
         advConfig.ch = channel;
@@ -1161,7 +1186,12 @@ int MXC_SPI_RevA_SlaveTransactionDMA (mxc_spi_reva_req_t* req, int reqselTx, int
     }
     
     if (req->rxData != NULL) {
+      #if TARGET_NUM == 32665
+        channel = MXC_DMA_AcquireChannel(dma);
+      #else
         channel = MXC_DMA_AcquireChannel();
+      #endif
+
         config.reqsel = reqselRx;
         config.ch = channel;
         config.srcinc_en = 0;

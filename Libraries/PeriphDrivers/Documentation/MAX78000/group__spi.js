@@ -50,6 +50,7 @@ var group__spi =
     [ "MXC_SPI_GetFlags", "group__spi.html#ga0975fa702566dae897a0a77417129808", null ],
     [ "MXC_SPI_GetFrequency", "group__spi.html#ga66094aea21801b4d038717eee7151dcc", null ],
     [ "MXC_SPI_GetMode", "group__spi.html#ga569449f07cb8baffe915265c6161ec3c", null ],
+    [ "MXC_SPI_GetPeripheralClock", "group__spi.html#ga41228df9f274fb42a12807d40770e3ea", null ],
     [ "MXC_SPI_GetRXFIFOAvailable", "group__spi.html#ga575ba2180995296e0a7f5c3bf8b52748", null ],
     [ "MXC_SPI_GetRXThreshold", "group__spi.html#gadbc0c35461519d71e09e2dfdc4849423", null ],
     [ "MXC_SPI_GetSlave", "group__spi.html#ga0c0e27e72171a55780d097ff2c2ffada", null ],

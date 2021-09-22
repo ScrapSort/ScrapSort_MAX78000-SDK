@@ -933,7 +933,7 @@ void MXC_CTB_RevA_Cipher_LoadKey(mxc_ctb_reva_regs_t* ctb_regs)
 
 void MXC_CTB_RevA_Cipher_SetOperation(mxc_ctb_reva_regs_t* ctb_regs, mxc_ctb_reva_cipher_operation_t operation)
 {
-    MXC_SETFIELD(ctb_regs->cipher_ctrl, MXC_F_CTB_REVA_CIPHER_CTRL_ENC,(!operation) << MXC_F_CTB_REVA_CIPHER_CTRL_ENC_POS);
+    MXC_SETFIELD(ctb_regs->cipher_ctrl, MXC_F_CTB_REVA_CIPHER_CTRL_ENC, operation << MXC_F_CTB_REVA_CIPHER_CTRL_ENC_POS);
 }
 
 void MXC_CTB_RevA_Cipher_SetKey(mxc_ctb_reva_regs_t* ctb_regs, uint8_t* key, uint32_t len)

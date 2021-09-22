@@ -60,13 +60,13 @@ typedef struct {
 
 static mxc_aes_revb_dma_req_t dma_state;
 
+#define SWAP_BYTES(x) ((((x) >> 24) & 0x000000FF) | (((x) >>  8) & 0x0000FF00) | (((x) <<  8) & 0x00FF0000) | (((x) << 24) & 0xFF000000))
+
 static void memcpy32r(uint32_t * dst, const uint32_t * src, unsigned int len)
 {
   uint32_t * dstr = dst + (len/4) - 1;
-  uint32_t temp;
   while (len) {
-    temp = *src;
-    *dstr = ((temp & 0xff)<<24)|((temp & 0xff00)<<8)|((temp & 0xff0000)>>8)|((temp & 0xff000000)>>24);
+    *dstr = SWAP_BYTES(*src);
     dstr--;
     src++;
     len -= 4;
@@ -178,7 +178,7 @@ int MXC_AES_RevB_Generic(mxc_aes_revb_regs_t* aes, mxc_aes_revb_req_t* req)
     remain = req->length;
     
     MXC_AES_RevB_FlushInputFIFO(aes);
-	  MXC_AES_RevB_FlushOutputFIFO(aes);
+	MXC_AES_RevB_FlushOutputFIFO(aes);
 
     MXC_AES_RevB_SetKeySize(aes, req->keySize);
 
@@ -189,32 +189,42 @@ int MXC_AES_RevB_Generic(mxc_aes_revb_regs_t* aes, mxc_aes_revb_req_t* req)
     while(remain/4)
     {
         for(i = 0; i < 4; i++) {
-            aes->fifo = *(req->inputData++);
+            aes->fifo = SWAP_BYTES(req->inputData[3-i]);
         }
+        req->inputData += 4;
 
         while(!(aes->intfl & MXC_F_AES_REVB_INTFL_DONE));
         aes->intfl |= MXC_F_AES_REVB_INTFL_DONE;
 
-        for( i=0 ; i < 4; i++) {
-            *(req->resultData++) = aes->fifo;
-        }
+        for(i = 0; i < 4; i++) {
+            uint32_t tmp = aes->fifo;
+            req->resultData[3-i] = SWAP_BYTES(tmp);
+        }        
+        req->resultData += 4;
+
         remain -= 4;
     }
 
     if(remain%4)
     {
         for(i = 0; i < remain; i++) {
-            aes->fifo = *(req->inputData++);
+            aes->fifo = SWAP_BYTES(req->inputData[remain-1-i]);
         }
+        req->inputData += remain;
 
-        MXC_AES_RevB_Start(aes);
+        // Pad last block with 0's
+        for(i = remain; i < 4; i++) {
+            aes->fifo = 0;
+        }
 
         while(!(aes->intfl & MXC_F_AES_REVB_INTFL_DONE));
         aes->intfl |= MXC_F_AES_REVB_INTFL_DONE;
 
         for(i = 0; i < 4; i++) {
-            *(req->resultData++) = aes->fifo;
-        }
+            uint32_t tmp = aes->fifo;
+            req->resultData[3-i] = SWAP_BYTES(tmp);
+        }        
+        req->resultData += 4;
     }
     return E_NO_ERROR;
 }

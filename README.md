@@ -4,6 +4,19 @@ Refer to [Getting Started with the MAX78000 Evaluation Kit](https://github.com/M
 
 ## Release Notes
 
+September 20, 2021
+* Updated all Eclipse project files to resolve indexer errors.
+* Added support for additional camera models.
+* Changed startup file to enable instruction cache by default.
+* Added libary MXC_SYS library function to retreive the device's unique serial number.
+* Fixed bug in SPI baud rate calculations.
+* Added callback functions for I2S DMA operations.
+* Added GPIO ports 2 and 3 to the low power wakeup functions.
+* Added RTC trimming function.
+* Improved Semaphore support.
+* Improved WUT support.
+* Fixed incorrect clock source calculations when configuring timers.
+
 June 15, 2021
 * Added touchscreen support to faceid_evkit and faceid_evkit-riscv demos.
 * Added DMA streaming mode to camera driver.

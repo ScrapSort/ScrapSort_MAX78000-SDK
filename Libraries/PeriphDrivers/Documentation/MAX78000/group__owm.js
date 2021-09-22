@@ -26,6 +26,7 @@ var group__owm =
     [ "MXC_OWM_DisableInt", "group__owm.html#gab54c7e0f51cd3942a13778a19deb668c", null ],
     [ "MXC_OWM_EnableInt", "group__owm.html#ga2bc0bf02a34d65509f00fdf449f1a790", null ],
     [ "MXC_OWM_GetFlags", "group__owm.html#gadaed2256b86e3d96aa105f2e50b17198", null ],
+    [ "MXC_OWM_GetPresenceDetect", "group__owm.html#ga5a7ee2746c4c5ec3565a9776576369a6", null ],
     [ "MXC_OWM_Init", "group__owm.html#ga5dd39b62dc394b6e93b3c58179991522", null ],
     [ "MXC_OWM_MatchROM", "group__owm.html#ga3fc1fc26807fe6abb12155d89d1ae327", null ],
     [ "MXC_OWM_ODMatchROM", "group__owm.html#ga2dcf481fad2d9c7c9e7d64aae6aa0ffd", null ],

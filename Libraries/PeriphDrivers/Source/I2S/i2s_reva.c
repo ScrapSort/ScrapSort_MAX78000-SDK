@@ -52,6 +52,7 @@
 
 /* ****** Globals ****** */
 static mxc_i2s_req_t* request;
+static void* dma_cb = NULL;
 
 /* ****** Functions ****** */
 int MXC_I2S_RevA_Init(mxc_i2s_reva_regs_t *i2s, mxc_i2s_req_t* req)
@@ -131,7 +132,7 @@ int MXC_I2S_RevA_ConfigData(mxc_i2s_reva_regs_t *i2s, mxc_i2s_req_t* req)
     i2s->ctrl1ch0 &= ~MXC_F_I2S_REVA_CTRL1CH0_SMP_SIZE;
     
     switch (req->sampleSize) {
-    case MXC_I2S_SAMPLESIZE_EIGTH:
+    case MXC_I2S_SAMPLESIZE_EIGHT:
         if (req->wordSize == MXC_I2S_DATASIZE_WORD) {
             //Set word length
             i2s->ctrl1ch0 |= (DATALENGTH_THIRTYTWO << MXC_F_I2S_REVA_CTRL1CH0_BITS_WORD_POS);
@@ -384,7 +385,7 @@ void MXC_I2S_RevA_TXDMAConfig(mxc_i2s_reva_regs_t *i2s, void* src_addr, int len)
     
     MXC_DMA_ConfigChannel(config, srcdst);
     MXC_DMA_AdvConfigChannel(advConfig);
-    MXC_DMA_SetCallback(channel, NULL);
+    MXC_DMA_SetCallback(channel, dma_cb);
     
     MXC_I2S_TXEnable();                                 //Enable I2S TX
     i2s->dmach0 |= MXC_F_I2S_REVA_DMACH0_DMA_TX_EN;      //Enable I2S DMA
@@ -452,7 +453,7 @@ void MXC_I2S_RevA_RXDMAConfig(mxc_i2s_reva_regs_t *i2s, void* dest_addr, int len
     
     MXC_DMA_ConfigChannel(config, srcdst);
     MXC_DMA_AdvConfigChannel(advConfig);
-    MXC_DMA_SetCallback(channel, NULL);
+    MXC_DMA_SetCallback(channel, dma_cb);
     
     MXC_I2S_RXEnable();                                 //Enable I2S RX
     i2s->dmach0 |= MXC_F_I2S_REVA_DMACH0_DMA_RX_EN;      //Enable I2S DMA
@@ -460,4 +461,9 @@ void MXC_I2S_RevA_RXDMAConfig(mxc_i2s_reva_regs_t *i2s, void* dest_addr, int len
     MXC_DMA_EnableInt(channel);
     MXC_DMA_Start(channel);
     MXC_DMA->ch[channel].ctrl |= MXC_F_DMA_CTRL_CTZ_IE;
+}
+
+void MXC_I2S_RevA_RegisterDMACallback(void(*callback)(int, int))
+{
+    dma_cb = callback;
 }

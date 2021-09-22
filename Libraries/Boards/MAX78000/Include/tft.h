@@ -61,8 +61,8 @@ typedef struct {
 
 typedef enum {
     SCREEN_NORMAL,
-	SCREEN_FLIP,
-	SCREEN_ROTATE,
+    SCREEN_FLIP,
+    SCREEN_ROTATE,
 } tft_rotation_t;
 
 /************************************************************************************/
@@ -122,7 +122,9 @@ void MXC_TFT_WritePixel(int pixelX, int pixelY, int width, int height, uint32_t 
  */
 void MXC_TFT_ShowImage(int x0, int y0, int id);
 
-void MXC_TFT_ShowImageCameraRGB565(int x0, int y0, uint8_t *image, int iWidth, int iHeight);
+void MXC_TFT_ShowImageCameraRGB565(int x0, int y0, uint8_t* image, int iWidth, int iHeight);
+
+void MXC_TFT_ShowImageCameraMono(int x0, int y0, uint8_t* image, int iWidth, int iHeight);
 
 /**
  * @brief      Fills screen with one color
@@ -212,4 +214,3 @@ void MXC_TFT_SetRotation(tft_rotation_t rotation);
 void MXC_TFT_WriteReg(unsigned short command, unsigned short data);
 
 #endif /* _TFT_H_ */
-

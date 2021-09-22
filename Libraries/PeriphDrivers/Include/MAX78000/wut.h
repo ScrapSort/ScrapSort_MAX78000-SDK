@@ -108,13 +108,21 @@ typedef struct {
     uint32_t cmp_cnt;   /// Compare register value in timer ticks
 } mxc_wut_cfg_t;
 
+/**
+ * @brief   The callback routine used by the MXC_WUT_TrimCrystalAsync()
+ *          function to indicate the transaction has completed.
+ *
+ * @param   result      Error code.
+ */
+typedef void (*mxc_wut_complete_cb_t) (int result);
+
 /* **** Definitions **** */
 
 /* **** Function Prototypes **** */
 
 /**
  * @brief      Initialize timer module clock.
- * @param      pres       Prescaler value. 
+ * @param      pres       Prescaler value.
  */
 void MXC_WUT_Init(mxc_wut_pres_t pres);
 
@@ -187,7 +195,7 @@ void MXC_WUT_SetCount(uint32_t cnt);
  * @param   time    Number of units of time.
  * @param   units   Which units of time you want to convert.
  * @param   ticks   Pointer to store the number of ticks calculated.
- * @return     #E_NO_ERROR If everything is successful. 
+ * @return     #E_NO_ERROR If everything is successful.
  * @return     @ref MXC_Error_Codes If function is unsuccessful.
  */
 int MXC_WUT_GetTicks(uint32_t time, mxc_wut_unit_t units, uint32_t *ticks);
@@ -197,7 +205,7 @@ int MXC_WUT_GetTicks(uint32_t time, mxc_wut_unit_t units, uint32_t *ticks);
  * @param   ticks   Number of ticks.
  * @param   time    Pointer to store number of units of time.
  * @param   units   Pointer to store the units that time represents.
- * @return     #E_NO_ERROR If everything is successful. 
+ * @return     #E_NO_ERROR If everything is successful.
  * @return     @ref MXC_Error_Codes If function is unsuccessful.
  */
 int MXC_WUT_GetTime(uint32_t ticks, uint32_t *time, mxc_wut_unit_t *units);
@@ -219,7 +227,7 @@ void MXC_WUT_Store(void);
 void MXC_WUT_RestoreBBClock(uint32_t dbbFreq);
 
 /**
- * @brief   Get the difference between the stored counter value 
+ * @brief   Get the difference between the stored counter value
  *          and the current counter value.
  * @return  Returns the current counter value - stored counter value.
  */

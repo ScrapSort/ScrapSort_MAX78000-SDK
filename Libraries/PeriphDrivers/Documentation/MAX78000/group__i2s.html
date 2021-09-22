@@ -157,6 +157,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 <tr class="separator:ga7aed006acb05a879710b31e4790ce806"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac7a5a8366d3950a0052d7fafcbb214b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s.html#gac7a5a8366d3950a0052d7fafcbb214b1">MXC_I2S_RXDMAConfig</a> (void *dest_addr, int len)</td></tr>
 <tr class="separator:gac7a5a8366d3950a0052d7fafcbb214b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaf5037c6b75efb9ea52c959bc447d08a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2s.html#gaaf5037c6b75efb9ea52c959bc447d08a">MXC_I2S_RegisterDMACallback</a> (void(*callback)(int, int))</td></tr>
+<tr class="separator:gaaf5037c6b75efb9ea52c959bc447d08a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <hr/><h2 class="groupheader">Data Structure Documentation</h2>
@@ -329,6 +331,32 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 
 </div>
 </div>
+<a id="gaaf5037c6b75efb9ea52c959bc447d08a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaaf5037c6b75efb9ea52c959bc447d08a">&#9670;&nbsp;</a></span>MXC_I2S_RegisterDMACallback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MXC_I2S_RegisterDMACallback </td>
+          <td>(</td>
+          <td class="paramtype">void(*)(int, int)&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the callback function pointer for I2S DMA transactions. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>Function pointer to the DMA callback function </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="gac7a5a8366d3950a0052d7fafcbb214b1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gac7a5a8366d3950a0052d7fafcbb214b1">&#9670;&nbsp;</a></span>MXC_I2S_RXDMAConfig()</h2>
 
@@ -494,7 +522,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Jun 15 2021 19:40:53 for MAX78000 Peripheral Driver API by
+    <li class="footer">Generated on Mon Sep 20 2021 11:01:47 for MAX78000 Peripheral Driver API by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

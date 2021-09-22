@@ -46,7 +46,7 @@
 #include "dma_reva_regs.h"
 
 /***** Definitions *****/
-#define CHECK_HANDLE(x)((x >= 0) &&(x < MXC_DMA_CHANNELS) &&(dma_resource[x].valid))
+#define CHECK_HANDLE(x)((x >= 0) && (x < MXC_DMA_CHANNELS) && (dma_resource[x].valid))
 
 typedef struct {
     void*  userCallback;    // user given callback
@@ -74,9 +74,14 @@ static void transfer_callback(int ch, int error);
 int MXC_DMA_RevA_Init(mxc_dma_reva_regs_t *dma)
 {
     int i, numCh, offset;
+#if TARGET_NUM == 32665
+    numCh = MXC_DMA_CH_OFFSET;
+    offset = numCh * MXC_DMA_GET_IDX((mxc_dma_regs_t*) dma);
+#else
     numCh = MXC_DMA_CHANNELS;
     offset = 0;
-
+#endif
+    
     if(dma_initialized[MXC_DMA_GET_IDX((mxc_dma_regs_t*) dma)]) {
         return E_BAD_STATE;
     }
@@ -121,8 +126,14 @@ int MXC_DMA_RevA_AcquireChannel(mxc_dma_reva_regs_t* dma)
         return E_BAD_STATE;
     }
     
+#if TARGET_NUM == 32665
+    numCh = MXC_DMA_CH_OFFSET;
+    offset = MXC_DMA_CH_OFFSET * MXC_DMA_GET_IDX((mxc_dma_regs_t*) dma);
+#else
     numCh = MXC_DMA_CHANNELS;
     offset = 0;
+#endif
+
 #ifndef __riscv
     /* If DMA is locked return busy */
     if(MXC_GetLock(&dma_lock, 1) != E_NO_ERROR) {
@@ -133,15 +144,15 @@ int MXC_DMA_RevA_AcquireChannel(mxc_dma_reva_regs_t* dma)
     channel = E_NONE_AVAIL;
     
     for(i = offset; i < (offset + numCh); i++) {
-            if(!dma_resource[i].valid) {
-                /* Found one */
-                channel = i;
-                dma_resource[i].valid = 1;
-                dma_resource[i].regs->ctrl = 0;
-                dma_resource[i].regs->cntrld = 0; /* Used by DMA_Start() to conditionally set RLDEN */
-                break;
-            }
+        if(!dma_resource[i].valid) {
+            /* Found one */
+            channel = i;
+            dma_resource[i].valid = 1;
+            dma_resource[i].regs->ctrl = 0;
+            dma_resource[i].regs->cntrld = 0; /* Used by DMA_Start() to conditionally set RLDEN */
+            break;
         }
+    }
 #ifndef __riscv
     MXC_FreeLock(&dma_lock);
 #endif
@@ -336,6 +347,9 @@ int MXC_DMA_RevA_ChannelDisableInt(int ch, int flags)
 int MXC_DMA_RevA_EnableInt(mxc_dma_reva_regs_t *dma, int ch)
 {
     if(CHECK_HANDLE(ch)) {
+      #if TARGET_NUM == 32665
+        ch %= MXC_DMA_CH_OFFSET;
+      #endif
     	dma->inten |= (1 << ch);
     }
     else {
@@ -348,6 +362,9 @@ int MXC_DMA_RevA_EnableInt(mxc_dma_reva_regs_t *dma, int ch)
 int MXC_DMA_RevA_DisableInt(mxc_dma_reva_regs_t *dma, int ch)
 {
     if(CHECK_HANDLE(ch)) {
+      #if TARGET_NUM == 32665
+        ch %= MXC_DMA_CH_OFFSET;
+      #endif
     	dma->inten &= ~(1 << ch);
     }
     else {
@@ -461,7 +478,13 @@ int MXC_DMA_RevA_MemCpy(mxc_dma_reva_regs_t* dma, void* dest, void* src, int len
     int retval;
     mxc_dma_config_t config;
     mxc_dma_srcdst_t transfer;
-    int channel = MXC_DMA_AcquireChannel();
+    int channel;
+
+  #if TARGET_NUM == 32665
+    channel = MXC_DMA_AcquireChannel((mxc_dma_regs_t*) dma);
+  #else
+    channel = MXC_DMA_AcquireChannel();
+  #endif
     
     if(memcpy_resource[channel].userCallback != NULL) {
         // We acquired a channel we haven't cleared yet
@@ -519,8 +542,13 @@ void transfer_callback(int ch, int error)
 
 int MXC_DMA_RevA_DoTransfer(mxc_dma_reva_regs_t* dma, mxc_dma_config_t config, mxc_dma_srcdst_t firstSrcDst, mxc_dma_trans_chain_t callback)
 {
-    int retval;
-    int channel = MXC_DMA_AcquireChannel();
+    int retval, channel;
+
+  #if TARGET_NUM == 32665
+    channel = MXC_DMA_AcquireChannel((mxc_dma_regs_t*) dma);
+  #else
+    channel = MXC_DMA_AcquireChannel();
+  #endif
     
     if(memcpy_resource[channel].userCallback != NULL) {
         // We acquired a channel we haven't cleared yet

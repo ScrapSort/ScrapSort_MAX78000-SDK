@@ -76,8 +76,8 @@ void ECC_IRQHandler(void)
     eccAddr = MXC_GCR->eccaddr;
     eccFlag = 1;
     
-    MXC_GCR->eccerr = MXC_GCR->eccerr;
-    MXC_GCR->eccced = MXC_GCR->eccced;
+    MXC_GCR->eccerr = eccErr;
+    MXC_GCR->eccced = eccDErr;
 }
 
 
@@ -94,9 +94,9 @@ int main(void)
     printf("and ensure that the ECC interrupts on an error\n");
     printf("when the corrupted address is read\n\n");
     
-    // Clear all ECC Errors -- write-1-to-clear
-    MXC_GCR->eccerr = MXC_GCR->eccerr;
-    MXC_GCR->eccced = MXC_GCR->eccced;
+    // Clear all ECC Errors -- write-1-to-clear (cast is necessary to avoid compiler warning about assigning value to itself)
+    MXC_GCR->eccerr = (volatile uint32_t)MXC_GCR->eccerr;
+    MXC_GCR->eccced = (volatile uint32_t)MXC_GCR->eccced;
     
     // Enable interrupts for ECC errors
     MXC_GCR->eccie |=  MXC_F_GCR_ECCIE_RAM;
@@ -108,7 +108,7 @@ int main(void)
     
     for (i = MXC_SRAM_MEM_BASE; i < ramTop - sizeof(uint32_t); i += sizeof(uint32_t)) {
         cursor = (uint32_t*) i;
-        *cursor;
+        (volatile uint32_t)*cursor;	// Force a read of the memory location.
         
         if (eccFlag) {
             break;

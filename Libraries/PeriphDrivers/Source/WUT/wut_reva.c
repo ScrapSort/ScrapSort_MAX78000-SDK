@@ -39,7 +39,6 @@
 #include "mxc_assert.h"
 #include "wut.h"
 #include "wut_reva.h"
-#include "gcr_regs.h"
 
 /* **** Definitions **** */
 
@@ -249,23 +248,20 @@ uint32_t MXC_WUT_RevA_GetSleepTicks(mxc_wut_reva_regs_t* wut)
 /* ************************************************************************** */
 void MXC_WUT_RevA_Store(mxc_wut_reva_regs_t* wut)
 {
-    //TODO - update reva regs to have these registers
-
-    // wut_count = wut->cnt;
-    // wut_snapshot = wut->snapshot;
+    MXC_WUT_RevA_Edge(wut);
+    wut_count = wut->cnt;
+    wut_snapshot = wut->snapshot;
 }
 
 /* ************************************************************************** */
 void MXC_WUT_RevA_RestoreBBClock(mxc_wut_reva_regs_t* wut, uint32_t dbbFreq, uint32_t timerClock)
 {
-    //TODO - update reva regs to have these registers
-    
     /* restore DBB clock from WUT */
-    // MXC_WUT_RevA_Edge(wut);
-    // wut->preset = wut_snapshot + (uint64_t)(wut->cnt - wut_count + 1)
-    //               * dbbFreq / timerClock;
-    // wut->reload = 1;  // arm DBB_CNT update on the next rising WUT clock
-    // MXC_WUT_RevA_Edge(wut);
+    MXC_WUT_RevA_Edge(wut);
+    wut->preset = wut_snapshot + (uint64_t)(wut->cnt - wut_count + 1)
+                  * dbbFreq / timerClock;
+    wut->reload = 1;  // arm DBB_CNT update on the next rising WUT clock
+    MXC_WUT_RevA_Edge(wut);
 }
 
 /* ************************************************************************** */
@@ -275,7 +271,7 @@ void MXC_WUT_RevA_Delay_MS(mxc_wut_reva_regs_t* wut, uint32_t waitMs, uint32_t t
     uint32_t  tmp = wut->cnt;
     
     tmp += (waitMs * (timerClock /
-                      (0x1 << ((wut->ctrl & MXC_F_WUT_REVA_CTRL_PRES) >> MXC_F_WUT_REVA_CTRL_PRES_POS)))
+           (0x1 << ((wut->ctrl & MXC_F_WUT_REVA_CTRL_PRES) >> MXC_F_WUT_REVA_CTRL_PRES_POS)))
             + 500) / 1000 ;
             
     while (wut->cnt < tmp) {}

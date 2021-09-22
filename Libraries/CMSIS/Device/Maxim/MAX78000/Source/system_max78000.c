@@ -37,6 +37,7 @@
 #include "max78000.h"
 #include "gcr_regs.h"
 #include "mxc_sys.h"
+#include "icc.h"
 
 extern void (* const __isr_vector[])(void);
 
@@ -117,6 +118,9 @@ __weak void SystemInit(void)
     /* IAR sets the VTOR pointer incorrectly and causes stack corruption */
     SCB->VTOR = (unsigned long)__isr_vector;
 #endif /* __CC_ARM || __GNUC__ */
+
+    /* Enable instruction cache */
+    MXC_ICC_Enable(MXC_ICC0);
 
     /* Enable FPU on Cortex-M4, which occupies coprocessor slots 10 & 11 */
     /* Grant full access, per "Table B3-24 CPACR bit assignments". */

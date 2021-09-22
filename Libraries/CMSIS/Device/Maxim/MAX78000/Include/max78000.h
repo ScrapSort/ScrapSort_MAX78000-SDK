@@ -189,7 +189,7 @@ typedef enum {
     #endif
     PF_IRQn = 4,            /* 0x04,4 PFW | SYSFAULT | CM4 */
     WDT0_IRQn,              /* 0x05,5 Watchdog 0 */
-    GPIOWake_IRQn = 6,      /* 0x06,6 GPIO Wakeup */
+    GPIOWAKE_IRQn = 6,      /* 0x06,6 GPIO Wakeup */
     AINComp_IRQn = 6,       /* 0x06,6 AINComp */
     RTC_IRQn,               /* 0x07,7 RTC */
     TMR0_IRQn,              /* 0x08,8 Timer 0 */
@@ -396,6 +396,9 @@ typedef enum {
                                             (i) == 1 ? GPIO1_IRQn :            \
                                             (i) == 2 ? GPIO2_IRQn : 0)
 // GPIO3 does not have an interrupt
+
+#define GPIOWake_IRQn                   GPIOWAKE_IRQn
+#define GPIOWake_IRQHandler             GPIOWAKE_IRQHandler
 
 /******************************************************************************/
 

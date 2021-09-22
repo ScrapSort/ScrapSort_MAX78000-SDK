@@ -89,7 +89,7 @@ typedef enum {
 
 /** @brief  I2S transaction sample size */
 typedef enum {
-    MXC_I2S_SAMPLESIZE_EIGTH,
+    MXC_I2S_SAMPLESIZE_EIGHT,
     MXC_I2S_SAMPLESIZE_SIXTEEN,
     MXC_I2S_SAMPLESIZE_TWENTY,
     MXC_I2S_SAMPLESIZE_TWENTYFOUR,
@@ -231,6 +231,13 @@ void MXC_I2S_TXDMAConfig(void *src_addr, int len);
  * @param   len         length of the data to be received
  */
 void MXC_I2S_RXDMAConfig(void *dest_addr, int len);
+
+/**
+ * @brief   Set the callback function pointer for I2S DMA transactions
+ * 
+ * @param   callback    Function pointer to the DMA callback function
+ */
+void MXC_I2S_RegisterDMACallback(void(*callback)(int, int));
 
 #ifdef __cplusplus
 }

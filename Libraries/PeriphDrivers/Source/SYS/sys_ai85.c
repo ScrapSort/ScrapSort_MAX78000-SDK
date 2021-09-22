@@ -42,10 +42,13 @@
 
 /* **** Includes **** */
 #include <stddef.h>
+#include <string.h>
 #include "mxc_device.h"
 #include "mxc_assert.h"
 #include "mxc_sys.h"
 #include "mxc_delay.h"
+#include "aes.h"
+#include "flc.h"
 #include "lpgcr_regs.h"
 #include "gcr_regs.h"
 #include "fcr_regs.h"
@@ -63,6 +66,75 @@
 /* **** Globals **** */
 
 /* **** Functions **** */
+
+/* ************************************************************************** */
+int MXC_SYS_GetUSN(uint8_t *usn, uint8_t *checksum)
+{
+    uint32_t *infoblock = (uint32_t*)MXC_INFO0_MEM_BASE;
+
+    /* Read the USN from the info block */
+    MXC_FLC_UnlockInfoBlock(MXC_INFO0_MEM_BASE);
+
+    memset(usn, 0, MXC_SYS_USN_CHECKSUM_LEN);
+
+    usn[0]  = (infoblock[0] & 0x007F8000) >> 15;
+    usn[1]  = (infoblock[0] & 0x7F800000) >> 23;
+    usn[2]  = (infoblock[1] & 0x0000007F) << 1;
+    usn[2] |= (infoblock[0] & 0x80000000) >> 31;
+    usn[3]  = (infoblock[1] & 0x00007F80) >> 7;
+    usn[4]  = (infoblock[1] & 0x007F8000) >> 15;
+    usn[5]  = (infoblock[1] & 0x7F800000) >> 23;
+    usn[6]  = (infoblock[2] & 0x007F8000) >> 15;
+    usn[7]  = (infoblock[2] & 0x7F800000) >> 23;
+    usn[8]  = (infoblock[3] & 0x0000007F) << 1;
+    usn[8] |= (infoblock[2] & 0x80000000) >> 31;
+    usn[9]  = (infoblock[3] & 0x00007F80) >> 7;
+    usn[10] = (infoblock[3] & 0x007F8000) >> 15;
+
+    // Compute the checksum
+    if(checksum != NULL) {
+        uint8_t info_checksum[2];
+        uint8_t key[MXC_SYS_USN_CHECKSUM_LEN];
+
+        /* Initialize the remainder of the USN and key */
+        memset(key, 0, MXC_SYS_USN_CHECKSUM_LEN);
+        memset(checksum, 0, MXC_SYS_USN_CHECKSUM_LEN);
+
+        /* Read the checksum from the info block */
+        info_checksum[0] = ((infoblock[3] & 0x7F800000) >> 23);
+        info_checksum[1] = ((infoblock[4] & 0x007F8000) >> 15);
+
+        /* Setup the encryption parameters */
+        MXC_AES_Init();
+
+        mxc_aes_req_t aesReq;
+        aesReq.length = MXC_SYS_USN_CHECKSUM_LEN/4;
+        aesReq.inputData = (uint32_t*)usn;
+        aesReq.resultData = (uint32_t*)checksum;
+        aesReq.keySize = MXC_AES_128BITS;
+        aesReq.encryption = MXC_AES_ENCRYPT_EXT_KEY;
+
+        MXC_AES_SetExtKey(key, MXC_AES_128BITS);
+        MXC_AES_Encrypt(&aesReq);
+        MXC_AES_Shutdown();
+
+        /* Verify the checksum */
+        if((checksum[1] != info_checksum[0]) ||
+            (checksum[0] != info_checksum[1])) {
+
+            MXC_FLC_LockInfoBlock(MXC_INFO0_MEM_BASE);
+            return E_UNKNOWN;
+        }
+    }
+
+    /* Add the info block checksum to the USN */
+    usn[11] = ((infoblock[3] & 0x7F800000) >> 23);
+    usn[12] = ((infoblock[4] & 0x007F8000) >> 15);
+
+    MXC_FLC_LockInfoBlock(MXC_INFO0_MEM_BASE);
+
+    return E_NO_ERROR;
+}
 
 /* ************************************************************************** */
 int MXC_SYS_IsClockEnabled(mxc_sys_periph_clock_t clock)

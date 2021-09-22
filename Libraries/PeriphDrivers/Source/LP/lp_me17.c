@@ -37,19 +37,24 @@
 #include "mcr_regs.h"
 #include "lp.h"
 
-#ifdef __riscv
-void MXC_LP_EnterSleepMode(void)
-{
-    __asm volatile("wfi");
-}
+
+#ifndef __riscv
+/* ARM */
+#define SET_SLEEPDEEP(X)        (SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk)
+#define CLR_SLEEPDEEP(X)        (SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk)
 #else
+/* RISCV */
+/* These bits do not exist for RISCV core */
+#define SET_SLEEPDEEP(X)
+#define CLR_SLEEPDEEP(X)
+#endif
 
 void MXC_LP_EnterSleepMode(void)
 {
     MXC_LP_ClearWakeStatus();
     
     /* Clear SLEEPDEEP bit */
-    SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
+    CLR_SLEEPDEEP();
     
     /* Go into Sleep mode and wait for an interrupt to wake the processor */
     __WFI();
@@ -61,7 +66,7 @@ void MXC_LP_EnterLowPowerMode(void)
     MXC_MCR->ctrl |= MXC_F_MCR_CTRL_ERTCO_EN;   // Enabled for deep sleep mode
     
     /* Set SLEEPDEEP bit */
-    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+    SET_SLEEPDEEP();
 
     /* Go into low power mode and wait for an interrupt to wake the processor */
     MXC_GCR->pm |= MXC_S_GCR_PM_MODE_LPM; 
@@ -74,7 +79,7 @@ void MXC_LP_EnterMicroPowerMode(void)
     MXC_MCR->ctrl |= MXC_F_MCR_CTRL_ERTCO_EN;   // Enabled for deep sleep mode
     
     /* Set SLEEPDEEP bit */
-    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+    SET_SLEEPDEEP();
 
     /* Go into Deepsleep mode and wait for an interrupt to wake the processor */
     MXC_GCR->pm |= MXC_S_GCR_PM_MODE_UPM; // UPM mode
@@ -87,7 +92,7 @@ void MXC_LP_EnterStandbyMode(void)
     MXC_MCR->ctrl |= MXC_F_MCR_CTRL_ERTCO_EN;   // Enabled for deep sleep mode
     
     /* Set SLEEPDEEP bit */
-    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+    SET_SLEEPDEEP();
 
     /* Go into standby mode and wait for an interrupt to wake the processor */
     MXC_GCR->pm |= MXC_S_GCR_PM_MODE_STANDBY; // standby mode
@@ -138,6 +143,8 @@ void MXC_LP_ClearWakeStatus(void)
     /* Write 1 to clear */
     MXC_PWRSEQ->lpwkst0 = 0xFFFFFFFF;
     MXC_PWRSEQ->lpwkst1 = 0xFFFFFFFF;
+    MXC_PWRSEQ->lpwkst2 = 0xFFFFFFFF;
+    MXC_PWRSEQ->lpwkst3 = 0xFFFFFFFF;
     MXC_PWRSEQ->lppwst  = 0xFFFFFFFF;
 }
 
@@ -152,6 +159,13 @@ void MXC_LP_EnableGPIOWakeup(mxc_gpio_cfg_t* wu_pins)
         
     case MXC_GPIO_PORT_1:
         MXC_PWRSEQ->lpwken1 |= wu_pins->mask;
+		break;
+	case MXC_GPIO_PORT_2:
+        MXC_PWRSEQ->lpwken2 |= wu_pins->mask;
+		break;
+	case MXC_GPIO_PORT_3:
+        MXC_PWRSEQ->lpwken3 |= wu_pins->mask;
+		break;
     }
 }
 
@@ -164,9 +178,16 @@ void MXC_LP_DisableGPIOWakeup(mxc_gpio_cfg_t* wu_pins)
         
     case MXC_GPIO_PORT_1:
         MXC_PWRSEQ->lpwken1 &= ~wu_pins->mask;
+		break;
+	case MXC_GPIO_PORT_2:
+        MXC_PWRSEQ->lpwken2 &= ~wu_pins->mask;
+		break;
+	case MXC_GPIO_PORT_3:
+        MXC_PWRSEQ->lpwken3 &= ~wu_pins->mask;
+		break;
     }
     
-    if (MXC_PWRSEQ->lpwken1 == 0 && MXC_PWRSEQ->lpwken0 == 0) {
+    if (MXC_PWRSEQ->lpwken3 == 0 && MXC_PWRSEQ->lpwken2 == 0 && MXC_PWRSEQ->lpwken1 == 0 && MXC_PWRSEQ->lpwken0 == 0) {
         MXC_GCR->pm &= ~MXC_F_GCR_PM_GPIO_WE;
     }
 }
@@ -224,5 +245,3 @@ int MXC_LP_ConfigDeepSleepClocks(uint32_t mask)
     MXC_GCR->pm |= mask;
     return E_NO_ERROR;
 }
-
-#endif

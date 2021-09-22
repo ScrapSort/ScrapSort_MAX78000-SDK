@@ -141,7 +141,17 @@ typedef enum {
     MXC_SYS_CLOCK_EXTCLK  = MXC_V_GCR_CLKCTRL_SYSCLK_SEL_EXTCLK
 } mxc_sys_system_clock_t;
 
+#define MXC_SYS_USN_CHECKSUM_LEN    16
+
 /***** Function Prototypes *****/
+
+/**
+ * @brief Reads the device USN.
+ * @param usn       Pointer to store the USN.
+ * @param checksum  Optional pointer to store the AES checksum.
+ * @returns       E_NO_ERROR if everything is successful.
+ */
+int MXC_SYS_GetUSN(uint8_t *usn, uint8_t *checksum);
 
 /**
  * @brief Determines if the selected peripheral clock is enabled.

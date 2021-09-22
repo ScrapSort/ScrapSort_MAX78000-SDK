@@ -225,6 +225,15 @@ int MXC_SPI_Shutdown (mxc_spi_regs_t* spi);
 int MXC_SPI_ReadyForSleep (mxc_spi_regs_t* spi);
 
 /**
+ * @brief   Returns the frequency of the clock used as the bit rate generator for a given SPI instance.
+ *
+ * @param   spi         Pointer to SPI registers (selects the SPI block used.)
+ *
+ * @return  Frequency of the clock used as the bit rate generator
+ */
+int MXC_SPI_GetPeripheralClock(mxc_spi_regs_t* spi);
+
+/**
  * @brief   Set the frequency of the SPI interface.
  *
  * This function is applicable in Master mode only

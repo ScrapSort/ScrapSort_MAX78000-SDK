@@ -145,6 +145,12 @@ int main(void)
     
     for (i = 2; i < 17; i++) {
         // Sending out 2 to 16 bits
+
+        // The hardware doesn't support 9-bit wide characters at high speeds.
+        if(i == 9) {
+            printf("Hardware does not support 9-bit wide characters.\n");
+            continue;
+        }
         
         for (j = 0; j < DATA_LEN; j++) {
             tx_data[j] = DATA_VALUE;

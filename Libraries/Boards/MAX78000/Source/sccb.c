@@ -110,7 +110,7 @@ static uint8_t send_byte(uint8_t byt)
 {
     uint8_t i;
     uint8_t res = 0;
-    
+
     for (i = 0; i < 8; i++) {
         if ((byt << i) & 0x80)    {
             SDA_HIGH();
@@ -118,31 +118,31 @@ static uint8_t send_byte(uint8_t byt)
         else                      {
             SDA_LOW();
         }
-        
+
         DELAY_US(WAIT_US);
-        
+
         SCL_HIGH();
         DELAY_US(WAIT_US);
         SCL_LOW();
         DELAY_US(WAIT_US);
     }
-    
+
     SDA_IN();
     DELAY_US(WAIT_US);
     SCL_HIGH();
     DELAY_US(WAIT_US);
-    
+
     if (SDA_GET()) {
         res = 1;    // means nack
     }
     else {
         res = 0;    // means ack
     }
-    
+
     SCL_LOW();
     DELAY_US(WAIT_US);
     SDA_OUT();
-    
+
     return res;
 }
 
@@ -150,27 +150,27 @@ static uint8_t get_byte(void)
 {
     uint8_t byt = 0;
     uint8_t j;
-    
+
     SDA_IN();
     DELAY_US(WAIT_US);
-    
+
     for (j = 8; j > 0; j--) {
-    
+
         SCL_HIGH();
         DELAY_US(WAIT_US);
-        
+
         byt = byt << 1;
-        
+
         if (SDA_GET()) {
             byt++;
         }
-        
+
         SCL_LOW();
         DELAY_US(WAIT_US);
     }
-    
+
     SDA_OUT();
-    
+
     return byt;
 }
 
@@ -178,13 +178,12 @@ static uint8_t get_byte(void)
 int sccb_init(void)
 {
     int ret = 0;
-    
+
     MXC_GPIO_Config(&gpio_cfg_scl);
     MXC_GPIO_Config(&gpio_cfg_sda);
-    
+
     SDA_HIGH();
     SCL_HIGH();
-    
     return ret;
 }
 
@@ -192,80 +191,144 @@ int sccb_scan(void)
 {
     int ret = 0;
     int slv_addr = 0;
-    
+
     while (slv_addr < 0xFF) {
-    
+
         start();
         ret = send_byte(slv_addr << 1); // address
         stop();
-        
+
         if (ret == 0) {
             return slv_addr;
         }
-        
+
         slv_addr++;
     }
-    
+
     return -1; // not found
 }
 
 int sccb_read_byt(uint8_t slv_addr, uint8_t reg, uint8_t* byt)
 {
     int ret = 0;
-    
+
     start();
-    
+
     if (ret == 0) {
         ret = send_byte(slv_addr << 1);    // address
     }
-    
+
     if (ret == 0) {
         ret = send_byte(reg);
     }
-    
+
     stop();
-    
+
     if (ret == 0) {
         DELAY_US(WAIT_US);
-        
+
         start();
         ret = send_byte((slv_addr << 1) + 1); // +1 means read
-        
+
         if (ret == 0)   {
             *byt = get_byte(); //
             send_NACK();
         }
-        
+
         stop();
     }
-    
+
     return ret;
 }
 
 int sccb_write_byt(uint8_t slv_addr, uint8_t reg, uint8_t val)
 {
     int ret = 0;
-    
+
     start();
-    
+
     if (ret == 0) {
         ret = send_byte(slv_addr << 1);    // address
     }
-    
+
     DELAY_US(100);
-    
+
     if (ret == 0) {
         ret = send_byte(reg);    //
     }
-    
+
     DELAY_US(100);
-    
+
     if (ret == 0) {
         ret = send_byte(val);    //
     }
-    
+
     DELAY_US(100);
     stop();
-    
+
+    return ret;
+}
+
+int sccb_read_reg16(uint8_t slv_addr, uint16_t reg, uint8_t* byte)
+{
+    int ret = 0;
+
+    start();
+
+    if (ret == 0) {
+        ret = send_byte(slv_addr << 1);    // address
+    }
+
+    if (ret == 0) {
+        ret = send_byte(reg >> 8);
+    }
+
+    if (ret == 0) {
+        ret = send_byte(reg);
+    }
+
+    stop();
+
+    if (ret == 0) {
+        DELAY_US(WAIT_US);
+
+        start();
+        ret = send_byte((slv_addr << 1) + 1); // +1 means read
+
+        if (ret == 0)   {
+            *byte = get_byte(); //
+            send_NACK();
+        }
+
+        stop();
+    }
+
+    return ret;
+}
+
+int sccb_write_reg16(uint8_t slv_addr, uint16_t reg, uint8_t val)
+{
+    int ret = 0;
+
+    start();
+
+    if (ret == 0) {
+        ret = send_byte(slv_addr << 1);    // address
+    }
+
+    if (ret == 0) {
+        ret = send_byte(reg >> 8);
+    }
+
+    if (ret == 0) {
+        ret = send_byte(reg);
+    }
+
+    if (ret == 0) {
+        ret = send_byte(val);    //
+    }
+
+    stop();
+
     return ret;
 }

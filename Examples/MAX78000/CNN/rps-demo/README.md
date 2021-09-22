@@ -10,7 +10,7 @@ typora-root-url: Resources
 Description
 -----------
 
-This is a classic rock-paper-scissor game demo that user can play against the computer via the camera module. The model trained in this demo is used to classify images of "rock", "paper" and "scissor" hand gestures. The input size is 64x64 pixels RGB which is 3x64x64 in CHW format.
+This is a classic rock-paper-scissors game demo that user can play against the computer via the camera module. The model trained in this demo is used to classify images of "rock", "paper" and "scissors" hand gestures. The input size is 64x64 pixels RGB which is 3x64x64 in CHW format.
 
 The example supports live capture from camera module and displays the result on the TFT LCD. The code also uses a sampledata header (sampledata.h) file to test a pre-defined input sample.
 
@@ -39,6 +39,16 @@ BOARD=EvKit_V1
 endif
 ```
 
+To compile code for MAX78000 Feather board enable **BOARD=FTHR_RevA** in Makefile:
+
+```bash
+# Specify the board used
+ifeq "$(BOARD)" ""
+#BOARD=EvKit_V1
+BOARD=FTHR_RevA
+endif
+```
+
 ### Load firmware image to MAX78000 EVKIT
 
 Connect USB cable to CN1 (USB/PWR) and turn ON power switch (SW1).
@@ -62,6 +72,39 @@ This demo is operated in two modes: Real-time data using Camera module or using 
 
 In either mode, pushbutton trigger PB1(SW2) is used to capture and load an image into CNN engine. User is prompted to press PB1 to load an image
 
+### Load firmware image to MAX78000 Feather
+
+Connect USB cable to CN1 USB connector.
+
+Load the firmware image using OpenOCD. If you are using Windows, perform this step in a MinGW shell.
+
+```bash
+openocd -s $MAXIM_PATH/Tools/OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/max78000.cfg -c "program build/MAX78000.elf reset exit"
+```
+
+### MAX78000 Feather operations
+
+The TFT display is optional and not supplied with the MAX78000 Feather board.
+User should use PC terminal program to observe **cats-dogs_demo** result as described in "Terminal output" section.
+
+The MAX78000 Feather compatible 2.4'' TFT FeatherWing display can be ordered here:
+
+https://learn.adafruit.com/adafruit-2-4-tft-touch-screen-featherwing
+
+This TFT display comes fully assembled with dual sockets for MAX78000 Feather to plug into.
+
+To compile code with enabled TFT feature use following setting in Makefile:
+
+```bash
+ifeq "$(BOARD)" "FTHR_RevA"
+PROJ_CFLAGS += -DENABLE_TFT
+endif
+```
+
+While using TFT display keep its power switch in "ON" position. The TFT "Reset" button also can be used as Feather reset.
+Press PB1 (SW1) button to start demo.
+
+
 
 ### Camera Mode 
 
@@ -80,7 +123,7 @@ This mode uses a header file "sampledata.h" containing RGB image data and it sho
 To create your own header file follow these steps:
 
 1.  Navigate to Utility directory. $ cd Utility
-2.  Download rock, paper or scissor hand gesture image in this directory.
+2.  Download rock, paper or scissors hand gesture image in this directory.
 3.  Open 'rgb.py' file and change the name of the image file on line 8. im = (Image.open('./image\_filename.format')). Save the cahanges.
 4.  Now generate a header file using this command: python3 rgb.py
 5.  Use this header file in your main.c
@@ -91,28 +134,28 @@ Terminal output
 The Console UART of the device will output these messages:
 
 ```
+RPS Feather Demo
 Waiting...
-
-*** CNN Inference Test ***
-
-*** CNN Test ***
 Init LCD.
 Init Camera.
 ********** Press PB1 to capture an image **********
 
 Capture a camera frame 1
+Copy camera frame to CNN input buffers.
 Show camera frame on LCD.
-Time for CNN: 2664 us
+Time for CNN: 2667 us
 
 Classification results:
-[-326446] -> Class 0    Paper: 0.0%
-[ 314820] -> Class 1     Rock: 100.0%
-[-228949] -> Class 2  Scissor: 0.0%
+[ 153671] -> Class 0    Paper: 100.0%
+[-216581] -> Class 1     Rock: 0.0%
+[-283383] -> Class 2 Scissors: 0.0%
 
-User choose: Rock 
-Computer choose: Scissor 
+User choose: Paper 
+Computer choose: Scissors
 
-USER WINS!!!
+COMPUTER WINS!!!
+
+********** Press PB1 to capture an image **********
 ```
 
 ### References
