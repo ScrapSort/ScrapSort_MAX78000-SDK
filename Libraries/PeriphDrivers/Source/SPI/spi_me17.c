@@ -228,7 +228,12 @@ int MXC_SPI_ReadyForSleep(mxc_spi_regs_t* spi)
 int MXC_SPI_GetPeripheralClock(mxc_spi_regs_t* spi)
 {
     int retval;
-    if(spi == MXC_SPI0) {
+
+    if(spi == MXC_SPI1) {
+        retval = PeripheralClock;
+    }
+#ifdef MXC_SPI0 // SPI0 is not accessible from the RISC core.
+    else if(spi == MXC_SPI0) {
         int sys_clk = (MXC_GCR->clkctrl & MXC_F_GCR_CLKCTRL_SYSCLK_SEL) >> MXC_F_GCR_CLKCTRL_SYSCLK_SEL_POS;
         switch(sys_clk) {
             case MXC_SYS_CLOCK_IPO:
@@ -258,9 +263,7 @@ int MXC_SPI_GetPeripheralClock(mxc_spi_regs_t* spi)
                 return E_BAD_STATE;   
         }
     }
-    else if(spi == MXC_SPI1) {
-        retval = PeripheralClock;
-    }
+#endif // MXC_SPI0
     else {
         return E_BAD_PARAM;
     }
