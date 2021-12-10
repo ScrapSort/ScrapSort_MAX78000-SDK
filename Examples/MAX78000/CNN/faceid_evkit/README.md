@@ -52,20 +52,32 @@ Connect USB cable to CN1 (USB/PWR) and turn ON power switch (SW1). Note the COM 
 
 Connect PICO adapter to JH5 SWD header.
 
-Load the firmware image using OpenOCD. If you are using Windows, perform this step in a MinGW shell.
+If you are using Windows, load the firmware image with OpenOCD in a MinGW shell:
 
 ```bash
 openocd -s $MAXIM_PATH/Tools/OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/max78000.cfg -c "program build/MAX78000.elf reset exit"
+```
+
+If using Linux, perform this step:
+
+```bash
+./openocd -f tcl/interface/cmsis-dap.cfg -f tcl/target/max78000.cfg -c "program build/MAX78000.elf verify reset exit"
 ```
 
 ### Load firmware image to MAX78000 Feather
 
 Connect USB cable to CN1 USB connector.
 
-Load the firmware image using OpenOCD. If you are using Windows, perform this step in a MinGW shell.
+If you are using Windows, load the firmware image with OpenOCD in a MinGW shell:
 
 ```bash
 openocd -s $MAXIM_PATH/Tools/OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/max78000.cfg -c "program build/MAX78000.elf reset exit"
+```
+
+If using Linux, perform this step:
+
+```bash
+./openocd -f tcl/interface/cmsis-dap.cfg -f tcl/target/max78000.cfg -c "program build/MAX78000.elf verify reset exit"
 ```
 
 ### MAX78000 EVKIT operations

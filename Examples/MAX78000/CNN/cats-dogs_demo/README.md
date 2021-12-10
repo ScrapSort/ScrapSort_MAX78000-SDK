@@ -55,10 +55,16 @@ Connect USB cable to CN1 (USB/PWR) and turn ON power switch (SW1).
 
 Connect PICO adapter to JH5 SWD header.
 
-Load the firmware image using OpenOCD. If you are using Windows, perform this step in a MinGW shell.
+If you are using Windows, load the firmware image with OpenOCD in a MinGW shell:
 
 ```bash
 openocd -s $MAXIM_PATH/Tools/OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/max78000.cfg -c "program build/MAX78000.elf reset exit"
+```
+
+If using Linux, perform this step:
+
+```bash
+./openocd -f tcl/interface/cmsis-dap.cfg -f tcl/target/max78000.cfg -c "program build/MAX78000.elf verify reset exit"
 ```
 
 ### MAX78000 EVKIT operations
@@ -76,10 +82,16 @@ In either mode, pushbutton trigger PB1(SW2) is used to capture and load an image
 
 Connect USB cable to CN1 USB connector.
 
-Load the firmware image using OpenOCD. If you are using Windows, perform this step in a MinGW shell.
+If you are using Windows, load the firmware image with OpenOCD in a MinGW shell:
 
 ```bash
 openocd -s $MAXIM_PATH/Tools/OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/max78000.cfg -c "program build/MAX78000.elf reset exit"
+```
+
+If using Linux, perform this step:
+
+```bash
+./openocd -f tcl/interface/cmsis-dap.cfg -f tcl/target/max78000.cfg -c "program build/MAX78000.elf verify reset exit"
 ```
 
 ### MAX78000 Feather operations
@@ -130,7 +142,7 @@ To create your own header file follow these steps:
 
 1.  Navigate to Utility directory. $ cd Utility
 2.  Download cat or dog image in this directory.
-3.  Open 'rgb.py' file and change the name of the image file on line 8. im = (Image.open('./image\_filename.format')). Save the cahanges.
+3.  Open 'rgb.py' file and change the name of the image file on line 8. im = (Image.open('image_filename.format')). Save the changes.
 4.  Now generate a header file using this command: python3 rgb.py
 5.  Use this header file in your main.c
 
