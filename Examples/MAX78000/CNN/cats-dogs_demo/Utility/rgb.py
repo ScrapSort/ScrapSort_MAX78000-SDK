@@ -5,7 +5,7 @@ import sys
 import cv2
 
 np.set_printoptions(threshold=sys.maxsize)
-im = (Image.open('./dog.jpeg'))
+im = (Image.open('dog.jpeg'))
 size = (64,64)
 
 img = ImageOps.fit(im, size, Image.ANTIALIAS)
@@ -13,7 +13,7 @@ np1_img = np.array(img)
 new_img = Image.fromarray(np1_img)
 new_img.save("new_img.png")
 
-src = cv2.imread('./new_img.png', cv2.IMREAD_UNCHANGED)
+src = cv2.imread('new_img.png', cv2.IMREAD_UNCHANGED)
 
 #Get red channel from img
 red = src[:,:,2]

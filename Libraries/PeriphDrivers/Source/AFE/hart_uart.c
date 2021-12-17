@@ -54,13 +54,12 @@
 #include "mcr_regs.h"
 #include "dma.h"
 
-#if (TARGET != MAX32680 || TARGET_NUM == 32680)
+#if (TARGET_NUM == 32680)
 #include "ptg_regs.h"
 #include "pt_regs.h"
 #endif
 
 // Defines
-#define HART_UART_INSTANCE			MXC_UART2
 // #define HART_CLK_4MHZ_CHECK
 
 // #define DECREASE_HART_TX_SLEW_RATE
@@ -70,7 +69,9 @@
 #define MAX_HART_UART_PACKET_LEN	286
 
 // Note, this is internally bonded, but is Y bonded to MAX32675 package as well, as pin: 51, aka P1.8
-#if (TARGET != MAX32675 || TARGET_NUM == 32675)
+#if (TARGET_NUM == 32675)
+#define HART_UART_INSTANCE			MXC_UART2
+
 #define HART_RTS_GPIO_PORT          MXC_GPIO1
 #define HART_RTS_GPIO_PIN           MXC_GPIO_PIN_8
 
@@ -85,7 +86,9 @@
 
 #define PCLKDIV_DIV_BY_4			2
 
-#elif (TARGET != MAX32680 || TARGET_NUM == 32680)
+#elif (TARGET_NUM == 32680)
+#define HART_UART_INSTANCE			MXC_UART0
+
 #define HART_RTS_GPIO_PORT          MXC_GPIO0
 #define HART_RTS_GPIO_PIN           MXC_GPIO_PIN_3
 
@@ -110,7 +113,7 @@ volatile uint32_t hart_uart_reception_len = 0;
 volatile int32_t hart_uart_reception_avail = 0;
 volatile uint32_t hart_receive_active = 0;
 
-#if (TARGET != MAX32680 || TARGET_NUM == 32680)
+#if (TARGET_NUM == 32680)
 mxc_pt_regs_t* pPT0 = MXC_PT0;
 mxc_ptg_regs_t* pPTG = MXC_PTG;
 #endif
@@ -168,7 +171,7 @@ static int hart_uart_init(mxc_uart_regs_t* uart, unsigned int baud, mxc_uart_clo
         return E_NOT_SUPPORTED;
     }
     
-    return MXC_UART_RevB_Init ((mxc_uart_revb_regs_t*) uart, baud, clock);
+    return MXC_UART_RevB_Init ((mxc_uart_revb_regs_t*) uart, baud, (mxc_uart_revb_clock_t) clock);
 }
 
 int hart_uart_setflowctrl(mxc_uart_regs_t* uart, mxc_uart_flow_t flowCtrl, int rtsThreshold)
@@ -287,7 +290,7 @@ static int enable_hart_clock(void)
 {
 	int retval = 0;
 
-#if (TARGET != MAX32675 || TARGET_NUM == 32675)
+#if (TARGET_NUM == 32675)
 	mxc_gpio_cfg_t hart_clk_output;
 
 	// ERFO Crystal is required for the HART device in the AFE
@@ -314,7 +317,7 @@ static int enable_hart_clock(void)
     MXC_GCR->pclkdiv &= ~(MXC_F_GCR_PCLKDIV_DIV_CLK_OUT_CTRL | MXC_F_GCR_PCLKDIV_DIV_CLK_OUT_EN);
     MXC_GCR->pclkdiv |= ((PCLKDIV_DIV_BY_4 << MXC_F_GCR_PCLKDIV_DIV_CLK_OUT_CTRL_POS) & MXC_F_GCR_PCLKDIV_DIV_CLK_OUT_CTRL);
     MXC_GCR->pclkdiv |= MXC_F_GCR_PCLKDIV_DIV_CLK_OUT_EN;
-#elif (TARGET != MAX32680 || TARGET_NUM == 32680)
+#elif (TARGET_NUM == 32680)
     MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_PT);
     MXC_SYS_Reset_Periph(MXC_SYS_RESET1_PT);
 

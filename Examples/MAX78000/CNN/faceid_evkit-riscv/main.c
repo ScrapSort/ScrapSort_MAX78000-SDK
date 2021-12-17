@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (C) Maxim Integrated Products, Inc., All Rights Reserved.
+* Copyright (C) 2020-2021 Maxim Integrated Products, Inc., All Rights Reserved.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a
 * copy of this software and associated documentation files (the "Software"),
@@ -59,7 +59,6 @@
 #include "bitmap.h"
 #endif
 #include "MAXCAM_Debug.h"
-#include "faceid.h"
 #include "keypad.h"
 #include "sema_regs.h"
 #include "faceID.h"

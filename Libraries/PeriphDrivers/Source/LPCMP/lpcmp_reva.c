@@ -31,11 +31,8 @@
  *
  *************************************************************************** */
 
-#include "lpcmp.h"
-#include "dma.h"
+#include <stdio.h>
 #include "lpcmp_reva.h"
-#include "lpcmp_regs.h"
-#include "pwrseq_regs.h"
 #include "mxc_device.h"
 #include "mxc_errors.h"
 #include "mxc_assert.h"
@@ -43,46 +40,46 @@
 #include "mxc_sys.h"
 #include "mcr_regs.h"
 #include "mxc_lock.h"
-#include <stdio.h>
 
-int MXC_LPCMP_RevA_Init(void)
+
+int MXC_LPCMP_RevA_Init(mxc_lpcmp_ctrl_reg_t ctrl_reg)
 {
-    MXC_LPCMP0->ctrl[0] |= MXC_F_LPCMP_CTRL_CMPEN;
+    *ctrl_reg |= MXC_F_LPCMP_REVA_CTRL_EN;
     return E_NO_ERROR;
 }
 
-int MXC_LPCMP_RevA_Shutdown(void)
+int MXC_LPCMP_RevA_Shutdown(mxc_lpcmp_ctrl_reg_t ctrl_reg)
 {
-    MXC_LPCMP0->ctrl[0] &= ~MXC_F_LPCMP_CTRL_CMPEN;
+    *ctrl_reg &= ~MXC_F_LPCMP_REVA_CTRL_EN;
     return E_NO_ERROR;    
 }
 
-void MXC_LPCMP_RevA_EnableInt(void)
+int MXC_LPCMP_RevA_EnableInt(mxc_lpcmp_ctrl_reg_t ctrl_reg)
 {
-    MXC_LPCMP0->ctrl[0] |= MXC_F_LPCMP_CTRL_IRQEN;
+    *ctrl_reg |= MXC_F_LPCMP_REVA_CTRL_INT_EN;
+    return E_NO_ERROR;
 }
 
-void MXC_LPCMP_RevA_DisableInt(void)
+int MXC_LPCMP_RevA_DisableInt(mxc_lpcmp_ctrl_reg_t ctrl_reg)
 {
-    MXC_LPCMP0->ctrl[0] &= ~MXC_F_LPCMP_CTRL_IRQEN;
+    *ctrl_reg &= ~MXC_F_LPCMP_REVA_CTRL_INT_EN;
+    return E_NO_ERROR;
 }
 
-void MXC_LPCMP_RevA_EnableWakeup(void)
+int MXC_LPCMP_RevA_GetFlags(mxc_lpcmp_ctrl_reg_t ctrl_reg)
 {
-    MXC_PWRSEQ->lppwen |= MXC_F_PWRSEQ_LPPWEN_AINCOMP0;
+    return !!(*ctrl_reg & MXC_F_LPCMP_REVA_CTRL_INT_FL);
 }
 
-void MXC_LPCMP_RevA_DisableWakeup(void)
+int MXC_LPCMP_RevA_ClearFlags(mxc_lpcmp_ctrl_reg_t ctrl_reg)
 {
-    MXC_PWRSEQ->lppwen &= ~MXC_F_PWRSEQ_LPPWEN_AINCOMP0;   
+    *ctrl_reg |= MXC_F_LPCMP_REVA_CTRL_INT_FL;
+    return E_NO_ERROR;
 }
 
-void MXC_LPCMP_RevA_SelectPolarity(mxc_lpcmp_polarity_t polarity)
+int MXC_LPCMP_RevA_SelectPolarity(mxc_lpcmp_ctrl_reg_t ctrl_reg, mxc_lpcmp_polarity_t pol)
 {
-    if(polarity==MXC_LPCMP_POLLOW) {
-        MXC_LPCMP0->ctrl[0] &= ~(polarity<<MXC_F_LPCMP_CTRL_POLSEL_POS);    
-    }
-    else {
-        MXC_LPCMP0->ctrl[0] |= (polarity<<MXC_F_LPCMP_CTRL_POLSEL_POS);
-    }
+    *ctrl_reg &= ~MXC_F_LPCMP_REVA_CTRL_POL;    
+    *ctrl_reg |= (pol << MXC_F_LPCMP_REVA_CTRL_POL_POS);
+    return E_NO_ERROR;
 }

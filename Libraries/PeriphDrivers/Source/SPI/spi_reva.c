@@ -59,6 +59,8 @@ typedef struct {
     unsigned defaultTXData;
     int channelTx;
     int channelRx;
+    bool txrx_req;
+    uint8_t req_done;
 } spi_req_reva_state_t;
 
 /* states whether to use call back or not */
@@ -278,8 +280,8 @@ int MXC_SPI_RevA_GetDataSize (mxc_spi_reva_regs_t* spi)
 {
     int spi_num;
     spi_num = MXC_SPI_GET_IDX ((mxc_spi_regs_t*) spi);
-    MXC_ASSERT (spi_num >= 0);
-    (void)spi_num;
+     MXC_ASSERT (spi_num >= 0);
+     (void)spi_num;
     
     if (!(spi->ctrl2 & MXC_F_SPI_REVA_CTRL2_NUMBITS)) {
         return 16;
@@ -687,6 +689,7 @@ int MXC_SPI_RevA_TransSetup (mxc_spi_reva_req_t * req)
     
     states[spi_num].req = req;
     states[spi_num].started = 0;
+    states[spi_num].req_done = 0;
     
     // HW requires disabling/renabling SPI block at end of each transaction (when SS is inactive).
     if (states[spi_num].ssDeassert == 1) {
@@ -730,6 +733,13 @@ int MXC_SPI_RevA_TransSetup (mxc_spi_reva_req_t * req)
     else {
         (req->spi)->ctrl1 &= ~(MXC_F_SPI_REVA_CTRL1_TX_NUM_CHAR);
         (req->spi)->dma &= ~(MXC_F_SPI_REVA_DMA_TX_FIFO_EN);
+    }
+
+    if((req->txData != NULL && req->txLen) && (req->rxData != NULL && req->rxLen)) {
+        states[spi_num].txrx_req = true;
+    }
+    else {
+        states[spi_num].txrx_req = false;
     }
     
     (req->spi)->dma |= (MXC_F_SPI_REVA_DMA_TX_FLUSH | MXC_F_SPI_REVA_DMA_RX_FLUSH);
@@ -1244,33 +1254,32 @@ void MXC_SPI_RevA_DMACallback(int ch, int error)
     mxc_spi_reva_req_t * temp_req;
     
     for (int i = 0; i < MXC_SPI_INSTANCES; i ++) {
-        if (states[i].channelTx == ch) {
-            //save the request
-            temp_req = states[i].req;
-            MXC_FreeLock((uint32_t*) &states[i].req);
-            // Callback if not NULL
-            if (temp_req->completeCB != NULL) {
-                temp_req->completeCB(temp_req, E_NO_ERROR);
-            }            
-            break;
-        }
-        
-        else if (states[i].channelRx == ch) {
-            //save the request
-            temp_req = states[i].req;
-            MXC_FreeLock((uint32_t*) &states[i].req);
-            
-            if (MXC_SPI_GetDataSize ((mxc_spi_regs_t*) temp_req->spi) > 8) {
-                MXC_SPI_RevA_SwapByte (temp_req->rxData, temp_req->rxLen);
-            }
+    	if(states[i].req != NULL) {
+			if (states[i].channelTx == ch) {
+				states[i].req_done++;
+			}
 
-            // Callback if not NULL
-            if (temp_req->completeCB != NULL) {
-                temp_req->completeCB(temp_req, E_NO_ERROR);
-            } 
-                        
-            break;
-        }
+			else if (states[i].channelRx == ch) {
+                states[i].req_done++;
+				//save the request
+				temp_req = states[i].req;
+
+				if (MXC_SPI_GetDataSize ((mxc_spi_regs_t*) temp_req->spi) > 8) {
+					MXC_SPI_RevA_SwapByte (temp_req->rxData, temp_req->rxLen);
+				}
+			}
+
+            if(!states[i].txrx_req || (states[i].txrx_req && states[i].req_done == 2)) {
+                //save the request
+                temp_req = states[i].req;
+                MXC_FreeLock((uint32_t*) &states[i].req);
+                // Callback if not NULL
+                if (temp_req->completeCB != NULL) {
+                    temp_req->completeCB(temp_req, E_NO_ERROR);
+                }
+                break;
+            }
+    	}
     }
 }
 

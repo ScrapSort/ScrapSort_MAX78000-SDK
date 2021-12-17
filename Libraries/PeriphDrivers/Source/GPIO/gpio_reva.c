@@ -169,29 +169,30 @@ int MXC_GPIO_RevA_SetAF (mxc_gpio_reva_regs_t* port, mxc_gpio_func_t func, uint3
         break;
         
     case MXC_GPIO_FUNC_ALT1:
-        port->en0_clr    = mask;
-        port->en1_clr    = mask;
         port->en2_clr    = mask;
+        port->en1_clr    = mask;
+        port->en0_clr    = mask;
         break;
         
     case MXC_GPIO_FUNC_ALT2:
-        port->en0_clr    = mask;
-        port->en1_set    = mask;
         port->en2_clr    = mask;
-        break;
-        
-    case MXC_GPIO_FUNC_ALT3:
+        port->en1_set    = mask;
         port->en0_clr    = mask;
-        port->en1_clr    = mask;
+        break;
+
+  #if TARGET_NUM != 32650
+    case MXC_GPIO_FUNC_ALT3:
         port->en2_set    = mask;
+        port->en1_clr    = mask;
+        port->en0_clr    = mask;
         break;
         
     case MXC_GPIO_FUNC_ALT4:
-        port->en0_clr    = mask;
-        port->en1_set    = mask;
         port->en2_set    = mask;
+        port->en1_set    = mask;
+        port->en0_clr    = mask;
         break;
-        
+  #endif
     default:
         return E_BAD_PARAM;
     }

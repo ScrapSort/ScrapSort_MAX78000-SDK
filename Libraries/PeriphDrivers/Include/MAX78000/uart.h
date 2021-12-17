@@ -121,19 +121,19 @@ typedef void (*mxc_uart_dma_complete_cb_t)(mxc_uart_req_t* req, int num, int res
  * @note    "callback" only needs to be initialized for interrupt driven (Async) or DMA transactions.
  */
 struct _mxc_uart_req_t {
-    mxc_uart_regs_t* uart;      ///<Point to UART registers
-    const uint8_t  *txData;     ///< Buffer containing transmit data. For character sizes
-                                ///< < 8 bits, pad the MSB of each byte with zeros. For 
-                                ///< character sizes > 8 bits, use two bytes per character
-                                ///< and pad the MSB of the upper byte with zeros
-    uint8_t        *rxData;     ///< Buffer to store received data For character sizes
-                                ///< < 8 bits, pad the MSB of each byte with zeros. For 
-                                ///< character sizes > 8 bits, use two bytes per character
-                                ///< and pad the MSB of the upper byte with zeros
-    uint32_t        txLen;      ///< Number of bytes to be sent from txData
-    uint32_t        rxLen;      ///< Number of bytes to be stored in rxData
-    uint32_t        txCnt;      ///< Number of bytes actually transmitted from txData
-    uint32_t        rxCnt;      ///< Number of bytes stored in rxData
+    mxc_uart_regs_t* uart;               ///<Point to UART registers
+    const uint8_t  *txData;              ///< Buffer containing transmit data. For character sizes
+                                         ///< < 8 bits, pad the MSB of each byte with zeros. For 
+                                         ///< character sizes > 8 bits, use two bytes per character
+                                         ///< and pad the MSB of the upper byte with zeros
+    uint8_t        *rxData;              ///< Buffer to store received data For character sizes
+                                         ///< < 8 bits, pad the MSB of each byte with zeros. For 
+                                         ///< character sizes > 8 bits, use two bytes per character
+                                         ///< and pad the MSB of the upper byte with zeros
+    uint32_t        txLen;               ///< Number of bytes to be sent from txData
+    uint32_t        rxLen;               ///< Number of bytes to be stored in rxData
+    volatile uint32_t        txCnt;      ///< Number of bytes actually transmitted from txData
+    volatile uint32_t        rxCnt;      ///< Number of bytes stored in rxData
 
     mxc_uart_complete_cb_t callback;  ///< Pointer to function called when transaction is complete
 };
@@ -652,6 +652,24 @@ int MXC_UART_AbortAsync(mxc_uart_regs_t* uart);
  * @return  See \ref MXC_Error_Codes for the list of error return codes.
  */
 int MXC_UART_AsyncHandler(mxc_uart_regs_t* uart);
+
+/**
+ * @brief   Provide TXCount for asynchronous transactions..
+ *
+ * @param   uart         Pointer to UART registers (selects the UART block used.)
+ * 
+ * @return  Returns transmit bytes (in FIFO).
+ */
+uint32_t MXC_UART_GetAsyncTXCount(mxc_uart_req_t* req);
+
+/**
+ * @brief   Provide RXCount for asynchronous transactions..
+ *
+ * @param   uart         Pointer to UART registers (selects the UART block used.)
+ * 
+ * @return  Returns receive bytes (in FIFO).
+ */
+uint32_t MXC_UART_GetAsyncRXCount(mxc_uart_req_t* req);
 
 /**@} end of group uart */
 

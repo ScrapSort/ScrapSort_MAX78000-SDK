@@ -23,6 +23,7 @@ var searchData=
   ['mxc_5fi2s_5fregs_5ft',['mxc_i2s_regs_t',['../group__i2s__registers.html#structmxc__i2s__regs__t',1,'']]],
   ['mxc_5fi2s_5freq_5ft',['mxc_i2s_req_t',['../group__i2s.html#structmxc__i2s__req__t',1,'']]],
   ['mxc_5ficc_5fregs_5ft',['mxc_icc_regs_t',['../group__icc__registers.html#structmxc__icc__regs__t',1,'']]],
+  ['mxc_5flpcmp_5fregs_5ft',['mxc_lpcmp_regs_t',['../group__lpcmp__registers.html#structmxc__lpcmp__regs__t',1,'']]],
   ['mxc_5flpgcr_5fregs_5ft',['mxc_lpgcr_regs_t',['../group__lpgcr__registers.html#structmxc__lpgcr__regs__t',1,'']]],
   ['mxc_5fmcr_5fregs_5ft',['mxc_mcr_regs_t',['../group__mcr__registers.html#structmxc__mcr__regs__t',1,'']]],
   ['mxc_5fowm_5fcfg_5ft',['mxc_owm_cfg_t',['../group__owm.html#structmxc__owm__cfg__t',1,'']]],

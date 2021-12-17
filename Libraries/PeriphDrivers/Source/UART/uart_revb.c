@@ -89,7 +89,7 @@ int MXC_UART_RevB_Init (mxc_uart_revb_regs_t* uart, unsigned int baud, mxc_uart_
         return err;
     }
 
-    if((err = MXC_UART_SetFrequency ((mxc_uart_regs_t*) uart, baud, clock)) < E_NO_ERROR) {
+    if((err = MXC_UART_SetFrequency ((mxc_uart_regs_t*) uart, baud, (mxc_uart_clock_t) clock)) < E_NO_ERROR) {
         return err; 
     }
 
@@ -125,30 +125,36 @@ int MXC_UART_RevB_SetFrequency (mxc_uart_revb_regs_t* uart, unsigned int baud, m
 
     switch (clock) {
         case MXC_UART_REVB_APB_CLK:
-        clkDiv = (PeripheralClock / baud);
-        mod = (PeripheralClock % baud);
-        break;
+            clkDiv = (PeripheralClock / baud);
+            mod = (PeripheralClock % baud);
+            break;
 
         case MXC_UART_REVB_EXT_CLK:
-        uart->ctrl |= MXC_S_UART_REVB_CTRL_BCLKSRC_EXTERNAL_CLOCK;
-        break;
+            uart->ctrl |= MXC_S_UART_REVB_CTRL_BCLKSRC_EXTERNAL_CLOCK;
+            break;
 
         //case MXC_UART_IBRO_CLK:
         case MXC_UART_REVB_CLK2:
-        clkDiv = (7372800 / baud);
-        mod = (7372800 % baud);
-        uart->ctrl |= MXC_S_UART_REVB_CTRL_BCLKSRC_CLK2;
-        break;
+            clkDiv = (IBRO_FREQ / baud);
+            mod = (IBRO_FREQ % baud);
+
+            uart->ctrl |= MXC_S_UART_REVB_CTRL_BCLKSRC_CLK2;
+            break;
 
         //case MXC_UART_ERFO:
         case MXC_UART_REVB_CLK3:
-        clkDiv = (16000000 / baud);
-        mod = (16000000 % baud);
-        uart->ctrl |= MXC_S_UART_REVB_CTRL_BCLKSRC_CLK3;
-        break;
+          #if (TARGET_NUM == 78000 || TARGET_NUM == 78002)
+            return E_BAD_PARAM;
+          #else
+            clkDiv = (ERFO_FREQ / baud);
+            mod = (ERFO_FREQ % baud);
+          #endif
+
+            uart->ctrl |= MXC_S_UART_REVB_CTRL_BCLKSRC_CLK3;
+            break;
 
         default:
-        return E_BAD_PARAM;
+            return E_BAD_PARAM;
     }
     
     if(!clkDiv || mod > (baud / 2)) {
@@ -176,7 +182,11 @@ int MXC_UART_RevB_GetFrequency (mxc_uart_revb_regs_t* uart)
         periphClock = 7372800;
     }
     else if((uart->ctrl & MXC_F_UART_REVB_CTRL_BCLKSRC) == MXC_S_UART_REVB_CTRL_BCLKSRC_CLK3) {
-        periphClock = 16000000;
+      #if (TARGET_NUM == 78000 || TARGET_NUM == 78002)
+        return E_BAD_PARAM;
+      #else
+        periphClock = ERFO_FREQ;
+      #endif
     }
     else {
         return E_BAD_PARAM;
@@ -990,6 +1000,9 @@ int MXC_UART_RevB_TransactionDMA (mxc_uart_revb_req_t* req)
     MXC_UART_DisableInt ((mxc_uart_regs_t*) (req->uart), 0xFFFFFFFF);
     MXC_UART_ClearFlags ((mxc_uart_regs_t*) (req->uart), 0xFFFFFFFF);
     
+    MXC_UART_ClearTXFIFO ((mxc_uart_regs_t*) (req->uart));
+    MXC_UART_ClearRXFIFO ((mxc_uart_regs_t*) (req->uart));
+    
     //Set DMA FIFO threshold
     (req->uart)->dma |= (1 << MXC_F_UART_REVB_DMA_RX_THD_VAL_POS);
     (req->uart)->dma |= (2 << MXC_F_UART_REVB_DMA_TX_THD_VAL_POS);
@@ -1021,6 +1034,9 @@ void MXC_UART_RevB_DMACallback (int ch, int error)
         if (states[i].channelTx == ch) {
             //save the request
             temp_req = states[i].req;
+
+            MXC_DMA_ReleaseChannel(ch);
+
             // Callback if not NULL
             if (temp_req->callback != NULL) {
                 temp_req->callback((mxc_uart_req_t*)temp_req, E_NO_ERROR);
@@ -1031,6 +1047,9 @@ void MXC_UART_RevB_DMACallback (int ch, int error)
         else if (states[i].channelRx == ch) {
             //save the request
             temp_req = states[i].req;
+
+            MXC_DMA_ReleaseChannel(ch);
+
             // Callback if not NULL
             if (temp_req->callback != NULL) {
                 temp_req->callback((mxc_uart_req_t*)temp_req, E_NO_ERROR);

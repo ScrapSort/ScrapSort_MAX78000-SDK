@@ -131,6 +131,7 @@ int MXC_FLC_ME17_PageErase(uint32_t address)
     }
 
     err = MXC_FLC_RevB_PageErase((mxc_flc_revb_regs_t*)flc, addr);
+
     // Flush the cache
     MXC_FLC_ME17_Flash_Operation();
     
@@ -162,19 +163,13 @@ int MXC_FLC_ME17_Write128(uint32_t address, uint32_t* data)
     if ((err = MXC_FLC_ME17_GetPhysicalAddress(address, &addr)) < E_NO_ERROR) {
         return err;
     }
-    
-    if ((err = MXC_FLC_RevB_Write128((mxc_flc_revb_regs_t*)flc, addr, data)) != E_NO_ERROR) {
-        return err;
-    }
-    
+
+    err = MXC_FLC_RevB_Write128((mxc_flc_revb_regs_t*)flc, addr, data);
+
     // Flush the cache
     MXC_FLC_ME17_Flash_Operation();
     
-    if ((err = MXC_FLC_Com_VerifyData(address, 4, data)) != E_NO_ERROR) {
-        return err;
-    }
-    
-    return E_NO_ERROR;
+    return err;
 }
 
 //******************************************************************************
@@ -201,8 +196,9 @@ int MXC_FLC_ME17_Write32(uint32_t address, uint32_t data)
         return err;
     }
     
-    return MXC_FLC_RevB_Write32((mxc_flc_revb_regs_t*)flc, address, data, addr);
-    
+    err = MXC_FLC_RevB_Write32((mxc_flc_revb_regs_t*)flc, address, data, addr);
+
+    return err;
 }
 
 int MXC_FLC_ME17_MassErase(void)
@@ -212,18 +208,19 @@ int MXC_FLC_ME17_MassErase(void)
     
     for (i = 0; i < MXC_FLC_INSTANCES; i++) {
         flc = MXC_FLC_GET_FLC(i);
+
+
         err = MXC_FLC_RevB_MassErase((mxc_flc_revb_regs_t*)flc);
+
+
+        MXC_FLC_ME17_Flash_Operation();
         
         if (err != E_NO_ERROR) {
             return err;
         }
-        
-        MXC_FLC_ME17_Flash_Operation();
     }
     
     return E_NO_ERROR;
-    
-    
 }
 int MXC_FLC_ME17_UnlockInfoBlock(uint32_t address)
 {

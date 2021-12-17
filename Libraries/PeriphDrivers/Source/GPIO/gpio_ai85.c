@@ -51,9 +51,7 @@
 
 /* **** Functions **** */
 int MXC_GPIO_Init(uint32_t portmask)
-{
-    int retval = MXC_GPIO_Common_Init(portmask);
-    
+{    
     if (portmask & 0x1) {
         MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_GPIO0);
     }
@@ -62,7 +60,7 @@ int MXC_GPIO_Init(uint32_t portmask)
         MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_GPIO1);
     }
     
-    return MXC_GPIO_Common_Init(portmask) + retval;
+    return MXC_GPIO_Common_Init(portmask);
 }
 
 int MXC_GPIO_Shutdown(uint32_t portmask)
@@ -115,11 +113,19 @@ int MXC_GPIO_Config(const mxc_gpio_cfg_t* cfg)
             
             switch (cfg->pad) {
             case MXC_GPIO_PAD_NONE:
-                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P30_PE);
+                MXC_MCR->gpio3_ctrl |= MXC_F_MCR_GPIO3_CTRL_P30_PE;
                 break;
                 
             case MXC_GPIO_PAD_PULL_UP:
-                MXC_MCR->gpio3_ctrl |= MXC_F_MCR_GPIO3_CTRL_P30_PE;
+                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P30_PE);
+                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P30_OE);
+                MXC_MCR->gpio3_ctrl |= MXC_F_MCR_GPIO3_CTRL_P30_DO;
+                break;
+
+            case MXC_GPIO_PAD_PULL_DOWN:
+                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P30_PE);
+                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P30_OE);
+                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P30_DO);
                 break;
                 
             default:
@@ -144,11 +150,19 @@ int MXC_GPIO_Config(const mxc_gpio_cfg_t* cfg)
             
             switch (cfg->pad) {
             case MXC_GPIO_PAD_NONE:
-                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P31_PE);
+                MXC_MCR->gpio3_ctrl |= MXC_F_MCR_GPIO3_CTRL_P31_PE;
                 break;
                 
             case MXC_GPIO_PAD_PULL_UP:
-                MXC_MCR->gpio3_ctrl |= MXC_F_MCR_GPIO3_CTRL_P31_PE;
+                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P31_PE);
+                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P31_OE);
+                MXC_MCR->gpio3_ctrl |= MXC_F_MCR_GPIO3_CTRL_P31_DO;
+                break;
+
+            case MXC_GPIO_PAD_PULL_DOWN:
+                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P31_PE);
+                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P31_OE);
+                MXC_MCR->gpio3_ctrl &= ~(MXC_F_MCR_GPIO3_CTRL_P31_DO);
                 break;
                 
             default:
@@ -220,15 +234,7 @@ uint32_t MXC_GPIO_InGet(mxc_gpio_regs_t* port, uint32_t mask)
             results |= (!!(MXC_MCR->gpio3_ctrl & MXC_F_MCR_GPIO3_CTRL_P30_IN) << 0);
             results |= (!!(MXC_MCR->gpio3_ctrl & MXC_F_MCR_GPIO3_CTRL_P31_IN) << 1);
             
-            return results;
-        }
-        
-        if (mask & MXC_GPIO_PIN_0) {
-            return MXC_MCR->gpio3_ctrl & MXC_F_MCR_GPIO3_CTRL_P30_IN;
-        }
-        
-        if (mask & MXC_GPIO_PIN_1) {
-            return MXC_MCR->gpio3_ctrl & MXC_F_MCR_GPIO3_CTRL_P31_IN;
+            return (results & mask);
         }
     }
     

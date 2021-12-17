@@ -24,6 +24,7 @@ var annotated_dup =
     [ "mxc_i2s_regs_t", "group__i2s__registers.html#structmxc__i2s__regs__t", "group__i2s__registers_structmxc__i2s__regs__t" ],
     [ "mxc_i2s_req_t", "group__i2s.html#structmxc__i2s__req__t", null ],
     [ "mxc_icc_regs_t", "group__icc__registers.html#structmxc__icc__regs__t", "group__icc__registers_structmxc__icc__regs__t" ],
+    [ "mxc_lpcmp_regs_t", "group__lpcmp__registers.html#structmxc__lpcmp__regs__t", "group__lpcmp__registers_structmxc__lpcmp__regs__t" ],
     [ "mxc_lpgcr_regs_t", "group__lpgcr__registers.html#structmxc__lpgcr__regs__t", "group__lpgcr__registers_structmxc__lpgcr__regs__t" ],
     [ "mxc_mcr_regs_t", "group__mcr__registers.html#structmxc__mcr__regs__t", "group__mcr__registers_structmxc__mcr__regs__t" ],
     [ "mxc_owm_cfg_t", "group__owm.html#structmxc__owm__cfg__t", "group__owm_structmxc__owm__cfg__t" ],

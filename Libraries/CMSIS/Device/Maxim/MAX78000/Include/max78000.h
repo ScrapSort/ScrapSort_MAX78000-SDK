@@ -330,7 +330,7 @@ typedef enum {
 #define MXC_TRIMSIR                     ((mxc_trimsir_regs_t*)MXC_BASE_TRIMSIR)
 
 /******************************************************************************/
-/*                                               Global CNN Function Register */
+/*                                          General Control Function Register */
 #define MXC_BASE_GCFR                   ((uint32_t)0x40005800UL)
 #define MXC_GCFR                        ((mxc_gcfr_regs_t*)MXC_BASE_GCFR)
 
@@ -674,17 +674,8 @@ typedef enum {
 
 /******************************************************************************/
 /*                                                       Low-Power Comparator */
-#define MXC_CFG_LPCOMP_INSTANCES        (4)
-
-#define MXC_BASE_LPCOMP0                ((uint32_t)0x40006C0CUL)
-#define MXC_LPCOMP0                     ((mxc_lpcomp_regs_t*)MXC_BASE_LPCOMP0)
-#define MXC_BASE_LPCOMP1                ((uint32_t)0x40088000UL)
-#define MXC_LPCOMP1                     ((mxc_lpcomp_regs_t*)MXC_BASE_LPCOMP1)
-#define MXC_BASE_LPCOMP2                ((uint32_t)0x40088004UL)
-#define MXC_LPCOMP2                     ((mxc_lpcomp_regs_t*)MXC_BASE_LPCOMP2)
-#define MXC_BASE_LPCOMP3                ((uint32_t)0x40088008UL)
-#define MXC_LPCOMP3                     ((mxc_lpcomp_regs_t*)MXC_BASE_LPCOMP3)
-
+#define MXC_BASE_LPCMP                  ((uint32_t)0x40088000UL)
+#define MXC_LPCMP                       ((mxc_lpcmp_regs_t*)MXC_BASE_LPCMP)
 
 /******************************************************************************/
 /*                                                               Bit Shifting */

@@ -52,7 +52,7 @@ BOARD=EvKit_V1
 endif
 ```
 
-To compile code for MAX78000 Feather board enable **BOARD=FTHR_RevA** in Makefile (requires TFT display for Featherhttps://github.com/MaximIntegratedAI/MaximAI_Documentation/tree/master/MAX78000_Feather):
+To compile code for MAX78000 Feather board enable **BOARD=FTHR_RevA** in Makefile (requires TFT display for Feather https://github.com/MaximIntegratedAI/MaximAI_Documentation/tree/master/MAX78000_Feather):
 
 ```bash
 # Specify the board used
@@ -61,6 +61,14 @@ ifeq "$(BOARD)" ""
 BOARD=FTHR_RevA
 endif
 ```
+
+**Note: If you are using Eclipse, please also make sure to change the value of Board environment variable to "FTHR_RevA by:**
+
+*right click project name > Properties > C/C++ Build > Environment > Board"*
+
+<img src="Resources/eclipse_board.png" style="zoom:33%;" />
+
+
 
 ### Load firmware image to MAX78000 EVKIT or Feather Board
 
@@ -74,11 +82,16 @@ endif
 
 - Connect USB cable to CN1 USB connector.
 
-
-Load firmware image using Openocd.
+If you are using Windows, load the firmware image with OpenOCD in a MinGW shell:
 
 ```bash
 openocd -s $MAXIM_PATH/Tools/OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/max78000.cfg -c "program build/MAX78000.elf reset exit"
+```
+
+If using Linux, perform this step:
+
+```bash
+./openocd -f tcl/interface/cmsis-dap.cfg -f tcl/target/max78000.cfg -c "program build/MAX78000.elf verify reset exit"
 ```
 
 ### Running Demo

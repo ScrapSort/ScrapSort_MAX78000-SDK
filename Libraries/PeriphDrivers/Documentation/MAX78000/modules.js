@@ -30,6 +30,7 @@ var modules =
     [ "FCR_Registers", "group__fcr__registers.html", "group__fcr__registers" ],
     [ "GCFR_Registers", "group__gcfr__registers.html", "group__gcfr__registers" ],
     [ "GCR_Registers", "group__gcr__registers.html", "group__gcr__registers" ],
+    [ "LPCMP_Registers", "group__lpcmp__registers.html", "group__lpcmp__registers" ],
     [ "LPGCR_Registers", "group__lpgcr__registers.html", "group__lpgcr__registers" ],
     [ "MCR_Registers", "group__mcr__registers.html", "group__mcr__registers" ],
     [ "SIMO_Registers", "group__simo__registers.html", "group__simo__registers" ],

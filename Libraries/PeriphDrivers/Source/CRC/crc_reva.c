@@ -147,7 +147,7 @@ int MXC_CRC_RevA_Compute(mxc_crc_reva_regs_t* crc, mxc_crc_reva_req_t* req)
     
     while(length--)
     {
-        crc->datain = req->dataBuffer[i++];
+        crc->datain32 = req->dataBuffer[i++];
         while(crc->ctrl & MXC_F_CRC_REVA_CTRL_BUSY);
     }
     

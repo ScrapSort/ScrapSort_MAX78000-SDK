@@ -46,6 +46,8 @@ SRCS += ov7692.c
 SRCS += sccb.c
 SRCS += max20303.c
 
+PROJ_CFLAGS+=-DCAMERA_OV7692
+
 # Where to find BSP source files
 VPATH += $(BOARD_DIR)/Source
 VPATH += $(BOARD_DIR)/../Source

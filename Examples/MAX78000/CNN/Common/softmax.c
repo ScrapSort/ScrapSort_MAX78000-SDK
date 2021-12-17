@@ -17,7 +17,7 @@
  */
 
 /* 
- * Portions Copyright (C) 2020 Maxim Integrated Products, Inc.
+ * Portions Copyright (C) 2020-2021 Maxim Integrated Products, Inc.
  */
 
 /* ----------------------------------------------------------------------

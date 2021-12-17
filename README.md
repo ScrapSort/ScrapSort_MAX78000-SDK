@@ -4,6 +4,16 @@ Refer to [Getting Started with the MAX78000 Evaluation Kit](https://github.com/M
 
 ## Release Notes
 
+December 10, 2021
+* Improved RGB565 support for TFT driver.
+* Fixed baud rate calculations for UART0 through UART2.
+* Added low power mode example.
+* Added ability to query progress of asynchronous UART transactions.
+* Added 16- and 8-bit accesses to the CRC data register.
+* Fixed issue with SPI callbacks not being called when using DMA.
+* Fixed issue selecting the appropriate clock divider when initializing timers.
+* Fixed issue with releasing DMA channels after UART DMA transaction complete.
+
 September 20, 2021
 * Updated all Eclipse project files to resolve indexer errors.
 * Added support for additional camera models.

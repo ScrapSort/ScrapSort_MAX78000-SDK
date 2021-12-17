@@ -36,6 +36,7 @@
 #include "gcr_regs.h"
 #include "mcr_regs.h"
 #include "lp.h"
+#include "lpcmp.h"
 
 
 #ifndef __riscv
@@ -234,6 +235,30 @@ void MXC_LP_EnableWUTAlarmWakeup(void)
 void MXC_LP_DisableWUTAlarmWakeup(void)
 {
     MXC_GCR->pm &= ~MXC_F_GCR_PM_WUT_WE;
+}
+
+void MXC_LP_EnableLPCMPWakeup (mxc_lpcmp_cmpsel_t cmp)
+{
+    MXC_ASSERT((cmp >= MXC_LPCMP_CMP0) && (cmp <= MXC_LPCMP_CMP3));
+
+    if(cmp == MXC_LPCMP_CMP0) {
+        MXC_PWRSEQ->lppwen |= MXC_F_PWRSEQ_LPPWEN_AINCOMP0;
+    }
+    else {
+        MXC_PWRSEQ->lppwen |= MXC_F_PWRSEQ_LPPWEN_LPCMP;
+    }
+}
+
+void MXC_LP_DisableLPCMPWakeup (mxc_lpcmp_cmpsel_t cmp)
+{
+    MXC_ASSERT((cmp >= MXC_LPCMP_CMP0) && (cmp <= MXC_LPCMP_CMP3));
+
+    if(cmp == MXC_LPCMP_CMP0) {
+        MXC_PWRSEQ->lppwen &= ~MXC_F_PWRSEQ_LPPWEN_AINCOMP0;
+    }
+    else {
+        MXC_PWRSEQ->lppwen &= ~MXC_F_PWRSEQ_LPPWEN_LPCMP;
+    }
 }
 
 int MXC_LP_ConfigDeepSleepClocks(uint32_t mask)

@@ -46,11 +46,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
- 
+
 #if defined (__ICCARM__)
   #pragma system_include
 #endif
- 
+
 #if defined (__CC_ARM)
   #pragma anon_unions
 #endif
@@ -97,7 +97,7 @@ typedef struct {
 /**
  * @ingroup    adc_registers
  * @defgroup   ADC_Register_Offsets Register Offsets
- * @brief      ADC Peripheral Register Offsets from the ADC Base Peripheral Address. 
+ * @brief      ADC Peripheral Register Offsets from the ADC Base Peripheral Address.
  * @{
  */
  #define MXC_R_ADC_CTRL                     ((uint32_t)0x00000000UL) /**< Offset from ADC Base Address: <tt> 0x0000</tt> */ 
@@ -269,12 +269,12 @@ typedef struct {
  #define MXC_F_ADC_LIMIT_CH_HI_LIMIT                    ((uint32_t)(0x3FFUL << MXC_F_ADC_LIMIT_CH_HI_LIMIT_POS)) /**< LIMIT_CH_HI_LIMIT Mask */
 
  #define MXC_F_ADC_LIMIT_CH_SEL_POS                     24 /**< LIMIT_CH_SEL Position */
- #define MXC_F_ADC_LIMIT_CH_SEL                         ((uint32_t)(0xFUL << MXC_F_ADC_LIMIT_CH_SEL_POS)) /**< LIMIT_CH_SEL Mask */
+ #define MXC_F_ADC_LIMIT_CH_SEL                         ((uint32_t)(0x1FUL << MXC_F_ADC_LIMIT_CH_SEL_POS)) /**< LIMIT_CH_SEL Mask */
 
- #define MXC_F_ADC_LIMIT_CH_LO_LIMIT_EN_POS             28 /**< LIMIT_CH_LO_LIMIT_EN Position */
+ #define MXC_F_ADC_LIMIT_CH_LO_LIMIT_EN_POS             29 /**< LIMIT_CH_LO_LIMIT_EN Position */
  #define MXC_F_ADC_LIMIT_CH_LO_LIMIT_EN                 ((uint32_t)(0x1UL << MXC_F_ADC_LIMIT_CH_LO_LIMIT_EN_POS)) /**< LIMIT_CH_LO_LIMIT_EN Mask */
 
- #define MXC_F_ADC_LIMIT_CH_HI_LIMIT_EN_POS             29 /**< LIMIT_CH_HI_LIMIT_EN Position */
+ #define MXC_F_ADC_LIMIT_CH_HI_LIMIT_EN_POS             30 /**< LIMIT_CH_HI_LIMIT_EN Position */
  #define MXC_F_ADC_LIMIT_CH_HI_LIMIT_EN                 ((uint32_t)(0x1UL << MXC_F_ADC_LIMIT_CH_HI_LIMIT_EN_POS)) /**< LIMIT_CH_HI_LIMIT_EN Mask */
 
 /**@} end of group ADC_LIMIT_Register */

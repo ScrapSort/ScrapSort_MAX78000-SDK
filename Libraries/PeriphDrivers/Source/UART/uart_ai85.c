@@ -42,7 +42,7 @@
 
 void MXC_UART_DMACallback (int ch, int error)
 {
-    return MXC_UART_RevB_DMACallback (ch, error);
+    MXC_UART_RevB_DMACallback (ch, error);
 }
 
 int MXC_UART_AsyncCallback(mxc_uart_regs_t* uart, int retVal)
@@ -490,4 +490,14 @@ int MXC_UART_AbortAsync(mxc_uart_regs_t* uart)
 int MXC_UART_AsyncHandler(mxc_uart_regs_t* uart)
 {
     return MXC_UART_RevB_AsyncHandler((mxc_uart_revb_regs_t*) uart);
+}
+
+uint32_t MXC_UART_GetAsyncTXCount(mxc_uart_req_t* req)
+{
+	return req->txCnt;
+}
+
+uint32_t MXC_UART_GetAsyncRXCount(mxc_uart_req_t* req)
+{
+	return req->rxCnt;
 }

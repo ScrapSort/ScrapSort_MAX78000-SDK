@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (C) Maxim Integrated Products, Inc., All rights Reserved.
+* Copyright (C) 2020-2021 Maxim Integrated Products, Inc., All rights Reserved.
 *
 * This software is protected by copyright laws of the United States and
 * of foreign countries. This material may also be protected by patent laws
@@ -139,7 +139,7 @@ const int16_t voiceVector[] = KWS20_TEST_VECTOR;
 __attribute__((section(".rvflash_section")))
 const int8_t voiceVector[] = KWS20_TEST_VECTOR;
 #endif // #ifndef EIGHT_BIT_SAMPLES
-
+int8_t MicReader(int16_t* sample);
 #else  // #ifndef ENABLE_MIC_PROCESSING
 void i2s_isr(void)
 {
@@ -152,7 +152,6 @@ void i2s_isr(void)
 /* **** Functions Prototypes **** */
 void fail(void);
 uint8_t cnn_load_data(uint8_t* pIn);
-int8_t MicReader(int16_t* sample);
 uint8_t MicReadChunk(uint8_t* pBuff, uint16_t* avg);
 uint8_t AddTranspose(uint8_t* pIn, uint8_t* pOut, uint16_t inSize,
                      uint16_t outSize, uint16_t width);

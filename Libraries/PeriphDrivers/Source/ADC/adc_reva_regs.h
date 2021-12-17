@@ -4,7 +4,7 @@
  */
 
 /* ****************************************************************************
- * Copyright (C) 2016 Maxim Integrated Products, Inc., All Rights Reserved.
+ * Copyright (C) Maxim Integrated Products, Inc., All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -46,11 +46,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
- 
+
 #if defined (__ICCARM__)
   #pragma system_include
 #endif
- 
+
 #if defined (__CC_ARM)
   #pragma anon_unions
 #endif
@@ -97,7 +97,7 @@ typedef struct {
 /**
  * @ingroup    adc_reva_registers
  * @defgroup   ADC_REVA_Register_Offsets Register Offsets
- * @brief      ADC_REVA Peripheral Register Offsets from the ADC_REVA Base Peripheral Address. 
+ * @brief      ADC_REVA Peripheral Register Offsets from the ADC_REVA Base Peripheral Address.
  * @{
  */
  #define MXC_R_ADC_REVA_CTRL                ((uint32_t)0x00000000UL) /**< Offset from ADC_REVA Base Address: <tt> 0x0000</tt> */ 
@@ -122,17 +122,14 @@ typedef struct {
  #define MXC_F_ADC_REVA_CTRL_REFBUF_PWR_POS             3 /**< CTRL_REFBUF_PWR Position */
  #define MXC_F_ADC_REVA_CTRL_REFBUF_PWR                 ((uint32_t)(0x1UL << MXC_F_ADC_REVA_CTRL_REFBUF_PWR_POS)) /**< CTRL_REFBUF_PWR Mask */
 
- #define MXC_F_ADC_REVA_CTRL_CHGPUMP_PWR_POS            4 /**< CTRL_CHGPUMP_PWR Position */
- #define MXC_F_ADC_REVA_CTRL_CHGPUMP_PWR                ((uint32_t)(0x1UL << MXC_F_ADC_REVA_CTRL_CHGPUMP_PWR_POS)) /**< CTRL_CHGPUMP_PWR Mask */
+ #define MXC_F_ADC_REVA_CTRL_REF_SEL_POS                4 /**< CTRL_REF_SEL Position */
+ #define MXC_F_ADC_REVA_CTRL_REF_SEL                    ((uint32_t)(0x1UL << MXC_F_ADC_REVA_CTRL_REF_SEL_POS)) /**< CTRL_REF_SEL Mask */
 
  #define MXC_F_ADC_REVA_CTRL_REF_SCALE_POS              8 /**< CTRL_REF_SCALE Position */
  #define MXC_F_ADC_REVA_CTRL_REF_SCALE                  ((uint32_t)(0x1UL << MXC_F_ADC_REVA_CTRL_REF_SCALE_POS)) /**< CTRL_REF_SCALE Mask */
 
  #define MXC_F_ADC_REVA_CTRL_SCALE_POS                  9 /**< CTRL_SCALE Position */
  #define MXC_F_ADC_REVA_CTRL_SCALE                      ((uint32_t)(0x1UL << MXC_F_ADC_REVA_CTRL_SCALE_POS)) /**< CTRL_SCALE Mask */
-
- #define MXC_F_ADC_REVA_CTRL_REF_SEL_POS                10 /**< CTRL_REF_SEL Position */
- #define MXC_F_ADC_REVA_CTRL_REF_SEL                    ((uint32_t)(0x1UL << MXC_F_ADC_REVA_CTRL_REF_SEL_POS)) /**< CTRL_REF_SEL Mask */
 
  #define MXC_F_ADC_REVA_CTRL_CLK_EN_POS                 11 /**< CTRL_CLK_EN Position */
  #define MXC_F_ADC_REVA_CTRL_CLK_EN                     ((uint32_t)(0x1UL << MXC_F_ADC_REVA_CTRL_CLK_EN_POS)) /**< CTRL_CLK_EN Mask */
@@ -272,12 +269,12 @@ typedef struct {
  #define MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT               ((uint32_t)(0x3FFUL << MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT_POS)) /**< LIMIT_CH_HI_LIMIT Mask */
 
  #define MXC_F_ADC_REVA_LIMIT_CH_SEL_POS                24 /**< LIMIT_CH_SEL Position */
- #define MXC_F_ADC_REVA_LIMIT_CH_SEL                    ((uint32_t)(0xFUL << MXC_F_ADC_REVA_LIMIT_CH_SEL_POS)) /**< LIMIT_CH_SEL Mask */
+ #define MXC_F_ADC_REVA_LIMIT_CH_SEL                    ((uint32_t)(0x1FUL << MXC_F_ADC_REVA_LIMIT_CH_SEL_POS)) /**< LIMIT_CH_SEL Mask */
 
- #define MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT_EN_POS        28 /**< LIMIT_CH_LO_LIMIT_EN Position */
+ #define MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT_EN_POS        29 /**< LIMIT_CH_LO_LIMIT_EN Position */
  #define MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT_EN            ((uint32_t)(0x1UL << MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT_EN_POS)) /**< LIMIT_CH_LO_LIMIT_EN Mask */
 
- #define MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT_EN_POS        29 /**< LIMIT_CH_HI_LIMIT_EN Position */
+ #define MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT_EN_POS        30 /**< LIMIT_CH_HI_LIMIT_EN Position */
  #define MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT_EN            ((uint32_t)(0x1UL << MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT_EN_POS)) /**< LIMIT_CH_HI_LIMIT_EN Mask */
 
 /**@} end of group ADC_REVA_LIMIT_Register */

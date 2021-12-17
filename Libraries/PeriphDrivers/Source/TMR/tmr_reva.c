@@ -82,6 +82,7 @@ void MXC_TMR_RevA_Init(mxc_tmr_reva_regs_t *tmr, mxc_tmr_cfg_t* cfg)
         
     case TMR_PRES_256:
         tmr->cn |= (MXC_F_TMR_REVA_CN_PRES3);
+        tmr->cn &= ~(MXC_S_TMR_REVA_CN_PRES_DIV1);
         break;
         
     case TMR_PRES_512:
@@ -101,12 +102,11 @@ void MXC_TMR_RevA_Init(mxc_tmr_reva_regs_t *tmr, mxc_tmr_cfg_t* cfg)
         
     case TMR_PRES_4096:
         tmr->cn |= (MXC_F_TMR_REVA_CN_PRES3);
-        tmr->cn |= (MXC_S_TMR_REVA_CN_PRES_DIV128);
+        tmr->cn |= (MXC_S_TMR_REVA_CN_PRES_DIV32);
         break;
 
     default:
-        tmr->cn |= (MXC_F_TMR_REVA_CN_PRES3);
-        tmr->cn |= (MXC_S_TMR_REVA_CN_PRES_DIV128);
+        tmr->cn |= (MXC_S_TMR_REVA_CN_PRES_DIV1);
         break;
     }
 

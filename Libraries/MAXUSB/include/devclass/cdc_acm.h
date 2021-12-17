@@ -58,11 +58,11 @@
 /// Configuration structure
 typedef struct {
   uint8_t out_ep;           // endpoint to be used for OUT packets
-  uint8_t out_maxpacket;    // max packet size for OUT endpoint
+  uint16_t out_maxpacket;    // max packet size for OUT endpoint
   uint8_t in_ep;            // endpoint to be used for IN packets
-  uint8_t in_maxpacket;     // max packet size for IN endpoint
+  uint16_t in_maxpacket;     // max packet size for IN endpoint
   uint8_t notify_ep;        // endpoint to be used for notifications
-  uint8_t notify_maxpacket; // max packet size for notifications
+  uint16_t notify_maxpacket; // max packet size for notifications
 } acm_cfg_t;
 
 /// Line coding

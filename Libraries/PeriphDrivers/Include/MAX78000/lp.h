@@ -45,6 +45,7 @@
 #include "pwrseq_regs.h"
 #include "mcr_regs.h"
 #include "gcr_regs.h"
+#include "lpcmp.h"
 #include "gpio.h"
 #include "tmr.h"
 
@@ -189,6 +190,16 @@ void MXC_LP_EnableWUTAlarmWakeup (void);
  * @brief      Disables the WUT alarm from waking up the device.
  */
 void MXC_LP_DisableWUTAlarmWakeup (void);
+
+/**
+ * @brief      Enables the LPCMP to wake up the device from any low power mode.
+ */
+void MXC_LP_EnableLPCMPWakeup (mxc_lpcmp_cmpsel_t cmp);
+
+/**
+ * @brief      Disables the LPCMP from waking up the device.
+ */
+void MXC_LP_DisableLPCMPWakeup (mxc_lpcmp_cmpsel_t cmp);
 
 /**
  * @brief      Configure which clocks are powered down at deep sleep and which are not affected.

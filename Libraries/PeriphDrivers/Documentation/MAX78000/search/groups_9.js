@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['mcr_5fcmp_5fctrl',['MCR_CMP_CTRL',['../group___m_c_r___c_m_p___c_t_r_l.html',1,'']]],
   ['mcr_5fctrl',['MCR_CTRL',['../group___m_c_r___c_t_r_l.html',1,'']]],
   ['mcr_5feccen',['MCR_ECCEN',['../group___m_c_r___e_c_c_e_n.html',1,'']]],
   ['mcr_5fgpio3_5fctrl',['MCR_GPIO3_CTRL',['../group___m_c_r___g_p_i_o3___c_t_r_l.html',1,'']]],

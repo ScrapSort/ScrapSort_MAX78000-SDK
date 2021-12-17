@@ -67,14 +67,14 @@ int MXC_PT_RevA_Config(mxc_ptg_reva_regs_t* ptg, mxc_pt_cfg_t *cfg)
         return E_UNINITIALIZED;
     }
     
-    if(ptClock <(cfg->bps)) {
+    if(ptClock < (cfg->bps)) {
         return E_BAD_STATE;
     }
     
     //disable pulse train
-    MXC_PT_RevA_Stop(ptg, cfg->channel);
+    MXC_PT_RevA_Stop(ptg, 1 << cfg->channel);
     
-    rate = (ptClock /(cfg->bps));
+    rate = (ptClock / (cfg->bps));
     
     if(cfg->bps > 1000000) {           //To lessen the delta between generated and expected clock
         rate += 2;

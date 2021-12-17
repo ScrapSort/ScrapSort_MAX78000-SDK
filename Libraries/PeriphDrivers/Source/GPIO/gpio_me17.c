@@ -52,8 +52,6 @@
 /* **** Functions **** */
 int MXC_GPIO_Init(uint32_t portmask)
 {
-    int retval = MXC_GPIO_Common_Init(portmask);
-    
     if (portmask & 0x1) {
         MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_GPIO0);
     }
@@ -62,7 +60,7 @@ int MXC_GPIO_Init(uint32_t portmask)
         MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_GPIO1);
     }
     
-    return MXC_GPIO_Common_Init(portmask) + retval;
+    return MXC_GPIO_Common_Init(portmask);
 }
 
 int MXC_GPIO_Shutdown(uint32_t portmask)

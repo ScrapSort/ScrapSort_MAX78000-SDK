@@ -231,14 +231,25 @@ void MXC_ADC_RevA_SetExtScale (mxc_adc_reva_regs_t* adc, mxc_adc_scale_t scale)
 void MXC_ADC_RevA_EnableMonitor (mxc_adc_reva_regs_t* adc, mxc_adc_monitor_t monitor)
 {
     MXC_ASSERT (monitor < MXC_MONITOR_NUM);
+
+    // MAX32650 LO and HI limit enables are shifted by 1 bit
+#if TARGET_NUM == 32650
+    ((mxc_adc_regs_t*) adc)->limit[monitor] |= (MXC_F_ADC_LIMIT_CH_HI_LIMIT_EN | MXC_F_ADC_LIMIT_CH_LO_LIMIT_EN);
+#else
     adc->limit[monitor] |= (MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT_EN | MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT_EN);
-    
+#endif
 }
 
 void MXC_ADC_RevA_DisableMonitor (mxc_adc_reva_regs_t* adc, mxc_adc_monitor_t monitor)
 {
     MXC_ASSERT (monitor < MXC_MONITOR_NUM);
-    adc->limit[monitor] &= ~ (MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT_EN | MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT_EN);
+
+    // MAX32650 LO and HI limit enables are shifted by 1 bit
+#if TARGET_NUM == 32650
+    ((mxc_adc_regs_t*) adc)->limit[monitor] &= ~(MXC_F_ADC_LIMIT_CH_HI_LIMIT_EN | MXC_F_ADC_LIMIT_CH_LO_LIMIT_EN);
+#else
+    adc->limit[monitor] &= ~(MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT_EN | MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT_EN);
+#endif
 }
 
 void MXC_ADC_RevA_SetMonitorHighThreshold (mxc_adc_reva_regs_t* adc, mxc_adc_monitor_t monitor, uint32_t threshold)
@@ -252,14 +263,14 @@ void MXC_ADC_RevA_SetMonitorHighThreshold (mxc_adc_reva_regs_t* adc, mxc_adc_mon
 
 int MXC_ADC_RevA_GetMonitorHighThreshold (mxc_adc_reva_regs_t* adc, mxc_adc_monitor_t monitor)
 {
-    MXC_ASSERT (monitor <MXC_MONITOR_NUM);
+    MXC_ASSERT (monitor < MXC_MONITOR_NUM);
     return (adc->limit[monitor] & MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT) >> MXC_F_ADC_REVA_LIMIT_CH_HI_LIMIT_POS;
 }
 
 void MXC_ADC_RevA_SetMonitorLowThreshold (mxc_adc_reva_regs_t* adc, mxc_adc_monitor_t monitor, uint32_t threshold)
 {
     MXC_ASSERT (monitor < MXC_MONITOR_NUM);
-    adc->limit[monitor] &=  ~MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT;
+    adc->limit[monitor] &= ~MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT;
     adc->limit[monitor] |= (threshold << MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT_POS) & MXC_F_ADC_REVA_LIMIT_CH_LO_LIMIT;
 }
 
@@ -272,8 +283,15 @@ int MXC_ADC_RevA_GetMonitorLowThreshold (mxc_adc_reva_regs_t* adc, mxc_adc_monit
 void MXC_ADC_RevA_SetMonitorChannel (mxc_adc_reva_regs_t* adc, mxc_adc_monitor_t monitor, mxc_adc_chsel_t channel)
 {
     MXC_ASSERT (monitor < MXC_MONITOR_NUM);
+
+    // MAX32650 'ch_sel' field is 4-bits wide instead of 5-bits
+#if TARGET_NUM == 32650
+    ((mxc_adc_regs_t*) adc)->limit[monitor] &= ~MXC_F_ADC_LIMIT_CH_SEL;
+    ((mxc_adc_regs_t*) adc)->limit[monitor] |= (channel << MXC_F_ADC_LIMIT_CH_SEL_POS) & MXC_F_ADC_LIMIT_CH_SEL;
+#else
     adc->limit[monitor] &= ~MXC_F_ADC_REVA_LIMIT_CH_SEL;
     adc->limit[monitor] |= (channel << MXC_F_ADC_REVA_LIMIT_CH_SEL_POS) & MXC_F_ADC_REVA_LIMIT_CH_SEL;
+#endif
 }
 
 int MXC_ADC_RevA_GetMonitorChannel (mxc_adc_reva_regs_t* adc, mxc_adc_monitor_t monitor)
@@ -452,7 +470,7 @@ int MXC_ADC_RevA_Handler (mxc_adc_reva_regs_t* adc)
         mxc_adc_conversion_req_t  * temp = async_req;
         MXC_FreeLock ((uint32_t*) &async_req);
         MXC_ADC_RevA_ClearFlags (adc, MXC_F_ADC_REVA_INTR_DONE_IF);
-        flag &= ~MXC_CONVERSION_INTERRUPT;
+        flag &= ~MXC_CONVERSION_REQ_INTERRUPT;
         MXC_ADC_RevA_DisableInt (adc, MXC_F_ADC_REVA_INTR_DONE_IE);
         //read data
         temp->rawADCValue = data;

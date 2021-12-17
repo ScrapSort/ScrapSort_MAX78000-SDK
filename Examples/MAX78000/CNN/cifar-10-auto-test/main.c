@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (C) Maxim Integrated Products, Inc., All rights Reserved.
+* Copyright (C) 2020-2021 Maxim Integrated Products, Inc., All rights Reserved.
 *
 * This software is protected by copyright laws of the United States and
 * of foreign countries. This material may also be protected by patent laws
@@ -142,7 +142,7 @@ static void spi_init(void)
   spi_pins.sdio2 = FALSE;
   spi_pins.sdio3 = FALSE;
 
-  retVal = MXC_SPI_Init(SPI_REGS, 0, 0, 0, 0, SPI_SPEED, spi_pins);
+  retVal = MXC_SPI_Init(SPI_REGS, 1, 0, 1, 0, SPI_SPEED, spi_pins);
   if (retVal != E_NO_ERROR) {
     printf("SPI Slave Initialization Error\n");
     while (1);

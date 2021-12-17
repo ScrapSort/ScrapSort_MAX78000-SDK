@@ -4,6 +4,7 @@ var group__mcr__registers =
     [ "MCR_ECCEN", "group___m_c_r___e_c_c_e_n.html", "group___m_c_r___e_c_c_e_n" ],
     [ "MCR_IPO_MTRIM", "group___m_c_r___i_p_o___m_t_r_i_m.html", "group___m_c_r___i_p_o___m_t_r_i_m" ],
     [ "MCR_OUTEN", "group___m_c_r___o_u_t_e_n.html", "group___m_c_r___o_u_t_e_n" ],
+    [ "MCR_CMP_CTRL", "group___m_c_r___c_m_p___c_t_r_l.html", "group___m_c_r___c_m_p___c_t_r_l" ],
     [ "MCR_CTRL", "group___m_c_r___c_t_r_l.html", "group___m_c_r___c_t_r_l" ],
     [ "MCR_GPIO3_CTRL", "group___m_c_r___g_p_i_o3___c_t_r_l.html", "group___m_c_r___g_p_i_o3___c_t_r_l" ],
     [ "mxc_mcr_regs_t", "group__mcr__registers.html#structmxc__mcr__regs__t", [

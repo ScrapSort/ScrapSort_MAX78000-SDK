@@ -19,6 +19,12 @@
 /home/lparm/JenkinsTest/workspace/MnS/MSDK/Devices/AI85/MAX78000/Libraries/PeriphDrivers/Include/MAX78000/rtc.h:107: warning: unable to resolve reference to `MXC_ERROR_CODES' for \ref command
 /home/lparm/JenkinsTest/workspace/MnS/MSDK/Devices/AI85/MAX78000/Libraries/PeriphDrivers/Include/MAX78000/rtc.h:112: warning: unable to resolve reference to `MXC_ERROR_CODES' for \ref command
 /home/lparm/JenkinsTest/workspace/MnS/MSDK/Devices/AI85/MAX78000/Libraries/PeriphDrivers/Include/MAX78000/rtc.h:140: warning: unable to resolve reference to `MXC_ERROR_CODES' for \ref command
+/home/lparm/JenkinsTest/workspace/MnS/MSDK/Devices/AI85/MAX78000/Libraries/PeriphDrivers/Include/MAX78000/uart.h:666: warning: argument 'uart' of command @param is not found in the argument list of MXC_UART_GetAsyncRXCount(mxc_uart_req_t *req)
+/home/lparm/JenkinsTest/workspace/MnS/MSDK/Devices/AI85/MAX78000/Libraries/PeriphDrivers/Include/MAX78000/uart.h:672: warning: The following parameters of MXC_UART_GetAsyncRXCount(mxc_uart_req_t *req) are not documented:
+  parameter 'req'
+/home/lparm/JenkinsTest/workspace/MnS/MSDK/Devices/AI85/MAX78000/Libraries/PeriphDrivers/Include/MAX78000/uart.h:657: warning: argument 'uart' of command @param is not found in the argument list of MXC_UART_GetAsyncTXCount(mxc_uart_req_t *req)
+/home/lparm/JenkinsTest/workspace/MnS/MSDK/Devices/AI85/MAX78000/Libraries/PeriphDrivers/Include/MAX78000/uart.h:663: warning: The following parameters of MXC_UART_GetAsyncTXCount(mxc_uart_req_t *req) are not documented:
+  parameter 'req'
 /home/lparm/JenkinsTest/workspace/MnS/MSDK/Devices/AI85/MAX78000/Libraries/PeriphDrivers/Include/MAX78000/uart.h:372: warning: unable to resolve reference to `MXC_ERROR_CODES' for \ref command
 /home/lparm/JenkinsTest/workspace/MnS/MSDK/Devices/AI85/MAX78000/Libraries/PeriphDrivers/Include/MAX78000/uart.h:246: warning: unable to resolve reference to `UART' for \ref command
 /home/lparm/JenkinsTest/workspace/MnS/MSDK/Devices/AI85/MAX78000/Libraries/PeriphDrivers/Include/MAX78000/uart.h:236: warning: unable to resolve reference to `UART' for \ref command

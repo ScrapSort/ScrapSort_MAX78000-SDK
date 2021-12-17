@@ -46,11 +46,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
- 
+
 #if defined (__ICCARM__)
   #pragma system_include
 #endif
- 
+
 #if defined (__CC_ARM)
   #pragma anon_unions
 #endif
@@ -99,7 +99,7 @@ typedef struct {
 /**
  * @ingroup    mcr_registers
  * @defgroup   MCR_Register_Offsets Register Offsets
- * @brief      MCR Peripheral Register Offsets from the MCR Base Peripheral Address. 
+ * @brief      MCR Peripheral Register Offsets from the MCR Base Peripheral Address.
  * @{
  */
  #define MXC_R_MCR_ECCEN                    ((uint32_t)0x00000000UL) /**< Offset from MCR Base Address: <tt> 0x0000</tt> */ 
@@ -148,6 +148,29 @@ typedef struct {
  #define MXC_F_MCR_OUTEN_PDOWN_OUT_EN                   ((uint32_t)(0x1UL << MXC_F_MCR_OUTEN_PDOWN_OUT_EN_POS)) /**< OUTEN_PDOWN_OUT_EN Mask */
 
 /**@} end of group MCR_OUTEN_Register */
+
+/**
+ * @ingroup  mcr_registers
+ * @defgroup MCR_CMP_CTRL MCR_CMP_CTRL
+ * @brief    Comparator Control Register.
+ * @{
+ */
+ #define MXC_F_MCR_CMP_CTRL_EN_POS                      0 /**< CMP_CTRL_EN Position */
+ #define MXC_F_MCR_CMP_CTRL_EN                          ((uint32_t)(0x1UL << MXC_F_MCR_CMP_CTRL_EN_POS)) /**< CMP_CTRL_EN Mask */
+
+ #define MXC_F_MCR_CMP_CTRL_POL_POS                     5 /**< CMP_CTRL_POL Position */
+ #define MXC_F_MCR_CMP_CTRL_POL                         ((uint32_t)(0x1UL << MXC_F_MCR_CMP_CTRL_POL_POS)) /**< CMP_CTRL_POL Mask */
+
+ #define MXC_F_MCR_CMP_CTRL_INT_EN_POS                  6 /**< CMP_CTRL_INT_EN Position */
+ #define MXC_F_MCR_CMP_CTRL_INT_EN                      ((uint32_t)(0x1UL << MXC_F_MCR_CMP_CTRL_INT_EN_POS)) /**< CMP_CTRL_INT_EN Mask */
+
+ #define MXC_F_MCR_CMP_CTRL_OUT_POS                     14 /**< CMP_CTRL_OUT Position */
+ #define MXC_F_MCR_CMP_CTRL_OUT                         ((uint32_t)(0x1UL << MXC_F_MCR_CMP_CTRL_OUT_POS)) /**< CMP_CTRL_OUT Mask */
+
+ #define MXC_F_MCR_CMP_CTRL_INT_FL_POS                  15 /**< CMP_CTRL_INT_FL Position */
+ #define MXC_F_MCR_CMP_CTRL_INT_FL                      ((uint32_t)(0x1UL << MXC_F_MCR_CMP_CTRL_INT_FL_POS)) /**< CMP_CTRL_INT_FL Mask */
+
+/**@} end of group MCR_CMP_CTRL_Register */
 
 /**
  * @ingroup  mcr_registers

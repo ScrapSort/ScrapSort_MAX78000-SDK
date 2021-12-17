@@ -90,6 +90,8 @@ typedef int (*mxc_i2c_reva_slave_handler_t) (mxc_i2c_reva_regs_t* i2c,
                                         mxc_i2c_reva_slave_event_t event, void* data);
 /* **** Variable Declaration **** */
 
+extern void* AsyncRequests[MXC_I2C_INSTANCES];
+
 /* **** Function Prototypes **** */
 
 /* ************************************************************************* */

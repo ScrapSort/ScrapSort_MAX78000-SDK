@@ -43,7 +43,10 @@
 #include "ctb.h"
 #include "ctb_reva.h"
 #include "ctb_common.h"
+
+#if (TARGET_NUM != 32572)
 #include "icc_reva.h"
+#endif
 
 enum {   DMA_ID,
          HSH_ID,
@@ -200,6 +203,7 @@ void MXC_CTB_RevA_Reset(uint32_t features)
     MXC_CTB_Init(features);
 }
 
+#if (TARGET_NUM != 32572)
 void MXC_CTB_RevA_CacheInvalidate(void)
 {
     // Write non-zero value to invalidate
@@ -208,6 +212,7 @@ void MXC_CTB_RevA_CacheInvalidate(void)
     // Wait for completion of invalidation
     while((((mxc_icc_reva_regs_t*) MXC_ICC)->ctrl & MXC_F_ICC_REVA_CTRL_RDY) == 0);
 }
+#endif
 
 int MXC_CTB_RevA_Shutdown(uint32_t features)
 {
@@ -262,7 +267,7 @@ void MXC_CTB_RevA_Handler(mxc_trng_reva_regs_t* trng)
     if(features & MXC_CTB_REVA_FEATURE_CIPHER) {
         req = saved_requests[CPH_ID];
         MXC_CTB_DoneClear(MXC_CTB_REVA_FEATURE_CIPHER | MXC_CTB_REVA_FEATURE_DMA);
-        features &= ~MXC_CTB_REVA_FEATURE_DMA;
+        features &= ~MXC_CTB_REVA_FEATURE_CIPHER;
         
         if(MXC_CTB_Cipher_EncDecAsc(req)) {
             cb = MXC_CTB_Callbacks[CPH_ID];
@@ -339,7 +344,7 @@ void MXC_CTB_RevA_DMA_SetReadSource(mxc_ctb_reva_regs_t* ctb_regs, mxc_ctb_reva_
 
 mxc_ctb_reva_dma_read_source_t MXC_CTB_RevA_DMA_GetReadSource(mxc_ctb_reva_regs_t* ctb_regs)
 {
-    return(ctb_regs->ctrl & MXC_F_CTB_REVA_CTRL_RDSRC) >> MXC_F_CTB_REVA_CTRL_RDSRC_POS;
+    return (ctb_regs->ctrl & MXC_F_CTB_REVA_CTRL_RDSRC) >> MXC_F_CTB_REVA_CTRL_RDSRC_POS;
 }
 
 void MXC_CTB_RevA_DMA_SetWriteSource(mxc_ctb_reva_regs_t* ctb_regs, mxc_ctb_reva_dma_write_source_t source)
@@ -349,7 +354,7 @@ void MXC_CTB_RevA_DMA_SetWriteSource(mxc_ctb_reva_regs_t* ctb_regs, mxc_ctb_reva
 
 mxc_ctb_reva_dma_write_source_t MXC_CTB_RevA_DMA_GetWriteSource(mxc_ctb_reva_regs_t* ctb_regs)
 {
-    return(ctb_regs->ctrl & MXC_F_CTB_REVA_CTRL_WRSRC) >> MXC_F_CTB_REVA_CTRL_WRSRC_POS;
+    return (ctb_regs->ctrl & MXC_F_CTB_REVA_CTRL_WRSRC) >> MXC_F_CTB_REVA_CTRL_WRSRC_POS;
 }
 
 void MXC_CTB_RevA_DMA_SetSource(mxc_ctb_reva_regs_t* ctb_regs, uint8_t* source)
@@ -377,6 +382,8 @@ int MXC_CTB_RevA_DMA_SetupOperation(mxc_ctb_reva_dma_req_t* req)
     
     if(req->destBuffer == NULL) {
         MXC_CTB_DMA_SetWriteSource(MXC_CTB_REVA_DMA_WRITE_FIFO_NONE);
+    } else {
+        MXC_CTB_DMA_SetWriteSource(MXC_CTB_REVA_DMA_WRITE_FIFO_CIPHER); 
     }
     
     MXC_CTB_DMA_SetSource(req->sourceBuffer);

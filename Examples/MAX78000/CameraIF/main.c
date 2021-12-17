@@ -62,7 +62,13 @@
 #include "dma.h"
 
 #ifdef ENABLE_TFT  // defined in make file
+    #ifdef EvKit_V1
 #include "tft.h"
+    #endif
+
+    #ifdef FTHR_RevA
+#include "tft_fthr.h"
+    #endif
 #endif
 
 #define CAMERA_FREQ (10 * 1000 * 1000)
@@ -247,7 +253,13 @@ int main(void)
 
 #ifdef ENABLE_TFT
     /* Set the screen rotation */
+#ifdef EvKit_V1
     MXC_TFT_SetRotation(SCREEN_FLIP);
+#endif
+#ifdef FTHR_RevA
+    MXC_TFT_SetRotation(ROTATE_180);
+#endif
+
 #endif
 #endif //#ifndef STREAM_ENABLE
 
@@ -267,7 +279,7 @@ int main(void)
     camera_start_capture_image();
 
     while (1) {
-        // Check if image is aquired.
+        // Check if image is acquired.
 #ifndef STREAM_ENABLE
         if (camera_is_image_rcv())
 #endif

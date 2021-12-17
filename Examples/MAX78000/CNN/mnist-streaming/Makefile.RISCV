@@ -33,7 +33,7 @@
 
 # This is the name of the build output file
 ifeq "$(PROJECT)" ""
-PROJECT=max78000-riscv
+PROJECT=max78000
 endif
 
 # Specify the target processor
@@ -45,6 +45,8 @@ endif
 TARGET_UC:=$(shell echo $(TARGET) | tr a-z A-Z)
 TARGET_LC:=$(shell echo $(TARGET) | tr A-Z a-z)
 
+MAKE=make
+
 # Select 'GCC' or 'IAR' compiler
 COMPILER=GCC
 
@@ -52,6 +54,14 @@ COMPILER=GCC
 ifeq "$(BOARD)" ""
 BOARD=EvKit_V1
 #BOARD=FTHR_RevA
+endif
+
+# Enable the connected camera
+ifeq "$(CAMERA)" ""
+CAMERA=OV7692
+#CAMERA=OV5642
+#CAMERA=HM01B0
+#CAMERA=HM0360
 endif
 
 RISCV_CORE=RV32
@@ -103,7 +113,7 @@ STACK_SIZE=1024
 PROJ_CFLAGS+=-DRV32
 
 # Enable all warnings
-PROJ_CFLAGS+=-Wall
+PROJ_CFLAGS+=-Wall -Wcast-align
 # Specify the target revision to override default
 # "A2" in ASCII
 # TARGET_REV=0x4132

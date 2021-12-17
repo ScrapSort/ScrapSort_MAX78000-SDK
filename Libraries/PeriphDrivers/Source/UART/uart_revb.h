@@ -46,8 +46,9 @@ typedef enum {
 	MXC_UART_REVB_EXT_CLK = 1,
 	MXC_UART_REVB_CLK2 = 2,
 	MXC_UART_REVB_CLK3 = 3,
-    // For UART3, ERTCO clock
-    MXC_UART_REVB_LPCLK2 = 4
+        // For UART3, ERTCO and INRO clocks
+        MXC_UART_REVB_LPCLK2 = 4,
+        MXC_UART_REVB_LPCLK3 = 5
 } mxc_uart_revb_clock_t;
 
 struct _mxc_uart_revb_req_t {

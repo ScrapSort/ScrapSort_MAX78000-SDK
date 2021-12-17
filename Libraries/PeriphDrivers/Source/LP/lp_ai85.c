@@ -149,11 +149,14 @@ void MXC_LP_EnableGPIOWakeup(mxc_gpio_cfg_t* wu_pins)
     case MXC_GPIO_PORT_1:
         MXC_PWRSEQ->lpwken1 |= wu_pins->mask;
 		break;
+		
 	case MXC_GPIO_PORT_2:
         MXC_PWRSEQ->lpwken2 |= wu_pins->mask;
 		break;
+		
 	case MXC_GPIO_PORT_3:
         MXC_PWRSEQ->lpwken3 |= wu_pins->mask;
+		break;
     }
 }
 
@@ -167,9 +170,11 @@ void MXC_LP_DisableGPIOWakeup(mxc_gpio_cfg_t* wu_pins)
     case MXC_GPIO_PORT_1:
         MXC_PWRSEQ->lpwken1 &= ~wu_pins->mask;
 		break;
+		
 	case MXC_GPIO_PORT_2:
         MXC_PWRSEQ->lpwken2 &= ~wu_pins->mask;
 		break;
+		
 	case MXC_GPIO_PORT_3:
         MXC_PWRSEQ->lpwken3 &= ~wu_pins->mask;
 		break;
@@ -222,6 +227,30 @@ void MXC_LP_EnableWUTAlarmWakeup(void)
 void MXC_LP_DisableWUTAlarmWakeup(void)
 {
     MXC_GCR->pm &= ~MXC_F_GCR_PM_WUT_WE;
+}
+
+void MXC_LP_EnableLPCMPWakeup (mxc_lpcmp_cmpsel_t cmp)
+{
+    MXC_ASSERT((cmp >= MXC_LPCMP_CMP0) && (cmp <= MXC_LPCMP_CMP3));
+
+    if(cmp == MXC_LPCMP_CMP0) {
+        MXC_PWRSEQ->lppwen |= MXC_F_PWRSEQ_LPPWEN_AINCOMP0;
+    }
+    else {
+        MXC_PWRSEQ->lppwen |= MXC_F_PWRSEQ_LPPWEN_LPCMP;
+    }
+}
+
+void MXC_LP_DisableLPCMPWakeup (mxc_lpcmp_cmpsel_t cmp)
+{
+    MXC_ASSERT((cmp >= MXC_LPCMP_CMP0) && (cmp <= MXC_LPCMP_CMP3));
+
+    if(cmp == MXC_LPCMP_CMP0) {
+        MXC_PWRSEQ->lppwen &= ~MXC_F_PWRSEQ_LPPWEN_AINCOMP0;
+    }
+    else {
+        MXC_PWRSEQ->lppwen &= ~MXC_F_PWRSEQ_LPPWEN_LPCMP;
+    }
 }
 
 int MXC_LP_ConfigDeepSleepClocks(uint32_t mask)

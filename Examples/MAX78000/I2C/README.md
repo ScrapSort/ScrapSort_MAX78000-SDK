@@ -1,6 +1,6 @@
 ## Description
 
-This application demonstrates both encryption and decryption using AES.  A block of data is encrypted.  The resulting encrypted data is then decrypted.  The new plain text is then compared with the original plain text to confirm they match.  This is repeated three times using a different key size each time.
+This example uses the I2C Master to read/write from/to the I2C Slave. 
 
 '****' Note '****': This example is not compatible with the Featherboard EV Kit. This is due to a lack of exposed I2C pins needed for multiple I2C peripheral instances to communicate with one another, a necessary condition for this test. 
 

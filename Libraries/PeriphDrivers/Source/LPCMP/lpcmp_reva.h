@@ -31,9 +31,8 @@
  *
  *************************************************************************** */
 
+#include "lpcmp_reva_regs.h"
 #include "lpcmp.h"
-#include "lpcmp_regs.h"
-
 #include "mxc_device.h"
 #include "mxc_errors.h"
 #include "mxc_assert.h"
@@ -42,16 +41,16 @@
 #include "mxc_lock.h"
 #include <stdio.h>
 
-int MXC_LPCMP_RevA_Init(void);
+int MXC_LPCMP_RevA_Init(mxc_lpcmp_ctrl_reg_t ctrl_reg);
 
-int MXC_LPCMP_RevA_Shutdown(void);
+int MXC_LPCMP_RevA_Shutdown(mxc_lpcmp_ctrl_reg_t ctrl_reg);
 
-void MXC_LPCMP_RevA_EnableInt(void);
+int MXC_LPCMP_RevA_EnableInt(mxc_lpcmp_ctrl_reg_t ctrl_reg);
 
-void MXC_LPCMP_RevA_DisableInt(void);
+int MXC_LPCMP_RevA_DisableInt(mxc_lpcmp_ctrl_reg_t ctrl_reg);
 
-void MXC_LPCMP_RevA_EnableWakeup(void);
+int MXC_LPCMP_RevA_GetFlags(mxc_lpcmp_ctrl_reg_t ctrl_reg);
 
-void MXC_LPCMP_RevA_DisableWakeup(void);
+int MXC_LPCMP_RevA_ClearFlags(mxc_lpcmp_ctrl_reg_t ctrl_reg);
 
-void MXC_LPCMP_RevA_SelectPolarity(mxc_lpcmp_polarity_t polarity);
+int MXC_LPCMP_RevA_SelectPolarity(mxc_lpcmp_ctrl_reg_t ctrl_reg, mxc_lpcmp_polarity_t pol);

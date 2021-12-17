@@ -1,7 +1,3 @@
----
-typora-root-url: Resources
----
-
 # MAX78000 Keyword Spotting Demo v.3
 
 
@@ -61,6 +57,12 @@ BOARD=FTHR_RevA
 endif
 ```
 
+**Note: If you are using Eclipse, please also make sure to change the value of Board environment variable to "FTHR_RevA by:**
+
+*right click project name > Properties > C/C++ Build > Environment > Board"*
+
+<img src="Resources/eclipse_board.png" style="zoom:33%;" />
+
 ### Load firmware image to MAX78000 EVKIT
 
 Connect USB cable to CN1 (USB/PWR) and turn ON power switch (SW1).
@@ -85,7 +87,7 @@ If using Linux, perform this step:
 
 Make sure to install jumper at JP20-CLK (INT position) as shown bellow:
 
-<img src="/I2S_jumper.png" style="zoom:25%;" />
+<img src="Resources/I2S_jumper.png" style="zoom:25%;" />
 
 Note: On board external oscillator Y3 is used to generate I2S clock. The I2S sample rate is 16kHz to match speech samples of the dataset.
 
@@ -95,7 +97,7 @@ After power-cycle,  if the TFT display is blank, or not shown properly as below,
 
 The TFT display shows that it is ready. Press PB1 to start:
 
-<img src="/20200604_142849.jpg" style="zoom: 25%;" />
+<img src="Resources/20200604_142849.jpg" style="zoom: 25%;" />
 
 
 
@@ -111,7 +113,7 @@ The microphone (U15) is located between JH4 and JH5 headers on EVKIT, (MK1) betw
 
 
 
-<img src="/20200604_142536_1.jpg" style="zoom:25%;" />
+<img src="Resources/20200604_142536_1.jpg" style="zoom:25%;" />
 
 
 
@@ -154,11 +156,11 @@ endif
 While using TFT display keep its power switch in "ON" position. The TFT "Reset" button also can be used as Feather reset.
 Press PB1 (SW1) button to start demo.
 
-![](/feather_tft.jpg)
+![](Resources/feather_tft.jpg)
 
 The PB1 (SW1) button is located as shown in picture bellow:
 
-![](/pb1_button.jpg)
+![](Resources/pb1_button.jpg)
 
 
 
@@ -170,23 +172,23 @@ The USB cable connected to CN1 (USB/PWR) provides power and serial communication
 
 To configure PC terminal program select correct COM port and settings as follow:
 
-![](/Terminal2.png)
+![](Resources/Terminal2.png)
 
 After turning on power or pressing reset button the following message will appear in terminal window:
 
-![](/Terminal1.png)
+![](Resources/Terminal1.png)
 
 
 
 Terminal display after detecting words:
 
-![](/Terminal3.png)
+![](Resources/Terminal3.png)
 
 
 
 The software components of KWS20 demo are shown in diagram below:
 
-![](/Diagram.png)
+![](Resources/Diagram.png)
 
 
 
@@ -338,7 +340,7 @@ $ python RealtimeAudio.py -i voicefile.wav -o voicefile.h
 
 Following figure shows the processing in KWS20 Demo firmware:
 
-![](/KWS_Demo_flowchart.png)
+![](Resources/KWS_Demo_flowchart.png)
 
 Collected samples from mic/file are 18/16 bit signed and are converted to 8 bit signed to feed into CNN. If Microphone mode, a high pass filter is used to filter out the DC level in captured samples. Scaled samples are stored in **pPreambleCircBuffer** circular buffer in chunks of 128 samples (bytes). 
 

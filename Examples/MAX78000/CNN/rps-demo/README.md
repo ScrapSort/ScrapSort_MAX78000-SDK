@@ -1,8 +1,3 @@
----
-typora-root-url: Resources
-
----
-
 # MAX78000 Rock Paper Scissors Game
 
 
@@ -48,6 +43,14 @@ ifeq "$(BOARD)" ""
 BOARD=FTHR_RevA
 endif
 ```
+
+**Note: If you are using Eclipse, please also make sure to change the value of Board environment variable to "FTHR_RevA by:**
+
+*Right click project name > Properties > C/C++ Build > Environment > Board"*
+
+<img src="Resources/eclipse_board.png" style="zoom:33%;" />
+
+
 
 ### Load firmware image to MAX78000 EVKIT
 

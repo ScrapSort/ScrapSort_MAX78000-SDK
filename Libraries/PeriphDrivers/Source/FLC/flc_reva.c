@@ -55,6 +55,11 @@
 /* **** Definitions **** */
 
 /* **** Globals **** */
+#ifdef MXC_FLC0
+static mxc_flc_reva_regs_t *flc_int = (mxc_flc_reva_regs_t*) MXC_FLC0;
+#else
+static mxc_flc_reva_regs_t *flc_int = (mxc_flc_reva_regs_t*) MXC_FLC;
+#endif
 
 /* **** Functions **** */
 
@@ -296,6 +301,18 @@ int MXC_FLC_RevA_Write128 (mxc_flc_reva_regs_t *flc, uint32_t addr, uint32_t *da
 }
 
 //******************************************************************************
+void MXC_FLC_RevA_SetFLCInt(mxc_flc_reva_regs_t *flc)
+{
+    flc_int = flc;
+}
+
+//******************************************************************************
+mxc_flc_reva_regs_t* MXC_FLC_RevA_GetFLCInt(void)
+{
+    return flc_int;
+}
+
+//******************************************************************************
 int MXC_FLC_RevA_EnableInt(uint32_t mask)
 {
     mask &= (MXC_F_FLC_REVA_INTR_DONEIE |  MXC_F_FLC_REVA_INTR_AFIE);
@@ -306,7 +323,7 @@ int MXC_FLC_RevA_EnableInt(uint32_t mask)
     }
     
     /* Apply enables and write back, preserving the flags */
-    ((mxc_flc_reva_regs_t*) MXC_FLC_GET_FLC(0))->intr |= mask;
+    flc_int->intr |= mask;
     
     return E_NO_ERROR;
 }
@@ -322,7 +339,7 @@ int MXC_FLC_RevA_DisableInt(uint32_t mask)
     }
     
     /* Apply disables and write back, preserving the flags */
-    ((mxc_flc_reva_regs_t*) MXC_FLC_GET_FLC(0))->intr &= ~mask;
+    flc_int->intr &= ~mask;
     
     return E_NO_ERROR;
 }
@@ -330,7 +347,7 @@ int MXC_FLC_RevA_DisableInt(uint32_t mask)
 //******************************************************************************
 int MXC_FLC_RevA_GetFlags(void)
 {
-    return (((mxc_flc_reva_regs_t*) MXC_FLC_GET_FLC(0))->intr & (MXC_F_FLC_REVA_INTR_DONE | MXC_F_FLC_REVA_INTR_AF));
+    return (flc_int->intr & (MXC_F_FLC_REVA_INTR_DONE | MXC_F_FLC_REVA_INTR_AF));
 }
 
 //******************************************************************************
@@ -344,7 +361,7 @@ int MXC_FLC_RevA_ClearFlags(uint32_t mask)
     }
     
     /* Both flags are write zero clear */
-    ((mxc_flc_reva_regs_t*) MXC_FLC_GET_FLC(0))->intr ^= mask;
+    flc_int->intr ^= mask;
     
     return E_NO_ERROR;
 }

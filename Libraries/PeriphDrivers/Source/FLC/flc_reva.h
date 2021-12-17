@@ -68,6 +68,10 @@ int MXC_FLC_RevA_Write32 (mxc_flc_reva_regs_t *flc, uint32_t locgialAddr, uint32
 
 int MXC_FLC_RevA_Write128 (mxc_flc_reva_regs_t *flc, uint32_t addr, uint32_t *data);
 
+void MXC_FLC_RevA_SetFLCInt (mxc_flc_reva_regs_t *flc);
+
+mxc_flc_reva_regs_t* MXC_FLC_RevA_GetFLCInt (void);
+
 int MXC_FLC_RevA_EnableInt (uint32_t mask);
 
 int MXC_FLC_RevA_DisableInt (uint32_t mask);

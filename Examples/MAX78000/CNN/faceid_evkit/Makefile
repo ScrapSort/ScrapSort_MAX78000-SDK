@@ -56,7 +56,12 @@ BOARD=EvKit_V1
 endif
 
 # This is the path to the CMSIS root directory
+ifeq "$(MAXIM_PATH)" ""
 LIBS_DIR=../../../../Libraries
+else
+LIBS_DIR=/$(subst \,/,$(subst :,,$(MAXIM_PATH))/Libraries)
+endif
+
 CMSIS_ROOT=$(LIBS_DIR)/CMSIS
 CNN_ROOT=../../../../Examples/$(TARGET)/CNN
 
@@ -88,7 +93,6 @@ endif
 ifeq "$(BOARD)" "FTHR_RevA"
 VPATH += TFT/fthr/
 endif
-VPATH += $(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source
 VPATH += $(CNN_ROOT)/Common
 VPATH += ./src
 
@@ -109,6 +113,7 @@ ifeq "$(BOARD)" "EvKit_V1"
 PROJ_CFLAGS+=-DROTATE_SCREEN=1
 PROJ_CFLAGS+=-DTFT_ENABLE
 PROJ_CFLAGS+=-DTS_ENABLE
+CAMERA=OV7692
 endif
 
 ifeq "$(BOARD)" "FTHR_RevA"

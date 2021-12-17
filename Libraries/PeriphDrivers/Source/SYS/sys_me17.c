@@ -234,6 +234,8 @@ int MXC_SYS_ClockSourceEnable(mxc_sys_system_clock_t clock)
         break;
 
     case MXC_SYS_CLOCK_ERFO:
+        MXC_GCR->btleldoctrl |= MXC_F_GCR_BTLELDOCTRL_LDOTXEN | MXC_F_GCR_BTLELDOCTRL_LDORXEN;
+
         /* Initialize kickstart circuit
            Select Kick start circuit clock source- IPO/ISO 
         */
@@ -484,13 +486,16 @@ void MXC_SYS_Reset_Periph(mxc_sys_reset_t reset)
     if (reset > 63) {
         reset -= 64;
         MXC_LPGCR->rst = (0x1 << reset);
+		while (MXC_LPGCR->rst & (0x1 << reset));
     }
     else if (reset > 31) {
         reset -= 32;
         MXC_GCR->rst1  = (0x1 << reset);
+		while (MXC_GCR->rst1 & (0x1 << reset));
     }
     else {
         MXC_GCR->rst0  = (0x1 << reset);
+		while (MXC_GCR->rst0 & (0x1 << reset));
     }
 }
 

@@ -8,6 +8,8 @@ var searchData=
   ['loopdelay',['loopDelay',['../group__pulsetrain.html#a5d530a8b7c6b7e3c239e9dd55dbdee42',1,'mxc_pt_cfg_t']]],
   ['lowerintperiod',['lowerIntPeriod',['../group__wdt.html#a0fb6f702a2d2ef7e64d45746508dd675',1,'mxc_wdt_cfg_t']]],
   ['lowerresetperiod',['lowerResetPeriod',['../group__wdt.html#a7248d988facbc4deda93907b9c214a79',1,'mxc_wdt_cfg_t']]],
+  ['lpcmp_5fctrl',['LPCMP_CTRL',['../group___l_p_c_m_p___c_t_r_l.html',1,'']]],
+  ['lpcmp_5fregisters',['LPCMP_Registers',['../group__lpcmp__registers.html',1,'']]],
   ['lpcn',['lpcn',['../group__pwrseq__registers.html#af888e712772d38e0435de7296365e579',1,'mxc_pwrseq_regs_t']]],
   ['lpgcr_5fpclkdis',['LPGCR_PCLKDIS',['../group___l_p_g_c_r___p_c_l_k_d_i_s.html',1,'']]],
   ['lpgcr_5fregisters',['LPGCR_Registers',['../group__lpgcr__registers.html',1,'']]],

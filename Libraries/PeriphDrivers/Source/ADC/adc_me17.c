@@ -154,7 +154,7 @@ int MXC_ADC_SetConversionSpeed(uint32_t hz)
     //enable clock
     MXC_ADC_RevA_SetConversionSpeed((mxc_adc_reva_regs_t*) MXC_ADC, hz);
     
-    return E_NO_ERROR;
+    return MXC_ADC_GetConversionSpeed();
 }
 
 int MXC_ADC_GetConversionSpeed(void)

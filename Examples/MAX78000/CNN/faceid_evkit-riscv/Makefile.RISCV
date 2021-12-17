@@ -33,7 +33,7 @@
 
 # This is the name of the build output file
 ifeq "$(PROJECT)" ""
-PROJECT=max78000-riscv
+PROJECT=max78000
 endif
 
 # Specify the target processor
@@ -44,6 +44,8 @@ endif
 # Create Target name variables
 TARGET_UC:=$(shell echo $(TARGET) | tr a-z A-Z)
 TARGET_LC:=$(shell echo $(TARGET) | tr A-Z a-z)
+
+MAKE=make
 
 # Select 'GCC' or 'IAR' compiler
 COMPILER=GCC
@@ -110,6 +112,7 @@ STACK_SIZE=1024
 PROJ_CFLAGS+=-DRV32
 PROJ_CFLAGS+=-DROTATE_SCREEN=1
 #PROJ_CFLAGS+=-DRISCV_NOT_COMPRESSED
+CAMERA=OV7692
 
 # Enable all warnings
 PROJ_CFLAGS+=-Wall

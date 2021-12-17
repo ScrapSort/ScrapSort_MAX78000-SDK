@@ -84,7 +84,7 @@ If using Linux, perform this step:
 
 After loading FaceID firmware press "**Start_DEMO**" button on TFT screen to capture a face image. Make sure that captured face image should be inside blue rectangle. 
 
-![](Resources\evkit_tft.jpg)
+![](Resources/evkit_tft.jpg)
 
 ### MAX78000 Feather operations
 
@@ -106,7 +106,7 @@ endif
 
 While using TFT display keep its power switch in "ON" position. The TFT "Reset" button also can be used as Feather reset.
 
-![](Resources\feather_tft.jpg)
+![](Resources/feather_tft.jpg)
 
 ### Using Debug Terminal
 
@@ -116,13 +116,13 @@ The USB cable connected to CN1 (USB/PWR) provides power and serial communication
 
 To configure PC terminal program select correct COM port and settings as follow:
 
-![](Resources\terminal_setup.jpg)
+![](Resources/terminal_setup.jpg)
 
 
 
 Following message will appear in terminal window:
 
-![](Resources\terminal.jpg)
+![](Resources/terminal.jpg)
 
 
 
@@ -150,7 +150,7 @@ In order to achieve best identification, following steps are recommended:
 
 3. Pictures should be a passport style, with subject's face covering about 60-70% of the area: 
 
-![](Resources\image1.png)
+![](Resources/image1.png)
 
 4. Use a light color background; make sure it is not underexposed, and there is no shadow in the background or face. 
 
@@ -162,7 +162,7 @@ In order to achieve best identification, following steps are recommended:
 
    c) zoomed out face directly to camera covering about 20-30% of area (1 picture): 
 
-![](Resources\image2.png)
+![](Resources/image2.png)
 
 6. If needed, you may add additional 1-2 pictures with some facial expressions (eg. smile) directly facing the camera, similar to 5-a (1-2 pictures)
 

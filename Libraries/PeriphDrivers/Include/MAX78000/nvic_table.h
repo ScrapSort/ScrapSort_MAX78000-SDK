@@ -45,6 +45,8 @@
 extern "C" {
 #endif
 
+#include "max78000.h"
+
 /**
  * @brief Set an IRQ hander callback function.  If the IRQ table is in
  * flash, this will copy it to RAM and set NVIC to RAM based table.

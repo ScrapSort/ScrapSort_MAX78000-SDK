@@ -80,7 +80,6 @@ int MXC_AFE_GPIO_Config(const mxc_gpio_cfg_t* cfg)
         return E_BAD_PARAM;
     }
     
-    // Configure the vssel
-    return MXC_GPIO_SetVSSEL (gpio, cfg->vssel, cfg->mask);
+    return  E_NO_ERROR;
 }
 

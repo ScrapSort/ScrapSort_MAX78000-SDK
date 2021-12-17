@@ -3,10 +3,10 @@ var group__uart =
     [ "UART_Registers", "group__uart__registers.html", "group__uart__registers" ],
     [ "mxc_uart_req_t", "group__uart.html#struct__mxc__uart__req__t", [
       [ "callback", "group__uart.html#af33f8259bdf30484df63a458cbfc0fc5", null ],
-      [ "rxCnt", "group__uart.html#a1bf34bc0d63b8e4a68fa9fb295b03f34", null ],
+      [ "rxCnt", "group__uart.html#a5170bf9ee63cd6a1605360b56257439e", null ],
       [ "rxData", "group__uart.html#ab83c0e07099df7beb8e491cb91914de0", null ],
       [ "rxLen", "group__uart.html#a043f0f3e53b8233dca0b9446b9c36ccd", null ],
-      [ "txCnt", "group__uart.html#ab08c6d802a1534b503d57b1cfb785bbf", null ],
+      [ "txCnt", "group__uart.html#a204f0cb05dab7675aa7b7f7a2fd0e886", null ],
       [ "txData", "group__uart.html#a7dbe1c75593b075e387474ea112ce73b", null ],
       [ "txLen", "group__uart.html#abaa4e72af025cc3c53b626f14cb40c1d", null ],
       [ "uart", "group__uart.html#a1490246c0470b7a850eb417d3c7f6e13", null ]
@@ -41,6 +41,8 @@ var group__uart =
     [ "MXC_UART_DMACallback", "group__uart.html#ga256350715ed900f67d05e7a29f8632fc", null ],
     [ "MXC_UART_EnableInt", "group__uart.html#ga3258382626c1fe0e71771d53eb09fcca", null ],
     [ "MXC_UART_GetActive", "group__uart.html#ga724bb717925ccf2f4c4643a9d9949315", null ],
+    [ "MXC_UART_GetAsyncRXCount", "group__uart.html#ga11ea066a51c2abbfabb2998b41017be8", null ],
+    [ "MXC_UART_GetAsyncTXCount", "group__uart.html#gacb94f3a1b1db38ee0074a02d81bd9bbb", null ],
     [ "MXC_UART_GetFlags", "group__uart.html#ga59d00ccf6ed8d09e32a11768d711b2cb", null ],
     [ "MXC_UART_GetFrequency", "group__uart.html#gadce4a857e97b46b185b8a1cd52c4f810", null ],
     [ "MXC_UART_GetRXFIFOAvailable", "group__uart.html#ga6eabea818d1d4817481cf7b4cc401fe5", null ],

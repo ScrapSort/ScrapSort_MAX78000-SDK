@@ -50,8 +50,8 @@ typedef struct {
     int master;             // 1 for Master, 0 for slave
     int channelTx;          // DMA channel for TX transaction
     int channelRx;          // DMA channel for RX transaction
-    int writeDone;          // Write done flag
-    int readDone;           // Flag done flag
+    volatile int writeDone;          // Write done flag
+    volatile int readDone;           // Flag done flag
 } mxc_i2c_reva_req_state_t;
 
 static mxc_i2c_reva_req_state_t states[MXC_I2C_INSTANCES];
@@ -416,7 +416,11 @@ int MXC_I2C_RevA_ReadRXFIFODMA (mxc_i2c_reva_regs_t* i2c, unsigned char* bytes, 
 
     i2cNum = MXC_I2C_GET_IDX ((mxc_i2c_regs_t*) i2c);
     
+  #if TARGET_NUM == 32665
+    channel = MXC_DMA_AcquireChannel(dma);
+  #else
     channel = MXC_DMA_AcquireChannel();
+  #endif
     
     config.ch = channel;
     
@@ -489,7 +493,11 @@ int MXC_I2C_RevA_WriteTXFIFODMA (mxc_i2c_reva_regs_t* i2c, unsigned char* bytes,
     
     i2c->mstctrl |= MXC_F_I2C_REVA_MSTCTRL_START;
     
+  #if TARGET_NUM == 32665
+    channel = MXC_DMA_AcquireChannel(dma);
+  #else
     channel = MXC_DMA_AcquireChannel();
+  #endif
     
     config.ch = channel;
     
@@ -881,13 +889,21 @@ int MXC_I2C_RevA_MasterTransactionDMA (mxc_i2c_reva_req_t* req, mxc_dma_regs_t* 
     states[i2cNum].channelTx = 0xFF;
     states[i2cNum].channelRx = 0xFF;
     
+  #if TARGET_NUM == 32665
+    MXC_DMA_Init(dma);
+  #else
     MXC_DMA_Init();
+  #endif
     
     //tx
     if ((req->tx_buf != NULL) && !(states[i2cNum].writeDone)) {
         i2c->fifo = ((req->addr) << 1) & ~0x1;    // Load the slave address with write bit set
         
+      #if TARGET_NUM == 32665
+        MXC_I2C_WriteTXFIFODMA ((mxc_i2c_regs_t*) i2c, req->tx_buf, req->tx_len, NULL, dma);
+      #else
         MXC_I2C_WriteTXFIFODMA ((mxc_i2c_regs_t*) i2c, req->tx_buf, req->tx_len, NULL);
+      #endif
     }
     else {
         states[i2cNum].writeDone = 1;
@@ -910,7 +926,11 @@ int MXC_I2C_RevA_MasterTransactionDMA (mxc_i2c_reva_req_t* req, mxc_dma_regs_t* 
             
             i2c->fifo = ((req->addr) << 1) | 0x1;    // Load the slave address with write bit set
 
+          #if TARGET_NUM == 32665
+            MXC_I2C_ReadRXFIFODMA ((mxc_i2c_regs_t*) i2c, req->rx_buf, req->rx_len, NULL, dma);
+          #else
             MXC_I2C_ReadRXFIFODMA ((mxc_i2c_regs_t*) i2c, req->rx_buf, req->rx_len, NULL);
+          #endif
         }
     }
     else {

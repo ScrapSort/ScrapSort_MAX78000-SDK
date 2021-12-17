@@ -166,12 +166,21 @@ void MXC_TFT_ShowImage(int x0, int y0, int id);
  *
  * @param      x0           x location of image
  * @param      y0           y location of image
- * @param      image        RGB565 image buffer(pointer)
- * @param      width        image height
- * @param      height       image width
+ * @param      image        RGB565 image buffer (pointer)
+ * @param      width        image width
+ * @param      height       image height
  */
 void MXC_TFT_WriteBufferRGB565(int x0, int y0, uint8_t *image, int width, int height);
 
+/**
+ * @brief      Display captured RGB565 image on TFT
+ *
+ * @param      x0           x location of image
+ * @param      y0           y location of image
+ * @param      image        RGB565 image (pointer)
+ * @param      iWidth       image width
+ * @param      iHeight      image height
+ */
 void MXC_TFT_ShowImageCameraRGB565(int x0, int y0, uint8_t *image, int iWidth, int iHeight);
 
 /**

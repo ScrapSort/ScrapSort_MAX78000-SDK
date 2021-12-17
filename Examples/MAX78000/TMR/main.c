@@ -67,7 +67,7 @@
 #define OST_FREQ        1                   // (Hz)
 #define OST_TIMER       MXC_TMR5            // Can be MXC_TMR0 through MXC_TMR5
 
-#define FREQ            1000                // (Hz)
+#define FREQ            10                // (Hz)
 #define DUTY_CYCLE      50                  // (%)
 #define PWM_TIMER       MXC_TMR4            // must change PWM_PORT and PWM_PIN if changed
 

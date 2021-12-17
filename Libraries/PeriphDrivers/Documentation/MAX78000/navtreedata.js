@@ -22,18 +22,18 @@ var NAVTREEINDEX =
 "group___g_c_r___p_c_l_k_d_i_v.html#gaebc1bacb794cffc7711097d2d10f6e62",
 "group___g_p_i_o___i_n_t_p_o_l.html#ga33a7fc61f0f98e12bdd75b2950817b52",
 "group___i2_c___i_n_t_f_l0.html#gad39a2377c1d119eac587a63e84ee8bf1",
-"group___m_c_r___c_t_r_l.html#ga60f0b387e036d8a512ce0254abe67e8e",
-"group___p_t___r_a_t_e___l_e_n_g_t_h.html#gaaac91d505d21d3819ae5932cff3e0f6d",
-"group___r_t_c___t_r_i_m.html#ga2983c625e5b413f542e3503d2f8d5cb6",
-"group___s_p_i___c_t_r_l2.html#gaa717b1ad778fbf87a805fa8d25d376c9",
-"group___t_m_r___c_t_r_l0.html#gaaac86b1dde54ed5057368f03dcc147dd",
-"group___u_a_r_t___c_t_r_l.html#gae7ccc569576f916285ed3a46e771421b",
-"group___w_d_t___c_t_r_l.html#gae8a2dea018f8af7fa95a010a8391660c",
-"group__dma.html#gga9780c41835a193d27557326bdb94d07ca0ff76611731718a84ab2010da825cdce",
-"group__gpio__registers.html#a47d2d7a96dd66dee1572bb4c0ccf6f3b",
-"group__ptg__registers.html#a562f92f7c95a5ff9015a0a38c4bd0e9e",
-"group__tmr.html#ad09582679ae9f272be80f259ccce9248",
-"group__wut.html#gga96a472fb1a849939ace5b6027cb449d9a3449b1a6a0c1690dd19e0ecd3242c21a"
+"group___l_p_g_c_r___r_s_t.html#gad7fadc87428c6ba321a01291a1f21ef3",
+"group___p_t___r_a_t_e___l_e_n_g_t_h.html#ga44ef75cc8d9df65831e9f0a37c6f8ba5",
+"group___r_t_c___o_s_c_c_t_r_l.html#ga4583f89840c39829a25caaa601b6b318",
+"group___s_p_i___c_t_r_l2.html#ga418d9b50bfd7d7446e8062c21fa74785",
+"group___t_m_r___c_t_r_l0.html#ga6cffb1dce0bbab221231a68dbfa9fc22",
+"group___u_a_r_t___c_t_r_l.html#ga91f895698e53ec55e5a3102c2c71947f",
+"group___w_d_t___c_t_r_l.html#gabf54f21fcf9b647a68da890ba8cea5a1",
+"group__dma.html#ga4a43f6dbfc61c09827d632e7597e3e0d",
+"group__gpio__pin.html#gad5d02d5bdb4b090961705c9bbdcab64a",
+"group__owm.html#gadaed2256b86e3d96aa105f2e50b17198",
+"group__spi.html#gga60b8dae244994cc57471750e249bc09caf06ec36087996d6f328df39866ff5de6",
+"group__wdt__registers.html#a257571c52dc7169c2428058d20d02cd2"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

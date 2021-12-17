@@ -1,8 +1,3 @@
----
-typora-root-url: Resources
-
----
-
 # MAX78000 Cats vs Dogs Demo
 
 
@@ -48,6 +43,14 @@ ifeq "$(BOARD)" ""
 BOARD=FTHR_RevA
 endif
 ```
+
+**Note: If you are using Eclipse, please also make sure to change the value of Board environment variable to "FTHR_RevA by:**
+
+*Right click project name > Properties > C/C++ Build > Environment > Board"*
+
+<img src="Resources/eclipse_board.png" style="zoom:33%;" />
+
+
 
 ### Load firmware image to MAX78000 EVKIT
 
@@ -116,11 +119,11 @@ endif
 While using TFT display keep its power switch in "ON" position. The TFT "Reset" button also can be used as Feather reset.
 Press PB1 (SW1) button to start demo.
 
-<img src="/fthr_tft.png" style="zoom: 50%;" />
+<img src="Resources/fthr_tft.png" style="zoom: 50%;" />
 
 The PB1 (SW1) button is located as shown in picture bellow:
 
-<img src="/pb1_button.jpg" alt="pb1_button" style="zoom:67%;" />
+<img src="Resources/pb1_button.jpg" alt="pb1_button" style="zoom:67%;" />
 
 
 
@@ -151,7 +154,7 @@ Terminal output
 
 The Console UART of the device will output these messages:
 
-![](/terminal.png)
+![](Resources/terminal.png)
 
 ### References
 
