@@ -708,10 +708,18 @@ void MXC_TFT_ShowImageCameraRGB565(int x0, int y0, uint8_t *image, int width, in
 
 	write_command(0x2C);  // send pixel
 
-    for (j = 0; j < width; j++) {         //Lines
-        for (i = 0; i < width*height; i += width) {     // one line
-            write_data(*(image + ((i + j) * 2)));
-            write_data(*(image + ((i + j) * 2) + 1));
+    // for (j = 0; j < width; j++) {         //Lines
+    //     for (i = 0; i < width*height; i += width) {     // one line
+    //         write_data(*(image + ((i + j) * 2)));
+    //         write_data(*(image + ((i + j) * 2) + 1));
+    //     }
+    // }
+
+    // change the orientation to display to LCD because camera is upright
+    for (i = 0; i < height; i++) {         //Lines
+        for (j = 0; j < width; j ++) {     // one line
+            write_data(*(image + (i*width+j) * 2));
+            write_data(*(image + (i*width+j) * 2+1));
         }
     }
 
