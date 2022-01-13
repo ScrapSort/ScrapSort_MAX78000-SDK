@@ -1,3 +1,5 @@
+python reference: https://github.com/Rotrics-Dev/DexArm_API/blob/master/pydexarm/pydexarm.py
+ 
  def __init__(self, port):
         """
         Args:
