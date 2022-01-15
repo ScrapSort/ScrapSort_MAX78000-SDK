@@ -83,6 +83,7 @@ volatile int txnum = 0;
 volatile int txcnt = 0;
 volatile int rxnum = 0;
 volatile int num;
+int error;
 /***** Functions *****/
 
 
@@ -204,58 +205,93 @@ int verifyData()
     }
 }
 
+int I2C_Init() {
+    error = 0;
+
+    //Setup the I2CM
+    error = MXC_I2C_Init(I2C_MASTER, 1, I2C_SLAVE_ADDR);
+    
+    if (error != E_NO_ERROR) {
+        printf("-->Failed master\n");
+        return 1;
+    }
+    else {
+        printf("\n-->I2C Master Initialization Complete\n");
+    }
+    
+    MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ);
+
+
+    return 0;
+}
+
+int I2C_Send_Message(int tx_len, int rx_len, int restart) {
+    mxc_i2c_req_t reqMaster;
+    reqMaster.i2c = I2C_MASTER;
+    reqMaster.addr = I2C_SLAVE_ADDR;
+    reqMaster.tx_buf = txdata;
+    reqMaster.tx_len = tx_len; //I2C_BYTES;
+    reqMaster.rx_buf = rxdata;
+    reqMaster.rx_len = rx_len; //I2C_BYTES;
+    reqMaster.restart = restart; //0
+    reqMaster.callback = I2C_Callback;
+    I2C_FLAG = 1;
+    
+    printf("\n\n-->Writing/Reading data to slave\n");
+    
+    if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
+        printf("Error writing: %d\n", error);
+        return FAILED;
+    }
+    return 0;
+}
+
 // *****************************************************************************
 int main()
 {
     LED_Init();
     LED_On(1);
 
-    printf("\n******** I2C SLAVE ASYNC TRANSACTION TEST *********\n");
+    printf("\n******** I2C TEST *********\n");
+    if (I2C_Init() != 0) {
+        printf("INITIALIZATION FAILURE");
+    }
    
-    int error, i = 0;
-    
-    //Setup the I2CM
-    error = MXC_I2C_Init(I2C_MASTER, 1, I2C_SLAVE_ADDR);
-    
-    if (error != E_NO_ERROR) {
-        printf("-->Failed master\n");
-        return FAILED;
-    }
-    else {
-        printf("\n-->I2C Master Initialization Complete\n");
-    }
-    
-    //Setup the I2CS
-    // error = MXC_I2C_Init(I2C_SLAVE, 0, I2C_SLAVE_ADDR);
-    
-    // if (error != E_NO_ERROR) {
-    //     printf("Failed slave\n");
-    //     return FAILED;
-    // }
-    // else {
-    //     printf("\n-->I2C Slave Initialization Complete");
-    // }
-    
-    // NVIC_SetVector(I2C0_IRQn, I2C0_IRQHandler);
-    // NVIC_EnableIRQ(I2C0_IRQn);
-    
-    MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ);
-    
-    // MXC_I2C_SetFrequency(I2C_SLAVE, I2C_FREQ);
-    
+    int i = 0;
     // Initialize test data
     for (i = 0; i < I2C_BYTES; i++) {
         txdata[i] = 0;
         rxdata[i] = 0;
-        Stxdata[i] = i;
-        Srxdata[i] = 0;
+        // Stxdata[i] = i;
+        // Srxdata[i] = 0;
     }
-    // txdata[0] = 0x1C;
+
+    // RESET COMMAND TIMEOUT
+    txdata[0] = 0x8C;
+
+    I2C_Send_Message(1, 0, 0);
+
+    // EXIT SAFE START
+    txdata[0] = 0x83;
+
+    I2C_Send_Message(1, 0, 0);
+
+    // ENERGIZE
+    txdata[0] = 0x85;
+
+    I2C_Send_Message(1, 0, 0);
+
+    // SET TARGET POSITION
+    // txdata[0] = 0x1C; THIS IS NOT NEEDED
     txdata[0] = 0xE0;
     txdata[1] = 0xD2;
     txdata[2] = 0x02;
     txdata[3] = 0x96;
     txdata[4] = 0x49; 
+
+    I2C_Send_Message(5, 0, 0);
+
+    // COMMANDS
     // get variable
         // round 1 slave addr+wr|cmd = get var| Offset|
                     // 0x1C         0xA1         0x00  
@@ -267,31 +303,6 @@ int main()
         //  0x1C          0xE0      0xD2		0x02		0x96		0x49
     
 
-    // This will write data to slave
-    // Then read data back from slave
-    mxc_i2c_req_t reqMaster;
-    reqMaster.i2c = I2C_MASTER;
-    reqMaster.addr = I2C_SLAVE_ADDR;
-    reqMaster.tx_buf = txdata;
-    reqMaster.tx_len = 6; //I2C_BYTES;
-    reqMaster.rx_buf = rxdata;
-    reqMaster.rx_len = 0; //I2C_BYTES;
-    reqMaster.restart = 0;
-    reqMaster.callback = I2C_Callback;
-    I2C_FLAG = 1;
-    
-    printf("\n\n-->Writing data to slave, and reading the data back\n");
-    
-    // if ((error = MXC_I2C_SlaveTransactionAsync(I2C_SLAVE, slaveHandler)) != 0) {
-    //     printf("Error Starting Slave Transaction %d\n", error);
-    //     return FAILED;
-    // }
-    
-    if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
-        printf("Error writing: %d\n", error);
-        return FAILED;
-    }
-    
     // while (I2C_FLAG == 1) {
     //     // printf("here\n");
     // };
@@ -301,13 +312,4 @@ int main()
     printData();
     
     printf("\n");
-    
-    // if (verifyData()) {
-    //     printf("\n-->I2C Transaction Successful\n");
-    //     return PASSED;
-    // }
-    // else {
-    //     printf("\n-->I2C Transaction Failed\n");
-    //     return FAILED;
-    // }
 }
