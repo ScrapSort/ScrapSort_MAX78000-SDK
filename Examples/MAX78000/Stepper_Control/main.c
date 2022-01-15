@@ -54,16 +54,18 @@
 #include "i2c_regs.h"
 #include "i2c.h"
 #include "dma.h"
+#include "led.h"
+
 
 /***** Definitions *****/
 // #define MASTERDMA
 
 #define I2C_MASTER      MXC_I2C1
-#define I2C_SLAVE       MXC_I2C0
+// #define I2C_SLAVE       MXC_I2C0
 
 #define I2C_FREQ        100000
-#define I2C_SLAVE_ADDR  (0x51)
-#define I2C_BYTES       100
+#define I2C_SLAVE_ADDR  14//(0x51)
+#define I2C_BYTES       32
 
 typedef enum {
     FAILED,
@@ -85,15 +87,16 @@ volatile int num;
 
 
 //Slave interrupt handler
-void I2C0_IRQHandler(void)
-{
-    MXC_I2C_AsyncHandler(I2C_SLAVE);
-    return;
-}
+// void I2C0_IRQHandler(void)
+// {
+//     MXC_I2C_AsyncHandler(I2C_SLAVE);
+//     return;
+// }
 
 //I2C callback function
 void I2C_Callback(mxc_i2c_req_t* req, int error)
 {
+    printf("in callback\n");
     I2C_FLAG = error;
     return;
 }
@@ -204,20 +207,15 @@ int verifyData()
 // *****************************************************************************
 int main()
 {
-    printf("\n******** I2C SLAVE ASYNC TRANSACTION TEST *********\n");
-    printf("\nThis example uses one I2C peripheral as a master to\n");
-    printf("read and write to another I2C which acts as a slave.\n");
-    
-    printf("\nYou will need to connect P0.10 to P0.16 (SCL) and\n");
-    printf("P0.11 to P0.17 (SDA).\n");
-    
-    printf("\n*** Note **** This example is not compatible with the\n");
-    printf("featherboard, due to a lack of exposed I2C pins.\n");
+    LED_Init();
+    LED_On(1);
 
+    printf("\n******** I2C SLAVE ASYNC TRANSACTION TEST *********\n");
+   
     int error, i = 0;
     
     //Setup the I2CM
-    error = MXC_I2C_Init(I2C_MASTER, 1, 0);
+    error = MXC_I2C_Init(I2C_MASTER, 1, I2C_SLAVE_ADDR);
     
     if (error != E_NO_ERROR) {
         printf("-->Failed master\n");
@@ -228,57 +226,75 @@ int main()
     }
     
     //Setup the I2CS
-    error = MXC_I2C_Init(I2C_SLAVE, 0, I2C_SLAVE_ADDR);
+    // error = MXC_I2C_Init(I2C_SLAVE, 0, I2C_SLAVE_ADDR);
     
-    if (error != E_NO_ERROR) {
-        printf("Failed slave\n");
-        return FAILED;
-    }
-    else {
-        printf("\n-->I2C Slave Initialization Complete");
-    }
+    // if (error != E_NO_ERROR) {
+    //     printf("Failed slave\n");
+    //     return FAILED;
+    // }
+    // else {
+    //     printf("\n-->I2C Slave Initialization Complete");
+    // }
     
-    NVIC_SetVector(I2C0_IRQn, I2C0_IRQHandler);
-    NVIC_EnableIRQ(I2C0_IRQn);
+    // NVIC_SetVector(I2C0_IRQn, I2C0_IRQHandler);
+    // NVIC_EnableIRQ(I2C0_IRQn);
     
     MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ);
     
-    MXC_I2C_SetFrequency(I2C_SLAVE, I2C_FREQ);
+    // MXC_I2C_SetFrequency(I2C_SLAVE, I2C_FREQ);
     
     // Initialize test data
     for (i = 0; i < I2C_BYTES; i++) {
-        txdata[i] = i;
+        txdata[i] = 0;
         rxdata[i] = 0;
         Stxdata[i] = i;
         Srxdata[i] = 0;
     }
+    // txdata[0] = 0x1C;
+    txdata[0] = 0xE0;
+    txdata[1] = 0xD2;
+    txdata[2] = 0x02;
+    txdata[3] = 0x96;
+    txdata[4] = 0x49; 
+    // get variable
+        // round 1 slave addr+wr|cmd = get var| Offset|
+                    // 0x1C         0xA1         0x00  
+        // round 2 
+                    // 0x1D     
+
+    // set target position
+        // addr + Wr	command	    data1		data 2		data 3		data 4	
+        //  0x1C          0xE0      0xD2		0x02		0x96		0x49
     
+
     // This will write data to slave
     // Then read data back from slave
     mxc_i2c_req_t reqMaster;
     reqMaster.i2c = I2C_MASTER;
     reqMaster.addr = I2C_SLAVE_ADDR;
     reqMaster.tx_buf = txdata;
-    reqMaster.tx_len = I2C_BYTES;
+    reqMaster.tx_len = 6; //I2C_BYTES;
     reqMaster.rx_buf = rxdata;
-    reqMaster.rx_len = I2C_BYTES;
+    reqMaster.rx_len = 0; //I2C_BYTES;
     reqMaster.restart = 0;
     reqMaster.callback = I2C_Callback;
     I2C_FLAG = 1;
     
     printf("\n\n-->Writing data to slave, and reading the data back\n");
     
-    if ((error = MXC_I2C_SlaveTransactionAsync(I2C_SLAVE, slaveHandler)) != 0) {
-        printf("Error Starting Slave Transaction %d\n", error);
-        return FAILED;
-    }
+    // if ((error = MXC_I2C_SlaveTransactionAsync(I2C_SLAVE, slaveHandler)) != 0) {
+    //     printf("Error Starting Slave Transaction %d\n", error);
+    //     return FAILED;
+    // }
     
     if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
         printf("Error writing: %d\n", error);
         return FAILED;
     }
     
-    while (I2C_FLAG == 1) {};
+    // while (I2C_FLAG == 1) {
+    //     // printf("here\n");
+    // };
     
     printf("\n-->Result: \n");
     
@@ -286,12 +302,12 @@ int main()
     
     printf("\n");
     
-    if (verifyData()) {
-        printf("\n-->I2C Transaction Successful\n");
-        return PASSED;
-    }
-    else {
-        printf("\n-->I2C Transaction Failed\n");
-        return FAILED;
-    }
+    // if (verifyData()) {
+    //     printf("\n-->I2C Transaction Successful\n");
+    //     return PASSED;
+    // }
+    // else {
+    //     printf("\n-->I2C Transaction Failed\n");
+    //     return FAILED;
+    // }
 }
