@@ -254,7 +254,7 @@ int main()
 
     printf("\n******** I2C TEST *********\n");
     if (I2C_Init() != 0) {
-        printf("INITIALIZATION FAILURE");
+        printf("I2C INITIALIZATION FAILURE");
     }
    
     int i = 0;
@@ -262,8 +262,6 @@ int main()
     for (i = 0; i < I2C_BYTES; i++) {
         txdata[i] = 0;
         rxdata[i] = 0;
-        // Stxdata[i] = i;
-        // Srxdata[i] = 0;
     }
 
     // RESET COMMAND TIMEOUT
@@ -281,8 +279,16 @@ int main()
 
     I2C_Send_Message(1, 0, 0);
 
+    // SET MAX SPEED
+    txdata[0] = 0xE6; // command
+    txdata[1] = 0x00; 
+    txdata[2] = 0x09;
+    txdata[3] = 0x3D;
+    txdata[4] = 0x00; 
+
+    I2C_Send_Message(5, 0, 0);
+
     // SET TARGET POSITION
-    // txdata[0] = 0x1C; THIS IS NOT NEEDED
     txdata[0] = 0xE0;
     txdata[1] = 0xD2;
     txdata[2] = 0x02;
@@ -291,22 +297,12 @@ int main()
 
     I2C_Send_Message(5, 0, 0);
 
-    // COMMANDS
-    // get variable
-        // round 1 slave addr+wr|cmd = get var| Offset|
-                    // 0x1C         0xA1         0x00  
-        // round 2 
-                    // 0x1D     
+    // GET VARIABLE
+    txdata[0] = 0xA1;
+    txdata[1] = 0x16;
 
-    // set target position
-        // addr + Wr	command	    data1		data 2		data 3		data 4	
-        //  0x1C          0xE0      0xD2		0x02		0x96		0x49
-    
+    I2C_Send_Message(2, 4, 0);
 
-    // while (I2C_FLAG == 1) {
-    //     // printf("here\n");
-    // };
-    
     printf("\n-->Result: \n");
     
     printData();
