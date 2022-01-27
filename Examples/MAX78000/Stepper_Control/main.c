@@ -64,8 +64,16 @@
 // #define I2C_SLAVE       MXC_I2C0
 
 #define I2C_FREQ        100000
-#define I2C_SLAVE_ADDR  14//(0x51)
 #define I2C_BYTES       32
+
+#define NUM_SLAVES 2
+#define START_SLAVE_ADDR 1
+
+// #define I2C_SLAVE_ADDR1  1 
+// #define I2C_SLAVE_ADDR2  2 
+// #define I2C_SLAVE_ADDR3  3 
+// #define I2C_SLAVE_ADDR4  4 
+// #define I2C_SLAVE_ADDR5  5 
 
 typedef enum {
     FAILED,
@@ -73,8 +81,6 @@ typedef enum {
 } test_t;
 
 /***** Globals *****/
-static uint8_t Stxdata[I2C_BYTES];
-static uint8_t Srxdata[I2C_BYTES];
 static uint8_t txdata[I2C_BYTES];
 static uint8_t rxdata[I2C_BYTES];
 volatile uint8_t DMA_FLAG = 0;
@@ -84,15 +90,8 @@ volatile int txcnt = 0;
 volatile int rxnum = 0;
 volatile int num;
 int error;
+
 /***** Functions *****/
-
-
-//Slave interrupt handler
-// void I2C0_IRQHandler(void)
-// {
-//     MXC_I2C_AsyncHandler(I2C_SLAVE);
-//     return;
-// }
 
 //I2C callback function
 void I2C_Callback(mxc_i2c_req_t* req, int error)
@@ -102,68 +101,6 @@ void I2C_Callback(mxc_i2c_req_t* req, int error)
     return;
 }
 
-int slaveHandler(mxc_i2c_regs_t* i2c, mxc_i2c_slave_event_t event, void* data)
-{
-    switch (event) {
-    case MXC_I2C_EVT_MASTER_WR:
-        // If we're being written to
-        // Clear bytes written
-        rxnum = 0;
-        break;
-        
-    case MXC_I2C_EVT_MASTER_RD:
-    
-        // Serve as a 16 byte loopback, returning data*2
-        for (int i = 0; i < I2C_BYTES; i++) {
-            Stxdata[i] = i;
-        }
-        
-        txnum = I2C_BYTES;
-        txcnt = 0;
-        i2c->intfl0 = MXC_F_I2C_INTFL0_TX_LOCKOUT | MXC_F_I2C_INTFL0_ADDR_MATCH;
-        break;
-        
-    case MXC_I2C_EVT_RX_THRESH:
-    case MXC_I2C_EVT_OVERFLOW:
-        rxnum += MXC_I2C_ReadRXFIFO(i2c, &Srxdata[rxnum], MXC_I2C_GetRXFIFOAvailable(i2c));
-        
-        if (rxnum == I2C_BYTES) {
-            i2c->inten0 |= MXC_F_I2C_INTEN0_ADDR_MATCH;
-        }
-        
-        break;
-        
-    case MXC_I2C_EVT_TX_THRESH:
-    case MXC_I2C_EVT_UNDERFLOW:
-    
-        // Write as much data as possible into TX FIFO
-        // Unless we're at the end of the transaction (only write what's needed)
-        if (txcnt >= txnum) {
-            break;
-        }
-        
-        int num = MXC_I2C_GetTXFIFOAvailable(i2c);
-        num = (num > (txnum - txcnt)) ? (txnum - txcnt) : num;
-        txcnt += MXC_I2C_WriteTXFIFO(i2c, &Stxdata[txcnt], num);
-        break;
-        
-    default:
-        if (* ((int*) data) == E_COMM_ERR) {
-            printf("I2C Slave Error!\n");
-            printf("i2c->int_fl0 = 0x%08x\n", i2c->intfl0);
-            printf("i2c->status  = 0x%08x\n", i2c->status);
-            I2C_Callback(NULL, E_COMM_ERR);
-            return 1;
-        }
-        else if (* ((int*) data) == E_NO_ERROR) {
-            rxnum += MXC_I2C_ReadRXFIFO(i2c, &Srxdata[rxnum], MXC_I2C_GetRXFIFOAvailable(i2c));
-            I2C_Callback(NULL, E_NO_ERROR);
-            return 1;
-        }
-    }
-    
-    return 0;
-}
 
 //Prints out human-friendly format to read txdata and rxdata
 void printData(void)
@@ -186,30 +123,14 @@ void printData(void)
     return;
 }
 
-//Compare data to see if they are the same
-int verifyData()
-{
-    int i, fails = 0;
-    
-    for (i = 0; i < I2C_BYTES; ++i) {
-        if (txdata[i] != rxdata[i]) {
-            ++fails;
-        }
-    }
-    
-    if (fails > 0) {
-        return FAILED;
-    }
-    else {
-        return PASSED;
-    }
-}
 
 int I2C_Init() {
     error = 0;
 
     //Setup the I2CM
-    error = MXC_I2C_Init(I2C_MASTER, 1, I2C_SLAVE_ADDR);
+    for (int slave_addr = START_SLAVE_ADDR; slave_addr < START_SLAVE_ADDR + NUM_SLAVES; slave_addr++) {
+        error += MXC_I2C_Init(I2C_MASTER, 1, slave_addr);
+    }
     
     if (error != E_NO_ERROR) {
         printf("-->Failed master\n");
@@ -225,10 +146,10 @@ int I2C_Init() {
     return 0;
 }
 
-int I2C_Send_Message(int tx_len, int rx_len, int restart) {
+int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
     mxc_i2c_req_t reqMaster;
     reqMaster.i2c = I2C_MASTER;
-    reqMaster.addr = I2C_SLAVE_ADDR;
+    reqMaster.addr = slave_addr;
     reqMaster.tx_buf = txdata;
     reqMaster.tx_len = tx_len; //I2C_BYTES;
     reqMaster.rx_buf = rxdata;
@@ -237,13 +158,81 @@ int I2C_Send_Message(int tx_len, int rx_len, int restart) {
     reqMaster.callback = I2C_Callback;
     I2C_FLAG = 1;
     
-    printf("\n\n-->Writing/Reading data to slave\n");
+    printf("\n\n-->Writing/Reading data to slave %d\n", slave_addr);
     
     if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
-        printf("Error writing: %d\n", error);
+        printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
         return FAILED;
     }
     return 0;
+}
+
+int I2C_Broadcast_Message(int tx_len, int rx_len, int restart) {
+
+    for (int slave_addr = START_SLAVE_ADDR; slave_addr < START_SLAVE_ADDR + NUM_SLAVES; slave_addr++) {
+        mxc_i2c_req_t reqMaster;
+        reqMaster.i2c = I2C_MASTER;
+        reqMaster.addr = slave_addr;
+        reqMaster.tx_buf = txdata;
+        reqMaster.tx_len = tx_len; //I2C_BYTES;
+        reqMaster.rx_buf = rxdata;
+        reqMaster.rx_len = rx_len; //I2C_BYTES;
+        reqMaster.restart = restart; //0
+        reqMaster.callback = I2C_Callback;
+        I2C_FLAG = 1;
+        
+        printf("\n\n-->Writing/Reading data to slave %d\n", slave_addr);
+        
+        if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
+            printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
+            return FAILED;
+        }
+    }
+
+    return 0;
+}
+
+int Motor_Init_Settings() {
+
+    // RESET COMMAND TIMEOUT
+    txdata[0] = 0x8C;
+
+    I2C_Broadcast_Message(1, 0, 0);
+
+    // EXIT SAFE START
+    txdata[0] = 0x83;
+
+    I2C_Broadcast_Message(1, 0, 0);
+
+    // ENERGIZE
+    txdata[0] = 0x85;
+
+    I2C_Broadcast_Message(1, 0, 0);
+
+    // SET MAX SPEED
+    txdata[0] = 0xE6; // command
+    txdata[1] = 0x00; 
+    txdata[2] = 0x09;
+    txdata[3] = 0x3D;
+    txdata[4] = 0x00; 
+
+    I2C_Broadcast_Message(5, 0, 0);
+
+    // GET VARIABLE: OPERATION STATE
+    txdata[0] = 0xA1;
+    txdata[1] = 0x00;
+
+    for (int slave_addr = START_SLAVE_ADDR; slave_addr < START_SLAVE_ADDR + NUM_SLAVES; slave_addr++) {
+        I2C_Send_Message(slave_addr, 2, 1, 0);
+
+        if (rxdata[0] != 10) { // normal operation state
+            printf("ERROR could not init motor %d\n", slave_addr);
+            return -1;
+        }
+    }
+
+    return 0;
+
 }
 
 // *****************************************************************************
@@ -252,9 +241,11 @@ int main()
     LED_Init();
     LED_On(1);
 
-    printf("\n******** I2C TEST *********\n");
+    printf("\n******** Steppers! *********\n");
     if (I2C_Init() != 0) {
         printf("I2C INITIALIZATION FAILURE");
+    } else {
+        printf("I2C INITIALIZED :)");
     }
    
     int i = 0;
@@ -264,44 +255,25 @@ int main()
         rxdata[i] = 0;
     }
 
-    // RESET COMMAND TIMEOUT
-    txdata[0] = 0x8C;
-
-    I2C_Send_Message(1, 0, 0);
-
-    // EXIT SAFE START
-    txdata[0] = 0x83;
-
-    I2C_Send_Message(1, 0, 0);
-
-    // ENERGIZE
-    txdata[0] = 0x85;
-
-    I2C_Send_Message(1, 0, 0);
-
-    // SET MAX SPEED
-    txdata[0] = 0xE6; // command
-    txdata[1] = 0x00; 
-    txdata[2] = 0x09;
-    txdata[3] = 0x3D;
-    txdata[4] = 0x00; 
-
-    I2C_Send_Message(5, 0, 0);
+    if (Motor_Init_Settings() != 0) {
+        printf("MOTOR SETTINGS INITIALIZATION FAILURE");
+    } else {
+        printf("MOTOR SETTINGS INITIALIZED :)");
+    }
 
     // SET TARGET POSITION
+    // full rotation = 200 encoder ticks
     txdata[0] = 0xE0;
     txdata[1] = 0xD2;
     txdata[2] = 0x02;
     txdata[3] = 0x96;
     txdata[4] = 0x49; 
 
-    I2C_Send_Message(5, 0, 0);
+    // I2C_Broadcast_Message(5, 0, 0);
+    I2C_Send_Message(1, 5, 0, 0);
+    I2C_Send_Message(2, 5, 0, 0);
 
-    // GET VARIABLE
-    txdata[0] = 0xA1;
-    txdata[1] = 0x16;
-
-    I2C_Send_Message(2, 4, 0);
+    
 
     printf("\n-->Result: \n");
     
