@@ -51,8 +51,8 @@ COMPILER=GCC
 
 # Specify the board used
 ifeq "$(BOARD)" ""
-BOARD=EvKit_V1
-#BOARD=FTHR_RevA
+#BOARD=EvKit_V1
+BOARD=FTHR_RevA
 endif
 
 # This is the path to the CMSIS root directory
@@ -74,6 +74,8 @@ export CMSIS_ROOT
 
 # Source files for this test (add path to VPATH below)
 SRCS  = main.c
+SRCS += wrapper.cpp
+SRCS += test_class.cpp
 #SRCS += sla_header.c
 
 # Where to find source files for this test

@@ -46,6 +46,7 @@
 #include "pb.h"
 #include "board.h"
 #include "gpio.h"
+#include "wrapper.h"
 
 /***** Definitions *****/
 #ifdef EvKit_V1
@@ -148,7 +149,10 @@ int main(void)
     gpio_out.func = MXC_GPIO_FUNC_OUT;
     MXC_GPIO_Config(&gpio_out);
     
+    struct TestClass* t = newTestClass();
+    TestClass_test_func(t);
     while (1) {
+        TestClass_test_func(t);
         /* Read state of the input pin. */
         if (MXC_GPIO_InGet(gpio_in.port, gpio_in.mask)) {
             /* Input pin was high, set the output pin. */
