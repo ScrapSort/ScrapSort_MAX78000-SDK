@@ -175,7 +175,7 @@ int main(void)
     printf("Approximate inference time: %u us\n\n", cnn_time);
     memset(buff,32,TFT_BUFF_SIZE);
     //MXC_TFT_FillRect(&clear_time, 4);
-    TFT_Print(buff, 0, 280, font_1, sprintf(buff, "Inference time: %u us", cnn_time));
+    //TFT_Print(buff, 0, 280, font_1, sprintf(buff, "Inference time: %u us", cnn_time));
     #endif
 
     printf("Classification results:\n");
@@ -193,7 +193,7 @@ int main(void)
       }
       memset(buff,32,TFT_BUFF_SIZE);
       //MXC_TFT_FillRect(&clear_word, 4);
-      TFT_Print(buff, 0, 26+16*i, font_1, sprintf(buff, "%s:%d.%d%%\n", class_names[i], digs, tens));
+      //TFT_Print(buff, 0, 26+16*i, font_1, sprintf(buff, "%s:%d.%d%%\n", class_names[i], digs, tens));
     }
 
     memset(buff,32,TFT_BUFF_SIZE);
