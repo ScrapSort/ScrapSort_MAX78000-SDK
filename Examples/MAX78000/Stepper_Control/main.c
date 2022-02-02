@@ -56,24 +56,21 @@
 #include "dma.h"
 #include "led.h"
 
+// personal
+#include "I2C_funcs.h"
+#include "motor_funcs.h"
+
 
 /***** Definitions *****/
 // #define MASTERDMA
 
 #define I2C_MASTER      MXC_I2C1
-// #define I2C_SLAVE       MXC_I2C0
 
 #define I2C_FREQ        100000
 #define I2C_BYTES       32
 
 #define NUM_SLAVES 1
-#define START_SLAVE_ADDR 2
-
-// #define I2C_SLAVE_ADDR1  1 
-// #define I2C_SLAVE_ADDR2  2 
-// #define I2C_SLAVE_ADDR3  3 
-// #define I2C_SLAVE_ADDR4  4 
-// #define I2C_SLAVE_ADDR5  5 
+#define START_SLAVE_ADDR 3
 
 typedef enum {
     FAILED,
@@ -162,28 +159,6 @@ int I2C_Init() {
     return 0;
 }
 
-int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
-    mxc_i2c_req_t reqMaster;
-    reqMaster.i2c = I2C_MASTER;
-    reqMaster.addr = slave_addr;
-    reqMaster.tx_buf = txdata;
-    reqMaster.tx_len = tx_len; //I2C_BYTES;
-    reqMaster.rx_buf = rxdata;
-    reqMaster.rx_len = rx_len; //I2C_BYTES;
-    reqMaster.restart = restart; //0
-    reqMaster.callback = I2C_Callback;
-    I2C_FLAG = 1;
-    
-    if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
-        printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
-        return FAILED;
-    }
-
-    printTransaction(slave_addr, tx_len, rx_len);
-
-    return 0;
-}
-
 int I2C_Broadcast_Message(int tx_len, int rx_len, int restart) {
 
     for (int slave_addr = START_SLAVE_ADDR; slave_addr < START_SLAVE_ADDR + NUM_SLAVES; slave_addr++) {
@@ -209,9 +184,33 @@ int I2C_Broadcast_Message(int tx_len, int rx_len, int restart) {
     return 0;
 }
 
+int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
+    if (!slave_addr) return I2C_Broadcast_Message(tx_len, rx_len, restart);
+
+    mxc_i2c_req_t reqMaster;
+    reqMaster.i2c = I2C_MASTER;
+    reqMaster.addr = slave_addr;
+    reqMaster.tx_buf = txdata;
+    reqMaster.tx_len = tx_len; //I2C_BYTES;
+    reqMaster.rx_buf = rxdata;
+    reqMaster.rx_len = rx_len; //I2C_BYTES;
+    reqMaster.restart = restart; //0
+    reqMaster.callback = I2C_Callback;
+    I2C_FLAG = 1;
+    
+    if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
+        printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
+        return FAILED;
+    }
+
+    printTransaction(slave_addr, tx_len, rx_len);
+
+    return 0;
+}
+
 void Debug_Motors(void) {
     // PRINT OUT STATUS/ERROR VARS FOR DEBUG
-    printf("\n#####\tDEBUG VARS\t#####\n\n");
+    printf("\n#######  DEBUG VARS  #######\n\n");
 
     for (int slave_addr = START_SLAVE_ADDR; slave_addr < START_SLAVE_ADDR + NUM_SLAVES; slave_addr++) {
         
@@ -251,8 +250,42 @@ void Debug_Motors(void) {
 
         I2C_Send_Message(slave_addr, 2, 4, 0);
 
+        printf("\n############\n");
+
         
     }
+}
+
+void fill_tx_32b(uint32_t step_speed) {
+    // leave [0] to be filled separately with command hex
+    txdata[1] = step_speed & 0xFF;
+    txdata[2] = (step_speed & 0xFF00) >> 8;
+    txdata[3] = (step_speed & 0xFF0000) >> 16;
+    txdata[4] = (step_speed & 0xFF000000) >> 24;
+}
+
+void rotate_revs(int slave_addr, double rotations) {
+
+    // SET TARGET POSITION
+    // full rotation = 200 encoder ticks
+
+    int enc_tics = (int)rotations * 200;
+
+    txdata[0] = 0xE0;
+    fill_tx_32b(enc_tics);
+
+    I2C_Send_Message(slave_addr, 5, 0, 0);
+}
+
+void rotate_tics(int slave_addr, int enc_tics) {
+    
+    // SET TARGET POSITION
+    // full rotation = 200 encoder ticks
+
+    txdata[0] = 0xE0;
+    fill_tx_32b(enc_tics);
+
+    I2C_Send_Message(slave_addr, 5, 0, 0);
 }
 
 int Motor_Init_Settings() {
@@ -282,12 +315,21 @@ int Motor_Init_Settings() {
     I2C_Broadcast_Message(1, 0, 0);
 
     // // SET MAX SPEED
-    // txdata[0] = 0xE6; // command
-    // txdata[1] = 0x00; 
-    // txdata[2] = 0x09;
-    // txdata[3] = 0x3D;
-    // txdata[4] = 0x00; 
+    // // 0 to 500,000,000 microsteps per 10,000 s
+    // txdata[0] = 0xE6;
+    // fill_tx_32b(499999999);
+    // I2C_Broadcast_Message(5, 0, 0);
 
+    // // SET MAX ACCELERATION
+    // // 100 to 2,147,483,647 = 0x64 to 0x7FFF FFFF
+    // txdata[0] = 0xEA;
+    // fill_tx_32b(600000);
+    // I2C_Broadcast_Message(5, 0, 0);
+
+    // // SET MAX DECCELERATION
+    // // 100 to 2,147,483,647 = 0x64 to 0x7FFF FFFF
+    // txdata[0] = 0xE9;
+    // fill_tx_32b(600000);
     // I2C_Broadcast_Message(5, 0, 0);
 
 
@@ -340,15 +382,7 @@ int main()
         printf("MOTOR SETTINGS INITIALIZED :)");
     }
 
-    // SET TARGET POSITION
-    // full rotation = 200 encoder ticks
-    txdata[0] = 0xE0;
-    txdata[1] = 0x90;
-    txdata[2] = 0x01;
-    txdata[3] = 0x00;
-    txdata[4] = 0x00; 
-
-    I2C_Broadcast_Message(5, 0, 0);
+    rotate_revs(0, 2);
 
     printf("\n");
     printData();
