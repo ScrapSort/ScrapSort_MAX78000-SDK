@@ -66,8 +66,8 @@
 #define I2C_FREQ        100000
 #define I2C_BYTES       32
 
-#define NUM_SLAVES 2
-#define START_SLAVE_ADDR 1
+#define NUM_SLAVES 1
+#define START_SLAVE_ADDR 2
 
 // #define I2C_SLAVE_ADDR1  1 
 // #define I2C_SLAVE_ADDR2  2 
@@ -101,6 +101,22 @@ void I2C_Callback(mxc_i2c_req_t* req, int error)
     return;
 }
 
+void printTransaction(int slave_addr, int tx_len, int rx_len) {
+    printf("\n-->Transaction with slave %d\n", slave_addr);
+    if (tx_len > 0) {
+        printf("\tWriting: ");
+        for (int i = 0; i < tx_len; i++) {
+            printf("%02x ", txdata[i]);
+        }
+    }
+    if (rx_len > 0) {
+        printf("\n\tReading: ");
+        for (int i = 0; i < rx_len; i++) {
+            printf("%02x ", rxdata[i]);
+        }
+        printf("\n");
+    }
+}
 
 //Prints out human-friendly format to read txdata and rxdata
 void printData(void)
@@ -158,12 +174,13 @@ int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
     reqMaster.callback = I2C_Callback;
     I2C_FLAG = 1;
     
-    printf("\n\n-->Writing/Reading data to slave %d\n", slave_addr);
-    
     if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
         printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
         return FAILED;
     }
+
+    printTransaction(slave_addr, tx_len, rx_len);
+
     return 0;
 }
 
@@ -181,15 +198,61 @@ int I2C_Broadcast_Message(int tx_len, int rx_len, int restart) {
         reqMaster.callback = I2C_Callback;
         I2C_FLAG = 1;
         
-        printf("\n\n-->Writing/Reading data to slave %d\n", slave_addr);
-        
         if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
             printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
             return FAILED;
         }
+
+        printTransaction(slave_addr, tx_len, rx_len);
     }
 
     return 0;
+}
+
+void Debug_Motors(void) {
+    // PRINT OUT STATUS/ERROR VARS FOR DEBUG
+    printf("\n#####\tDEBUG VARS\t#####\n\n");
+
+    for (int slave_addr = START_SLAVE_ADDR; slave_addr < START_SLAVE_ADDR + NUM_SLAVES; slave_addr++) {
+        
+        // GET OPERATION STATE
+        printf("Operation Status: ");
+        txdata[0] = 0xA1;
+        txdata[1] = 0x00;
+
+        I2C_Send_Message(slave_addr, 2, 1, 0);
+
+
+        // GET MISC FLAGS
+        printf("Misc Flags: ");
+        txdata[0] = 0xA1;
+        txdata[1] = 0x01;
+
+        I2C_Send_Message(slave_addr, 2, 1, 0);
+
+        // GET ERROR STATUS
+        printf("Error Status: ");
+        txdata[0] = 0xA1;
+        txdata[1] = 0x02;
+
+        I2C_Send_Message(slave_addr, 2, 2, 0);
+
+        // GET ERRORS OCCURRED
+        printf("Errors Occurred: ");
+        txdata[0] = 0xA1;
+        txdata[1] = 0x04;
+
+        I2C_Send_Message(slave_addr, 2, 4, 0);
+
+        // GET CURRENT POSITION
+        printf("Current Position: ");
+        txdata[0] = 0xA1;
+        txdata[1] = 0x22;
+
+        I2C_Send_Message(slave_addr, 2, 4, 0);
+
+        
+    }
 }
 
 int Motor_Init_Settings() {
@@ -199,34 +262,50 @@ int Motor_Init_Settings() {
 
     I2C_Broadcast_Message(1, 0, 0);
 
+    // RESET 
+    txdata[0] = 0xB0;
+    I2C_Broadcast_Message(1, 0, 0);
+
+    MXC_Delay(1000);
+
+    // RESET COMMAND TIMEOUT
+    txdata[0] = 0x8C;
+
+    I2C_Broadcast_Message(1, 0, 0);
+
     // EXIT SAFE START
     txdata[0] = 0x83;
-
     I2C_Broadcast_Message(1, 0, 0);
 
     // ENERGIZE
     txdata[0] = 0x85;
-
     I2C_Broadcast_Message(1, 0, 0);
 
-    // SET MAX SPEED
-    txdata[0] = 0xE6; // command
-    txdata[1] = 0x00; 
-    txdata[2] = 0x09;
-    txdata[3] = 0x3D;
-    txdata[4] = 0x00; 
+    // // SET MAX SPEED
+    // txdata[0] = 0xE6; // command
+    // txdata[1] = 0x00; 
+    // txdata[2] = 0x09;
+    // txdata[3] = 0x3D;
+    // txdata[4] = 0x00; 
 
-    I2C_Broadcast_Message(5, 0, 0);
+    // I2C_Broadcast_Message(5, 0, 0);
 
-    // GET VARIABLE: OPERATION STATE
-    txdata[0] = 0xA1;
-    txdata[1] = 0x00;
 
     for (int slave_addr = START_SLAVE_ADDR; slave_addr < START_SLAVE_ADDR + NUM_SLAVES; slave_addr++) {
+        // GET VARIABLE: OPERATION STATE
+        txdata[0] = 0xA1;
+        txdata[1] = 0x00;
+
         I2C_Send_Message(slave_addr, 2, 1, 0);
 
         if (rxdata[0] != 10) { // normal operation state
             printf("ERROR could not init motor %d\n", slave_addr);
+            // GET ERROR STATUS
+            txdata[0] = 0xA2;
+            txdata[1] = 0x02;
+
+            I2C_Send_Message(slave_addr, 2, 1, 0);
+            printf("\tERROR CODE: %d\n", rxdata[0]);
             return -1;
         }
     }
@@ -264,24 +343,20 @@ int main()
     // SET TARGET POSITION
     // full rotation = 200 encoder ticks
     txdata[0] = 0xE0;
-    txdata[1] = 0xD2;
-    txdata[2] = 0x02;
-    txdata[3] = 0x96;
-    txdata[4] = 0x49; 
+    txdata[1] = 0x90;
+    txdata[2] = 0x01;
+    txdata[3] = 0x00;
+    txdata[4] = 0x00; 
 
-    // I2C_Broadcast_Message(5, 0, 0);
-    I2C_Send_Message(1, 5, 0, 0);
-    I2C_Send_Message(2, 5, 0, 0);
+    I2C_Broadcast_Message(5, 0, 0);
 
-    
-
-    // while (I2C_FLAG == 1) {
-    //     // printf("here\n");
-    // };
-    
-    printf("\n-->Result: \n");
-    
-    printData();
-    
     printf("\n");
+    printData();
+    printf("\n");
+
+    MXC_Delay(5000000);
+
+    Debug_Motors();
+
+    // while(1);
 }
