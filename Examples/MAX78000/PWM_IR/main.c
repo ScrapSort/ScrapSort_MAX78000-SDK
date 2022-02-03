@@ -72,7 +72,6 @@
 #error "Duty Cycle must be between 0 and 100."
 #endif
 
-
 /***** Functions *****/
 void PWMTimer()
 {
