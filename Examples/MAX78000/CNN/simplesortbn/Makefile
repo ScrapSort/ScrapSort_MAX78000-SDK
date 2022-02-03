@@ -70,7 +70,7 @@ export CMSIS_ROOT
 # LINKERFILE=$(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source/GCC/max78000_arm.ld
 
 # Source files for this test (add path to VPATH below)
-SRCS  = main.c cnn.c
+SRCS  = main.c cnn.c 
 SRCS += softmax.c
 SRCS += camera_tft_funcs.c
 SRCS += tft_fthr/Arial12x12.c

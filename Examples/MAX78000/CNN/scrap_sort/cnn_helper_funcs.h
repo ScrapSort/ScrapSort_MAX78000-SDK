@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-// this is the output types
+// this is the class output types
 typedef enum
 {
     CUP = 0,
@@ -19,6 +19,7 @@ typedef enum
 } output_classes_t;
 
 // this struct stores the output information from the CNN
+// we may want to add bounding box variables later
 typedef struct 
 {
     output_classes_t output_class;
@@ -36,7 +37,7 @@ void load_input(void);
 
 
 /*
-    Description: This function gets the classification output (face or no face)
+    Description: This function gets the classification output
                  from the output layer's data memory instance and passes it to
                  the auto-generated softmax function to get probability of each class
     Parameters: none
@@ -69,11 +70,9 @@ void startup_cnn();
                  the network (inference). Each time is gets called it will
                  start the CNN, load the input data, wait for completion,
                  stop the CNN, and return the output data through a pointer to a struct.
-    Parameters: Options to display whether a face is present and the bounding box to the LCD.
-                Note, if in the search state then it only makes sense to display the face state
-                because if no face is present then the bounding box data is meaningless.
+    Parameters: None.
     Return: the output of the CNN
 */
-cnn_output_t* run_cnn(int display_txt, int display_bb);
+cnn_output_t* run_cnn();
 
 #endif

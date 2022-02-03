@@ -30,19 +30,13 @@
 // ========================================================================================= //
 
 uint32_t cnn_buffer[CNN_INPUT_SIZE]; // the input image data into the CNN (80*80 = 6400 bytes = 1600 words)
-volatile uint32_t cnn_time; // Stopwatch to time forward pass, not used at the moment
+//volatile uint32_t cnn_time; // Stopwatch to time forward pass, not used at the moment
 cnn_output_t output; // the output data of the CNN
 
 static int32_t ml_data[NUM_CLASSES]; // classification output data
 static q15_t ml_softmax[NUM_CLASSES]; // softmax output data
 
-// buffer for touch screen text
-char buff[TFT_BUFF_SIZE];
-
-// font id
-int font_1 = (int)&Arial12x12[0];
-
-char* class_names[] = {"CUP", "TRAPEZOID", "HEXAGON","CAN","BOTTLE","NONE"};
+output_classes_t class_names[] = {CUP, TRAPEZOID, HEXAGON, CAN, BOTTLE, NONE};
 
 // ========================================================================================= //
 // ================================ FUNCTION DEFINITIONS =================================== //
@@ -87,12 +81,14 @@ uint32_t* get_cnn_buffer()
 
 
 // this function does a forward pass through the CNN 
-// (displaying text is now handled by the external function that calls this)
-cnn_output_t* run_cnn(int display_txt, int display_bb)
+cnn_output_t* run_cnn()
 {
     int digs, tens; // format probability
     int max = 0; // the current highest class probability
-    int max_i = 0; // the class with the highest probability (0 = face, 1 = no face)
+    int max_i = 0; // the class with the highest probability
+    
+    // cnn output
+    static cnn_output_t output;
 
     // first get an image from the camera and load it into the CNN buffer
     capture_camera_img();
@@ -104,8 +100,8 @@ cnn_output_t* run_cnn(int display_txt, int display_bb)
     cnn_init(); // Bring state machine into consistent state
     cnn_configure(); // Configure state machine
 
-    load_input();
     cnn_start();
+    load_input();
         
     while (cnn_time == 0)
     __WFI(); // Wait for CNN
@@ -113,50 +109,33 @@ cnn_output_t* run_cnn(int display_txt, int display_bb)
     // classify the output
     softmax_layer();
 
-
     printf("Classification results:\n");
 
-    for (int i = 0; i < CNN_NUM_OUTPUTS; i++) {
+    for (int i = 0; i < CNN_NUM_OUTPUTS; i++) 
+    {
+      // softmax output is in fixed point so need to convert to percentage
       digs = (1000 * ml_softmax[i] + 0x4000) >> 15;
-      tens = digs % 10;
-      digs = digs / 10;
+      tens = digs % 10; // get the fractional part
+      digs = digs / 10; // get the integer part
       printf("[%7d] -> Class %d: %d.%d%%\n", ml_data[i], i, digs, tens);
+      // keep track of the max class
       if(digs > max)
       {
           max = digs;
           max_i = i;
       }
-      memset(buff,32,TFT_BUFF_SIZE);
-      //MXC_TFT_FillRect(&clear_word, 4);
-      //TFT_Print(buff, 0, 26+16*i, font_1, sprintf(buff, "%s:%d.%d%%\n", class_names[i], digs, tens));
     }
-
-    memset(buff,32,TFT_BUFF_SIZE);
-    //MXC_TFT_FillRect(&clear_word, 4);
-    TFT_Print(buff, 0, 0, font_1, sprintf(buff, "Class: %s", class_names[max_i]));
     printf("\033[0;0f");
-
-    cnn_stop();
     // Disable CNN clock to save power
+    cnn_stop();
     MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_CNN);
 
 #ifdef CNN_INFERENCE_TIMER
     //printf("Approximate inference time: %u us\n\n", cnn_time);
 #endif
     
-    // printf("Classification results:\n");
-    for (int i = 0; i < NUM_CLASSES; i++) 
-    {
-        digs = (1000 * ml_softmax[i] + 0x4000) >> 15;
-        tens = digs % 10;
-        digs = digs / 10;
-        if(digs > max)
-        {
-            max = digs;
-            max_i = i;
-        }
-        //printf("[%7d] -> Class %d: %d.%d%%\n", ml_data[i], i, digs, tens);
-    }
+    // cnn output class
+    output.output_class = class_names[max_i];
     return &output;
 }
 
