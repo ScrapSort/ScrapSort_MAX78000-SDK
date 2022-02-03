@@ -54,7 +54,11 @@
 
 /***** Definitions *****/
 
+#define OST_CLOCK_SOURCE    MXC_TMR_8K_CLK       // \ref mxc_tmr_clock_t
 #define PWM_CLOCK_SOURCE    MXC_TMR_32K_CLK      // \ref mxc_tmr_clock_t
+
+#define OST_FREQ        1                   // (Hz)
+#define OST_TIMER       MXC_TMR5            // Can be MXC_TMR0 through MXC_TMR5
 
 #define FREQ            32000                // (Hz)
 #define DUTY_CYCLE      50                  // (%)
@@ -79,7 +83,7 @@ void PWMTimer()
     // Declare variables
     mxc_tmr_cfg_t tmr;          // to configure timer
     unsigned int periodTicks = MXC_TMR_GetPeriod(PWM_TIMER, PWM_CLOCK_SOURCE, 16, FREQ);
-    unsigned int dutyTicks   = periodTicks * DUTY_CYCLE / 100;
+    // unsigned int dutyTicks   = periodTicks * DUTY_CYCLE / 100;
 
     // printf("periodTicks: %u\ndutyTicks: %u", periodTicks, dutyTicks);
     
@@ -119,10 +123,71 @@ void PWMTimer()
     printf("PWM started.\n\n");
 }
 
+void OneshotTimerHandler()
+{
+    // Clear interrupt
+    MXC_TMR_ClearFlags(OST_TIMER);
+    
+    // Clear interrupt
+    if (MXC_TMR5->wkfl & MXC_F_TMR_WKFL_A) {
+        MXC_TMR5->wkfl = MXC_F_TMR_WKFL_A;
+
+        printf("Oneshot timer expired!\n");
+    }
+}
+
+void OneshotTimer()
+{
+    for(int i = 0; i < 5000; i++);      //Button debounce
+
+    // Declare variables
+    mxc_tmr_cfg_t tmr;
+    uint32_t periodTicks = MXC_TMR_GetPeriod(OST_TIMER, OST_CLOCK_SOURCE, 1, OST_FREQ);
+    /*
+    Steps for configuring a timer for PWM mode:
+    1. Disable the timer
+    2. Set the prescale value
+    3  Configure the timer for continuous mode
+    4. Set polarity, timer parameters
+    5. Enable Timer
+    */
+    
+    MXC_TMR_Shutdown(OST_TIMER);
+    
+    tmr.pres = TMR_PRES_1;
+    tmr.mode = TMR_MODE_ONESHOT;
+    tmr.bitMode = TMR_BIT_MODE_32;
+    tmr.clock = OST_CLOCK_SOURCE;
+    tmr.cmp_cnt = periodTicks;      //SystemCoreClock*(1/interval_time);
+    tmr.pol = 0;
+    
+    if (MXC_TMR_Init(OST_TIMER, &tmr, true) != E_NO_ERROR) {
+        printf("Failed one-shot timer Initialization.\n");
+        return;
+    }
+    
+    MXC_TMR_EnableInt(OST_TIMER);
+    
+    // Enable wkup source in Poower seq register
+    MXC_LP_EnableTimerWakeup(OST_TIMER);
+    // Enable Timer wake-up source
+    MXC_TMR_EnableWakeup(OST_TIMER, &tmr);
+    
+    printf("Oneshot timer started.\n\n");
+    
+    MXC_TMR_Start(OST_TIMER);
+}
+
 void PB1Handler()
 {
     printf("PWM button pressed\n");
     PWMTimer();
+
+    // one shot
+    NVIC_SetVector(TMR5_IRQn, OneshotTimerHandler);
+    NVIC_EnableIRQ(TMR5_IRQn);
+    
+    OneshotTimer();
 }
 
 // *****************************************************************************
