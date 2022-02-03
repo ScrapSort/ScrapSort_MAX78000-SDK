@@ -49,12 +49,6 @@
 
 /***** Definitions *****/
 
-// #define MXC_GPIO_PORT_IN                MXC_GPIO0
-// #define MXC_GPIO_PIN_IN                 MXC_GPIO_PIN_19
-
-// #define MXC_GPIO_PORT_OUT               MXC_GPIO2
-// #define MXC_GPIO_PIN_OUT                MXC_GPIO_PIN_1
-
 #define MXC_GPIO_PORT_INTERRUPT_IN      MXC_GPIO0
 #define MXC_GPIO_PIN_INTERRUPT_IN       MXC_GPIO_PIN_19
 
@@ -73,8 +67,7 @@ void gpio_isr(void* cbdata)
 
 int main(void)
 {
-    // mxc_gpio_cfg_t gpio_in;
-    // mxc_gpio_cfg_t gpio_out;
+
     mxc_gpio_cfg_t gpio_interrupt;
     mxc_gpio_cfg_t gpio_interrupt_status;
     
@@ -105,38 +98,6 @@ int main(void)
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO_PORT_INTERRUPT_IN)));
     
     while(1) {}
-    
-    
-    /*
-     *   Setup input pin.
-     *   Switch on EV kit is open when non-pressed, and grounded when pressed.  Use an internal pull-up so pin
-     *     reads high when button is not pressed.
-     */
-    // gpio_in.port = MXC_GPIO_PORT_IN;
-    // gpio_in.mask = MXC_GPIO_PIN_IN;
-    // gpio_in.pad = MXC_GPIO_PAD_PULL_UP;
-    // gpio_in.func = MXC_GPIO_FUNC_IN;
-    // MXC_GPIO_Config(&gpio_in);
-    
-    // /* Setup output pin. */
-    // gpio_out.port = MXC_GPIO_PORT_OUT;
-    // gpio_out.mask = MXC_GPIO_PIN_OUT;
-    // gpio_out.pad = MXC_GPIO_PAD_NONE;
-    // gpio_out.func = MXC_GPIO_FUNC_OUT;
-    // MXC_GPIO_Config(&gpio_out);
-    
-    // while (1) {
-    //     /* Read state of the input pin. */
-    //     printf("Input: %u\t\tOutput: %u\n", MXC_GPIO_InGet(gpio_in.port, gpio_in.mask), MXC_GPIO_OutGet(gpio_out.port, gpio_out.mask));
-    //     if (MXC_GPIO_InGet(gpio_in.port, gpio_in.mask)) {
-    //         /* Input pin was high, set the output pin. */
-    //         MXC_GPIO_OutSet(gpio_out.port, gpio_out.mask);
-    //     }
-    //     else {
-    //         /* Input pin was low, clear the output pin. */
-    //         MXC_GPIO_OutClr(gpio_out.port, gpio_out.mask);
-    //     }
-    // }
     
     return 0;
 }
