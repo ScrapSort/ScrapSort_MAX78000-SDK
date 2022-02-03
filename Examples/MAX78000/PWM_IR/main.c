@@ -56,7 +56,7 @@
 
 #define PWM_CLOCK_SOURCE    MXC_TMR_32K_CLK      // \ref mxc_tmr_clock_t
 
-#define FREQ            38000                // (Hz)
+#define FREQ            32000                // (Hz)
 #define DUTY_CYCLE      50                  // (%)
 #define PWM_TIMER       MXC_TMR4            // must change PWM_PORT and PWM_PIN if changed
 
@@ -75,10 +75,13 @@
 /***** Functions *****/
 void PWMTimer()
 {
+    // printf("1\n");
     // Declare variables
     mxc_tmr_cfg_t tmr;          // to configure timer
     unsigned int periodTicks = MXC_TMR_GetPeriod(PWM_TIMER, PWM_CLOCK_SOURCE, 16, FREQ);
     unsigned int dutyTicks   = periodTicks * DUTY_CYCLE / 100;
+
+    // printf("periodTicks: %u\ndutyTicks: %u", periodTicks, dutyTicks);
     
     /*
     Steps for configuring a timer for PWM mode:
@@ -88,7 +91,7 @@ void PWMTimer()
     4. Configure the timer for PWM mode
     5. Enable Timer
     */
-    
+    // printf("2\n");
     MXC_TMR_Shutdown(PWM_TIMER);
     
     tmr.pres = TMR_PRES_16;
@@ -97,16 +100,19 @@ void PWMTimer()
     tmr.clock = PWM_CLOCK_SOURCE;
     tmr.cmp_cnt = periodTicks;
     tmr.pol = 1;
+    // printf("3\n");
     
     if (MXC_TMR_Init(PWM_TIMER, &tmr, true) != E_NO_ERROR) {
         printf("Failed PWM timer Initialization.\n");
         return;
     }
+    // printf("4\n");
     
-    if (MXC_TMR_SetPWM(PWM_TIMER, dutyTicks) != E_NO_ERROR) {
-        printf("Failed TMR_PWMConfig.\n");
-        return;
-    }
+    // if (MXC_TMR_SetPWM(PWM_TIMER, dutyTicks) != E_NO_ERROR) {
+    //     printf("Failed TMR_PWMConfig.\n");
+    //     return;
+    // }
+    // printf("5\n");
     
     MXC_TMR_Start(PWM_TIMER);
     
