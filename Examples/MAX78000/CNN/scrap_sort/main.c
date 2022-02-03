@@ -106,7 +106,7 @@ int main(void)
   startup_cnn();
 
   cnn_output_t output;
-
+  init_trigger();
   while(true)
   {
     // display inference time
@@ -116,12 +116,15 @@ int main(void)
     //TFT_Print(buff, 0, 280, font_1, sprintf(buff, "Inference time: %u us", cnn_time));
     #endif
 
-    // do a forward pass
-    output = *run_cnn();
-    memset(buff,32,TFT_BUFF_SIZE);
-    
-    TFT_Print(buff, 0, 0, font_1, sprintf(buff, "Class: %s", class_strings[output.output_class]));
-    printf("\033[0;0f");
+    if(trigger_check() == 1)
+    {
+      // do a forward pass
+      output = *run_cnn();
+      memset(buff,32,TFT_BUFF_SIZE);
+      
+      TFT_Print(buff, 0, 0, font_1, sprintf(buff, "Class: %s", class_strings[output.output_class]));
+      printf("\033[0;0f");
+    }
   }
 
   return 0;

@@ -75,4 +75,27 @@ void startup_cnn();
 */
 cnn_output_t* run_cnn();
 
+
+/*
+    Description: This function initializes an interrupt for a pin.
+    Parameters: None.
+    Return: None
+*/
+void init_trigger();
+
+/*
+    Description: This function gets called on an interrupt. It will set a flag that can be
+    checked by the main loop.
+    Parameters: None.
+    Return: None
+*/
+void trigger_callback();
+
+/*
+    Description: This function checks if the interrupt has been triggered
+    Parameters: None.
+    Return: the status of the interrupt
+*/
+int trigger_check();
+
 #endif
