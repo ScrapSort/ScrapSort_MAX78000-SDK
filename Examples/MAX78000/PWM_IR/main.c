@@ -53,27 +53,27 @@
 #include "pb.h"
 
 /***** Definitions *****/
-#define SLEEP_MODE          // Select between SLEEP_MODE and DEEPSLEEP_MODE for LPTIMER
+// #define SLEEP_MODE          // Select between SLEEP_MODE and DEEPSLEEP_MODE for LPTIMER
 //#define DEEPSLEEP_MODE
 
 #define PB2     1
 
 // Parameters for PWM output
-#define OST_CLOCK_SOURCE    MXC_TMR_8K_CLK       // \ref mxc_tmr_clock_t
+// #define OST_CLOCK_SOURCE    MXC_TMR_8K_CLK       // \ref mxc_tmr_clock_t
 #define PWM_CLOCK_SOURCE    MXC_TMR_32K_CLK      // \ref mxc_tmr_clock_t
-#define CONT_CLOCK_SOURCE   MXC_TMR_8M_CLK       // \ref mxc_tmr_clock_t
+// #define CONT_CLOCK_SOURCE   MXC_TMR_8M_CLK       // \ref mxc_tmr_clock_t
 
 // Parameters for Continuous timer
-#define OST_FREQ        1                   // (Hz)
-#define OST_TIMER       MXC_TMR5            // Can be MXC_TMR0 through MXC_TMR5
+// #define OST_FREQ        1                   // (Hz)
+// #define OST_TIMER       MXC_TMR5            // Can be MXC_TMR0 through MXC_TMR5
 
 #define FREQ            38000                // (Hz)
 #define DUTY_CYCLE      50                  // (%)
 #define PWM_TIMER       MXC_TMR4            // must change PWM_PORT and PWM_PIN if changed
 
 // Parameters for Continuous timer
-#define CONT_FREQ       2                   // (Hz)
-#define CONT_TIMER      MXC_TMR1            // Can be MXC_TMR0 through MXC_TMR5
+// #define CONT_FREQ       2                   // (Hz)
+// #define CONT_TIMER      MXC_TMR1            // Can be MXC_TMR0 through MXC_TMR5
 
 // Check Frequency bounds
 #if (FREQ == 0)
@@ -130,110 +130,110 @@ void PWMTimer()
 }
 
 // Toggles GPIO when continuous timer repeats
-void ContinuousTimerHandler()
-{
-    // Clear interrupt
-    MXC_TMR_ClearFlags(CONT_TIMER);
-    LED_Toggle(LED1);
-}
+// void ContinuousTimerHandler()
+// {
+//     // Clear interrupt
+//     MXC_TMR_ClearFlags(CONT_TIMER);
+//     LED_Toggle(LED1);
+// }
 
-void ContinuousTimer()
-{
-    // Declare variables
-    mxc_tmr_cfg_t tmr;
-    uint32_t periodTicks = MXC_TMR_GetPeriod(CONT_TIMER, CONT_CLOCK_SOURCE, 128, CONT_FREQ);
+// void ContinuousTimer()
+// {
+//     // Declare variables
+//     mxc_tmr_cfg_t tmr;
+//     uint32_t periodTicks = MXC_TMR_GetPeriod(CONT_TIMER, CONT_CLOCK_SOURCE, 128, CONT_FREQ);
     
-    /*
-    Steps for configuring a timer for PWM mode:
-    1. Disable the timer
-    2. Set the prescale value
-    3  Configure the timer for continuous mode
-    4. Set polarity, timer parameters
-    5. Enable Timer
-    */
+//     /*
+//     Steps for configuring a timer for PWM mode:
+//     1. Disable the timer
+//     2. Set the prescale value
+//     3  Configure the timer for continuous mode
+//     4. Set polarity, timer parameters
+//     5. Enable Timer
+//     */
     
-    MXC_TMR_Shutdown(CONT_TIMER);
+//     MXC_TMR_Shutdown(CONT_TIMER);
     
-    tmr.pres = TMR_PRES_128;
-    tmr.mode = TMR_MODE_CONTINUOUS;
-    tmr.bitMode = TMR_BIT_MODE_16B;
-    tmr.clock = CONT_CLOCK_SOURCE;
-    tmr.cmp_cnt = periodTicks;      //SystemCoreClock*(1/interval_time);
-    tmr.pol = 0;
+//     tmr.pres = TMR_PRES_128;
+//     tmr.mode = TMR_MODE_CONTINUOUS;
+//     tmr.bitMode = TMR_BIT_MODE_16B;
+//     tmr.clock = CONT_CLOCK_SOURCE;
+//     tmr.cmp_cnt = periodTicks;      //SystemCoreClock*(1/interval_time);
+//     tmr.pol = 0;
     
-    if (MXC_TMR_Init(CONT_TIMER, &tmr, true) != E_NO_ERROR) {
-        printf("Failed Continuous timer Initialization.\n");
-        return;
-    }
+//     if (MXC_TMR_Init(CONT_TIMER, &tmr, true) != E_NO_ERROR) {
+//         printf("Failed Continuous timer Initialization.\n");
+//         return;
+//     }
     
-    printf("Continuous timer started.\n\n");
-}
+//     printf("Continuous timer started.\n\n");
+// }
 
-void OneshotTimerHandler()
-{
-    // Clear interrupt
-    MXC_TMR_ClearFlags(OST_TIMER);
+// void OneshotTimerHandler()
+// {
+//     // Clear interrupt
+//     MXC_TMR_ClearFlags(OST_TIMER);
     
-    // Clear interrupt
-    if (MXC_TMR5->wkfl & MXC_F_TMR_WKFL_A) {
-        MXC_TMR5->wkfl = MXC_F_TMR_WKFL_A;
-#ifdef BOARD_EVKIT_V1
-        LED_Toggle(LED2);
-#endif
-        printf("Oneshot timer expired!\n");
-    }
-}
+//     // Clear interrupt
+//     if (MXC_TMR5->wkfl & MXC_F_TMR_WKFL_A) {
+//         MXC_TMR5->wkfl = MXC_F_TMR_WKFL_A;
+// #ifdef BOARD_EVKIT_V1
+//         LED_Toggle(LED2);
+// #endif
+//         printf("Oneshot timer expired!\n");
+//     }
+// }
 
-void OneshotTimer()
-{
-    for(int i = 0; i < 5000; i++);      //Button debounce
+// void OneshotTimer()
+// {
+//     for(int i = 0; i < 5000; i++);      //Button debounce
 
-    // Declare variables
-    mxc_tmr_cfg_t tmr;
-    uint32_t periodTicks = MXC_TMR_GetPeriod(OST_TIMER, OST_CLOCK_SOURCE, 1, OST_FREQ);
-    /*
-    Steps for configuring a timer for PWM mode:
-    1. Disable the timer
-    2. Set the prescale value
-    3  Configure the timer for continuous mode
-    4. Set polarity, timer parameters
-    5. Enable Timer
-    */
+//     // Declare variables
+//     mxc_tmr_cfg_t tmr;
+//     uint32_t periodTicks = MXC_TMR_GetPeriod(OST_TIMER, OST_CLOCK_SOURCE, 1, OST_FREQ);
+//     /*
+//     Steps for configuring a timer for PWM mode:
+//     1. Disable the timer
+//     2. Set the prescale value
+//     3  Configure the timer for continuous mode
+//     4. Set polarity, timer parameters
+//     5. Enable Timer
+//     */
     
-    MXC_TMR_Shutdown(OST_TIMER);
+//     MXC_TMR_Shutdown(OST_TIMER);
     
-    tmr.pres = TMR_PRES_1;
-    tmr.mode = TMR_MODE_ONESHOT;
-    tmr.bitMode = TMR_BIT_MODE_32;
-    tmr.clock = OST_CLOCK_SOURCE;
-    tmr.cmp_cnt = periodTicks;      //SystemCoreClock*(1/interval_time);
-    tmr.pol = 0;
+//     tmr.pres = TMR_PRES_1;
+//     tmr.mode = TMR_MODE_ONESHOT;
+//     tmr.bitMode = TMR_BIT_MODE_32;
+//     tmr.clock = OST_CLOCK_SOURCE;
+//     tmr.cmp_cnt = periodTicks;      //SystemCoreClock*(1/interval_time);
+//     tmr.pol = 0;
     
-    if (MXC_TMR_Init(OST_TIMER, &tmr, true) != E_NO_ERROR) {
-        printf("Failed one-shot timer Initialization.\n");
-        return;
-    }
+//     if (MXC_TMR_Init(OST_TIMER, &tmr, true) != E_NO_ERROR) {
+//         printf("Failed one-shot timer Initialization.\n");
+//         return;
+//     }
     
-    MXC_TMR_EnableInt(OST_TIMER);
+//     MXC_TMR_EnableInt(OST_TIMER);
     
-    // Enable wkup source in Poower seq register
-    MXC_LP_EnableTimerWakeup(OST_TIMER);
-    // Enable Timer wake-up source
-    MXC_TMR_EnableWakeup(OST_TIMER, &tmr);
+//     // Enable wkup source in Poower seq register
+//     MXC_LP_EnableTimerWakeup(OST_TIMER);
+//     // Enable Timer wake-up source
+//     MXC_TMR_EnableWakeup(OST_TIMER, &tmr);
     
-    printf("Oneshot timer started.\n\n");
+//     printf("Oneshot timer started.\n\n");
     
-    MXC_TMR_Start(OST_TIMER);
-}
+//     MXC_TMR_Start(OST_TIMER);
+// }
 
 void PB1Handler()
 {
     printf("PWM button pressed\n");
     PWMTimer();
     
-    NVIC_SetVector(TMR1_IRQn, ContinuousTimerHandler);
-    NVIC_EnableIRQ(TMR1_IRQn);
-    ContinuousTimer();
+    // NVIC_SetVector(TMR1_IRQn, ContinuousTimerHandler);
+    // NVIC_EnableIRQ(TMR1_IRQn);
+    // ContinuousTimer();
 }
 
 // *****************************************************************************
@@ -242,33 +242,33 @@ int main(void)
     //Exact timer operations can be found in tmr_utils.c
     
     printf("\n************************** Timer Example **************************\n\n");
-    printf("1. A oneshot mode timer, Timer 5 (low-power timer) is used to create an\n");
-    printf("   interrupt at a freq of %d Hz. If running the example on the Standard\n", OST_FREQ);
-    printf("   EV Kit, LED2 will toggle when the interrupt occurs.\n\n");
+    // printf("1. A oneshot mode timer, Timer 5 (low-power timer) is used to create an\n");
+    // printf("   interrupt at a freq of %d Hz. If running the example on the Standard\n", OST_FREQ);
+    // printf("   EV Kit, LED2 will toggle when the interrupt occurs.\n\n");
     printf("2. Timer 4 is used to output a PWM signal on Port 2.4.\n");
     printf("   The PWM frequency is %d Hz and the duty cycle is %d%%.\n\n", FREQ, DUTY_CYCLE);
-    printf("3. Timer 1 is configured as 16-bit timer used in continuous mode\n");
-    printf("   which is used to create an interrupt at freq of %d Hz.\n", CONT_FREQ);
-    printf("   LED1 will toggle when the interrupt occurs.\n\n");
+    // printf("3. Timer 1 is configured as 16-bit timer used in continuous mode\n");
+    // printf("   which is used to create an interrupt at freq of %d Hz.\n", CONT_FREQ);
+    // printf("   LED1 will toggle when the interrupt occurs.\n\n");
     printf("Push PB1 to start the PWM and continuous timer and PB2 to start lptimer in oneshot mode.\n\n");
     
     PB_RegisterCallback(0, (pb_callback) PB1Handler);
     
     while (1) {
-        if (PB_Get(1) == 1) {
-            NVIC_SetVector(TMR5_IRQn, OneshotTimerHandler);
-            NVIC_EnableIRQ(TMR5_IRQn);
+//         if (PB_Get(1) == 1) {
+//             NVIC_SetVector(TMR5_IRQn, OneshotTimerHandler);
+//             NVIC_EnableIRQ(TMR5_IRQn);
             
-            OneshotTimer();
+//             OneshotTimer();
 
 
-#ifdef SLEEP_MODE
-            MXC_LP_EnterSleepMode();
+// #ifdef SLEEP_MODE
+//             MXC_LP_EnterSleepMode();
             
-#else
-            MXC_LP_EnterDeepSleepMode();
-#endif
-        }
+// #else
+//             MXC_LP_EnterDeepSleepMode();
+// #endif
+//         }
     }
     
     return 0;
