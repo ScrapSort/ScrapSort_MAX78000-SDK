@@ -175,7 +175,7 @@ void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer)
 
   // Get the details of the image from the camera driver.
 	camera_get_image(&raw, &imgLen, &w, &h);
-  printf("\nimg len: %i\n",imgLen);
+  //printf("\nimg len: %i\n",imgLen);
   // iterate over all pixels
   for(int i = 0; i < w; i++) // rows
   {
@@ -206,8 +206,8 @@ void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer)
     }
   }
 
-  printf("\nr: %i g: %i b: %i--\n",r,g,b);
-  printf("\nhex:%8X\n",cnn_buffer[w*127+127]);
+  //printf("\nr: %i g: %i b: %i--\n",r,g,b);
+  //printf("\nhex:%8X\n",cnn_buffer[w*127+127]);
 	MXC_TFT_ShowImageCameraRGB565(x_coord, y_coord, raw, h, w);
 }
 

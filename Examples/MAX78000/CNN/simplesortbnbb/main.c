@@ -125,7 +125,8 @@ int main(void)
     //TFT_Print(buff, 0, 280, font_1, sprintf(buff, "Inference time: %u us", cnn_time));
     #endif
 
-    if(trigger_check() == 1)
+    //if(trigger_check() == 1)
+    if(true)
     {
       // do a forward pass
       output = *run_cnn();
