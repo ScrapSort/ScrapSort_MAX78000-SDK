@@ -63,7 +63,8 @@ void Debug_Motors(void) {
     }
 }
 
-void rotate_revs(int slave_addr, double rotations) {
+void rotate_revs(int slave_addr, float rotations) {
+    
 
     // GET CURRENT POSITION
     txdata[0] = 0xA1;
@@ -73,11 +74,12 @@ void rotate_revs(int slave_addr, double rotations) {
 
     int curr_pos = rxdata[0] + (rxdata[1] << 8) + (rxdata[2] << 16) + (rxdata[3] << 24);
 
-
     // SET TARGET POSITION
     // full rotation = 200 encoder ticks
 
-    int enc_target = (int)rotations * 200 + curr_pos;
+    int enc_target = (int)(rotations * 200 + curr_pos);
+
+    // printf("")
 
     txdata[0] = 0xE0;
     fill_tx_32b(enc_target);

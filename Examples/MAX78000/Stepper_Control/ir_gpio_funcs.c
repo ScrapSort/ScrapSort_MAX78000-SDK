@@ -25,7 +25,7 @@ void gpio_isr(void* cbdata)
 
     printf("interrupt\n");
 
-    rotate_revs(0, 2);
+    target_tics(0, -40);
 
     NVIC_SetVector(TMR5_IRQn, OneshotTimerHandler);
     NVIC_EnableIRQ(TMR5_IRQn);

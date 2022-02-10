@@ -2,7 +2,7 @@
 #define OST_CLOCK_SOURCE    MXC_TMR_8K_CLK       // \ref mxc_tmr_clock_t
 #define PWM_CLOCK_SOURCE    MXC_TMR_32K_CLK      // \ref mxc_tmr_clock_t
 
-#define OST_FREQ        1                   // (Hz)
+#define OST_FREQ        1                 // (Hz)
 #define OST_TIMER       MXC_TMR5            // Can be MXC_TMR0 through MXC_TMR5
 
 #define FREQ            32000                // (Hz)

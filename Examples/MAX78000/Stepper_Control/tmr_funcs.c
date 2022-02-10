@@ -9,10 +9,12 @@
 #include "led.h"
 
 #include "tmr_funcs.h"
-
+#include "motor_funcs.h"
 
 /***** Globals *****/
 int pause_ir_interrupts = 0;
+int ost_counter = 0;
+
 
 /***** Functions *****/
 void PWMTimer()
@@ -21,7 +23,7 @@ void PWMTimer()
     mxc_tmr_cfg_t tmr;          // to configure timer
     unsigned int periodTicks = MXC_TMR_GetPeriod(PWM_TIMER, PWM_CLOCK_SOURCE, 16, FREQ);
     // unsigned int dutyTicks   = periodTicks * DUTY_CYCLE / 100;
-    
+
     /*
     Steps for configuring a timer for PWM mode:
     1. Disable the timer
@@ -64,8 +66,22 @@ void OneshotTimerHandler()
     if (MXC_TMR5->wkfl & MXC_F_TMR_WKFL_A) {
         MXC_TMR5->wkfl = MXC_F_TMR_WKFL_A;
 
-        printf("Oneshot timer expired!\n");
-        pause_ir_interrupts = 0;
+        if (ost_counter > 4) {
+
+            printf("Oneshot timer expired!\n");
+            pause_ir_interrupts = 0;
+            target_tics(0, 0);
+
+            ost_counter = 0;
+        } else {
+            printf("Reup oneshot timer\n");
+            ost_counter ++;
+
+            NVIC_SetVector(TMR5_IRQn, OneshotTimerHandler);
+            NVIC_EnableIRQ(TMR5_IRQn);
+            
+            OneshotTimer();
+        }
     }
 }
 
@@ -76,6 +92,8 @@ void OneshotTimer()
     // Declare variables
     mxc_tmr_cfg_t tmr;
     uint32_t periodTicks = MXC_TMR_GetPeriod(OST_TIMER, OST_CLOCK_SOURCE, 1, OST_FREQ);
+    // printf("\nperiodTicks: %u\n", periodTicks);
+
     /*
     Steps for configuring a timer for PWM mode:
     1. Disable the timer
