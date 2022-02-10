@@ -112,9 +112,9 @@ int Motor_Init_Settings() {
     MXC_Delay(1000);
 
     // RESET COMMAND TIMEOUT
-    txdata[0] = 0x8C;
+    // txdata[0] = 0x8C;
 
-    I2C_Broadcast_Message(1, 0, 0);
+    // I2C_Broadcast_Message(1, 0, 0);
 
     // EXIT SAFE START
     txdata[0] = 0x83;
