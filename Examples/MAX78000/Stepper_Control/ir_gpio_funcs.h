@@ -9,4 +9,5 @@
 #define MXC_GPIO_PORT_INTERRUPT_STATUS  MXC_GPIO2
 #define MXC_GPIO_PIN_INTERRUPT_STATUS   MXC_GPIO_PIN_1
 
+void gpio_init(void);
 void gpio_isr(void* cbdata);

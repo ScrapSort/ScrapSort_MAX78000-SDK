@@ -68,50 +68,20 @@
 // *****************************************************************************
 int main()
 {
-    // LED_Init();
-    // LED_On(1); // indicator that program is running!
+    printf("\n\n***** STARTED *****\n\n");
+    // printf("2. Timer 4 is used to output a PWM signal on Port 2.4.\n");
+    // printf("   The PWM frequency is %d Hz and the duty cycle is %d%%.\n\n", FREQ, DUTY_CYCLE);
 
-    printf("\n\n***** IR_GPIO & PWM *****\n\n");
-    printf("2. Timer 4 is used to output a PWM signal on Port 2.4.\n");
-    printf("   The PWM frequency is %d Hz and the duty cycle is %d%%.\n\n", FREQ, DUTY_CYCLE);
-
-    printf("Push PB1 to start the PWM\n\n");
+    printf("Push PB1 to start the PWM\n");
 
     // GPIO
-    mxc_gpio_cfg_t gpio_interrupt;
-    mxc_gpio_cfg_t gpio_interrupt_status;
-
-    /* Setup interrupt status pin as an output so we can toggle it on each interrupt. */
-    gpio_interrupt_status.port = MXC_GPIO_PORT_INTERRUPT_STATUS;
-    gpio_interrupt_status.mask = MXC_GPIO_PIN_INTERRUPT_STATUS;
-    gpio_interrupt_status.pad = MXC_GPIO_PAD_NONE;
-    gpio_interrupt_status.func = MXC_GPIO_FUNC_OUT;
-    gpio_interrupt_status.vssel = MXC_GPIO_VSSEL_VDDIO;
-    MXC_GPIO_Config(&gpio_interrupt_status);
-    
-    /*
-     *   Set up interrupt pin.
-     *   Switch on EV kit is open when non-pressed, and grounded when pressed.  Use an internal pull-up so pin
-     *     reads high when button is not pressed.
-     */
-    gpio_interrupt.port = MXC_GPIO_PORT_INTERRUPT_IN;
-    gpio_interrupt.mask = MXC_GPIO_PIN_INTERRUPT_IN;
-    gpio_interrupt.pad = MXC_GPIO_PAD_PULL_UP;
-    gpio_interrupt.func = MXC_GPIO_FUNC_IN;
-    gpio_interrupt.vssel = MXC_GPIO_VSSEL_VDDIOH;
-    MXC_GPIO_Config(&gpio_interrupt);
-    MXC_GPIO_RegisterCallback(&gpio_interrupt, gpio_isr, &gpio_interrupt_status);
-    MXC_GPIO_IntConfig(&gpio_interrupt, MXC_GPIO_INT_FALLING);
-    MXC_GPIO_EnableInt(gpio_interrupt.port, gpio_interrupt.mask);
-    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO_PORT_INTERRUPT_IN)));
-    
+    gpio_init();
 
     // PWM & TMR
     PB_RegisterCallback(0, (pb_callback) PB1Handler);
-    // PWMTimer();
 
     // I2C
-    printf("\n******** Steppers! *********\n");
+    // printf("\n******** Steppers! *********\n");
     if (I2C_Init() != E_NO_ERROR) {
         printf("I2C INITIALIZATION FAILURE\n");
     } else {
