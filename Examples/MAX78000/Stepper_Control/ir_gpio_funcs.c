@@ -23,7 +23,7 @@ void gpio_isr(void* cbdata)
     
     if (pause_ir_interrupts) return;
 
-    printf("interrupt\n");
+    printf("\ninterrupt\n");
 
     target_tics(0, -40);
 

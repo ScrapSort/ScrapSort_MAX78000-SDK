@@ -108,14 +108,14 @@ int main()
 
     // PWM & TMR
     PB_RegisterCallback(0, (pb_callback) PB1Handler);
-
+    // PWMTimer();
 
     // I2C
     printf("\n******** Steppers! *********\n");
     if (I2C_Init() != E_NO_ERROR) {
-        printf("I2C INITIALIZATION FAILURE");
+        printf("I2C INITIALIZATION FAILURE\n");
     } else {
-        printf("I2C INITIALIZED :)");
+        printf("I2C INITIALIZED :)\n");
     }
    
     // MOTORS
@@ -126,9 +126,9 @@ int main()
     }
 
     if (Motor_Init_Settings() != E_NO_ERROR) {
-        printf("MOTOR SETTINGS INITIALIZATION FAILURE");
+        printf("MOTOR SETTINGS INITIALIZATION FAILURE\n");
     } else {
-        printf("MOTOR SETTINGS INITIALIZED :)");
+        printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
 
     // rotate_revs(0, 2);
