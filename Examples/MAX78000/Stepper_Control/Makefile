@@ -73,7 +73,7 @@ CMSIS_ROOT=$(LIBS_DIR)/CMSIS
 export CMSIS_ROOT
 
 # Source files for this test (add path to VPATH below)
-SRCS  = main.c I2C_funcs.c motor_funcs.c tmr_funcs.c ir_gpio_funcs.c
+SRCS  = main.c I2C_funcs.c motor_funcs.c tmr_funcs.c ir_gpio_funcs.c motor_funcs.c queue_node.c queue.c sorter.c stats.c
 #SRCS += sla_header.c
 
 # Where to find source files for this test

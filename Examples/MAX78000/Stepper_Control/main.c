@@ -65,13 +65,12 @@
 #include "tmr_funcs.h"
 #include "ir_gpio_funcs.h"
 
+#include "sorter.h"
+
 // *****************************************************************************
 int main()
 {
     printf("\n\n***** STARTED *****\n\n");
-    // printf("2. Timer 4 is used to output a PWM signal on Port 2.4.\n");
-    // printf("   The PWM frequency is %d Hz and the duty cycle is %d%%.\n\n", FREQ, DUTY_CYCLE);
-
     printf("Push PB1 to start the PWM\n");
 
     // GPIO
@@ -81,39 +80,26 @@ int main()
     PB_RegisterCallback(0, (pb_callback) PB1Handler);
 
     // I2C
-    // printf("\n******** Steppers! *********\n");
     if (I2C_Init() != E_NO_ERROR) {
         printf("I2C INITIALIZATION FAILURE\n");
     } else {
         printf("I2C INITIALIZED :)\n");
-    }
-   
-    // MOTORS
+    } 
+    
     // Initialize test data
     for (int i = 0; i < I2C_BYTES; i++) {
         txdata[i] = 0;
         rxdata[i] = 0;
     }
 
+    // MOTORS
     if (Motor_Init_Settings() != E_NO_ERROR) {
         printf("MOTOR SETTINGS INITIALIZATION FAILURE\n");
     } else {
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
 
-    // rotate_revs(0, 2);
 
-    // MXC_Delay(1000000);
-
-    // rotate_revs(0, -2);
-
-    // printf("\n");
-    // printData();
-    // printf("\n");
-
-    // MXC_Delay(2000000);
-
-    // Debug_Motors();
 
     while(1);
 }

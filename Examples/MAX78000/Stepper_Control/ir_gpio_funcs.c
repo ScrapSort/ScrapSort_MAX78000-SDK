@@ -14,18 +14,44 @@
 #include "ir_gpio_funcs.h"
 #include "motor_funcs.h"
 
+#include "sorter.h"
+
+// sorter s = Sorter(5);
+sorter s;
+
+int motor_ir_index[] = {0, 1, 2, 3, 4};
+
 /***** Functions *****/
 
-void gpio_isr(void* cbdata)
-{
-    mxc_gpio_cfg_t* cfg = cbdata;
-    MXC_GPIO_OutToggle(cfg->port, cfg->mask);
+void ir_camera_handler(void* cbdata) {
+    printf("\nir camera interrupt\n");
+
+    sorter* s_ptr = cbdata;
+
+    // call camera take picture
+
+    int class_type = 2; // ex
+
+    // add to queues w/ return val from classifier
+    sorter__add_item(s_ptr, class_type);
+}
+
+
+
+void ir_motor_handler(void* cbdata) {
+    printf("\nir motor interrupt\n");
+
+    sorter* s_ptr = cbdata;
+
+    // mxc_gpio_cfg_t* cfg = cbdata;
+    // MXC_GPIO_OutToggle(cfg->port, cfg->mask);
     
-    if (pause_ir_interrupts) return;
+    // if (pause_ir_interrupts) return;
 
-    printf("\ninterrupt\n");
-
-    target_tics(0, -40);
+    if (sorter__detected_item(s_ptr, 2)) { // same motor address as IR sensor address
+        target_tics(2, -40); 
+    }
+    
 
     // NVIC_SetVector(TMR5_IRQn, OneshotTimerHandler);
     // NVIC_EnableIRQ(TMR5_IRQn);
@@ -34,31 +60,37 @@ void gpio_isr(void* cbdata)
 }
 
 void gpio_init(void) {
-    mxc_gpio_cfg_t gpio_interrupt;
-    mxc_gpio_cfg_t gpio_interrupt_status;
 
-    /* Setup interrupt status pin as an output so we can toggle it on each interrupt. */
-    gpio_interrupt_status.port = MXC_GPIO_PORT_INTERRUPT_STATUS;
-    gpio_interrupt_status.mask = MXC_GPIO_PIN_INTERRUPT_STATUS;
-    gpio_interrupt_status.pad = MXC_GPIO_PAD_NONE;
-    gpio_interrupt_status.func = MXC_GPIO_FUNC_OUT;
-    gpio_interrupt_status.vssel = MXC_GPIO_VSSEL_VDDIO;
-    MXC_GPIO_Config(&gpio_interrupt_status);
-    
-    /*
-     *   Set up interrupt pin.
-     *   Switch on EV kit is open when non-pressed, and grounded when pressed.  Use an internal pull-up so pin
-     *     reads high when button is not pressed.
-     */
-    gpio_interrupt.port = MXC_GPIO_PORT_INTERRUPT_IN;
-    gpio_interrupt.mask = MXC_GPIO_PIN_INTERRUPT_IN;
+    s = Sorter(5);
+
+    // CAMERA IR
+    mxc_gpio_cfg_t ir_camera_interrupt;
+
+    ir_camera_interrupt.port = IR_CAMERA_PORT;
+    ir_camera_interrupt.mask = IR_CAMERA_PIN;
+    ir_camera_interrupt.pad = MXC_GPIO_PAD_PULL_UP;
+    ir_camera_interrupt.func = MXC_GPIO_FUNC_IN;
+    ir_camera_interrupt.vssel = MXC_GPIO_VSSEL_VDDIOH;
+    MXC_GPIO_Config(&ir_camera_interrupt);
+    MXC_GPIO_RegisterCallback(&ir_camera_interrupt, ir_camera_handler, &s);
+    MXC_GPIO_IntConfig(&ir_camera_interrupt, MXC_GPIO_INT_FALLING);
+    MXC_GPIO_EnableInt(ir_camera_interrupt.port, ir_camera_interrupt.mask);
+    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_CAMERA_PORT)));
+
+
+    // MOTOR IR
+
+    mxc_gpio_cfg_t gpio_interrupt;
+
+    gpio_interrupt.port = IR_MOTOR_PORT_0;
+    gpio_interrupt.mask = IR_MOTOR_PIN_0;
     gpio_interrupt.pad = MXC_GPIO_PAD_PULL_UP;
     gpio_interrupt.func = MXC_GPIO_FUNC_IN;
     gpio_interrupt.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&gpio_interrupt);
-    MXC_GPIO_RegisterCallback(&gpio_interrupt, gpio_isr, &gpio_interrupt_status);
+    MXC_GPIO_RegisterCallback(&gpio_interrupt, ir_motor_handler, &s);
     MXC_GPIO_IntConfig(&gpio_interrupt, MXC_GPIO_INT_FALLING);
     MXC_GPIO_EnableInt(gpio_interrupt.port, gpio_interrupt.mask);
-    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO_PORT_INTERRUPT_IN)));
+    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_MOTOR_PORT_0)));
     
 }

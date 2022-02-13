@@ -2,12 +2,18 @@
 
 /***** Definitions *****/
 
-// GPIO 
-#define MXC_GPIO_PORT_INTERRUPT_IN      MXC_GPIO1
-#define MXC_GPIO_PIN_INTERRUPT_IN       MXC_GPIO_PIN_6
+// CAMERA IR
+#define IR_CAMERA_PORT      MXC_GPIO1
+#define IR_CAMERA_PIN       MXC_GPIO_PIN_6
 
-#define MXC_GPIO_PORT_INTERRUPT_STATUS  MXC_GPIO2
-#define MXC_GPIO_PIN_INTERRUPT_STATUS   MXC_GPIO_PIN_1
+
+// MOTOR IR 
+#define IR_MOTOR_PORT_0      MXC_GPIO2
+#define IR_MOTOR_PIN_0       MXC_GPIO_PIN_3
+
+// #define MXC_GPIO_PORT_INTERRUPT_STATUS  MXC_GPIO2
+// #define MXC_GPIO_PIN_INTERRUPT_STATUS   MXC_GPIO_PIN_1
 
 void gpio_init(void);
-void gpio_isr(void* cbdata);
+void ir_motor_handler(void* cbdata);
+void ir_camera_handler(void* cbdata);
