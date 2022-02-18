@@ -22,10 +22,13 @@
 #endif
 
 
-extern int pause_ir_interrupts;
-
+extern int pause_camera_interrupts;
+extern volatile uint32_t global_counter;
 
 void PWMTimer();
 void OneshotTimerHandler();
 void OneshotTimer();
 void PB1Handler();
+
+void SysTick_Setup();
+void SysTick_Handler();

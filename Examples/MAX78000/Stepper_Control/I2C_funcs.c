@@ -11,7 +11,7 @@
 #include "led.h"
 
 #include "I2C_funcs.h"
-
+#include "motor_funcs.h"
 
 /***** Globals *****/
 uint8_t txdata[I2C_BYTES]; //was static 
@@ -49,9 +49,10 @@ void printTransaction(int slave_addr, int tx_len, int rx_len) {
         for (int i = 0; i < tx_len; i++) {
             printf("%02x ", txdata[i]);
         }
+        printf("\n");
     }
     if (rx_len > 0) {
-        printf("\n\tReading: ");
+        printf("\tReading: ");
         for (int i = 0; i < rx_len; i++) {
             printf("%02x ", rxdata[i]);
         }

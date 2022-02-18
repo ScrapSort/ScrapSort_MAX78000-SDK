@@ -4,7 +4,7 @@
 #define I2C_BYTES       16
 
 #define NUM_SLAVES 1
-#define START_SLAVE_ADDR 2
+#define START_SLAVE_ADDR 1
 
 extern uint8_t txdata[I2C_BYTES]; //was static 
 extern uint8_t rxdata[I2C_BYTES]; //was static 

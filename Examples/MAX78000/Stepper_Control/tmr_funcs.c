@@ -12,9 +12,9 @@
 #include "motor_funcs.h"
 
 /***** Globals *****/
-int pause_ir_interrupts = 0;
+int pause_camera_interrupts = 0;
 int ost_counter = 0;
-
+volatile uint32_t global_counter = 0;
 
 /***** Functions *****/
 void PWMTimer()
@@ -66,15 +66,15 @@ void OneshotTimerHandler()
     if (MXC_TMR5->wkfl & MXC_F_TMR_WKFL_A) {
         MXC_TMR5->wkfl = MXC_F_TMR_WKFL_A;
 
-        if (ost_counter > 4) {
+        if (ost_counter > 0) {
 
             printf("Oneshot timer expired!\n");
-            pause_ir_interrupts = 0;
-            target_tics(0, 0);
+            pause_camera_interrupts = 0;
+            // target_tics(0, 0);
 
             ost_counter = 0;
         } else {
-            printf("Reup oneshot timer\n");
+            // printf("Reup oneshot timer\n");
             ost_counter ++;
 
             NVIC_SetVector(TMR5_IRQn, OneshotTimerHandler);
@@ -124,15 +124,26 @@ void OneshotTimer()
     // Enable Timer wake-up source
     MXC_TMR_EnableWakeup(OST_TIMER, &tmr);
     
-    printf("Oneshot timer started.\n\n");
+    // printf("Oneshot timer started.\n\n");
     
     MXC_TMR_Start(OST_TIMER);
 
-    pause_ir_interrupts = 1;
+    pause_camera_interrupts = 1;
 }
 
 void PB1Handler()
 {
     printf("PWM button pressed\n");
     PWMTimer();    
+}
+
+void SysTick_Setup() {
+    NVIC_SetVector(SysTick_IRQn, SysTick_Handler);
+    NVIC_EnableIRQ(SysTick_IRQn);
+
+    SysTick_Config(SystemCoreClock/1000);
+}
+
+void SysTick_Handler() {
+    global_counter++;
 }

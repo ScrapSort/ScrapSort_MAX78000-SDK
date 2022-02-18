@@ -73,6 +73,9 @@ int main()
     printf("\n\n***** STARTED *****\n\n");
     printf("Push PB1 to start the PWM\n");
 
+    // SYSTICK
+    SysTick_Setup();
+
     // GPIO
     gpio_init();
 
@@ -100,6 +103,19 @@ int main()
     }
 
 
+    int sanity_check = 0;
+    while(1) {
+        // sanity_check++;
+        // if (sanity_check >= 100000000) {
+        //     sanity_check = 0;
+        //     printf("\nnot stalled :)\n");
+        // }
 
-    while(1);
+        // if (MXC_GPIO_InGet(IR_MOTOR_PORT_0, IR_MOTOR_PIN_0)) {
+        //     MXC_GPIO_OutSet(MXC_GPIO_PORT_INTERRUPT_STATUS, MXC_GPIO_PIN_INTERRUPT_STATUS);
+        // } else {
+        //     MXC_GPIO_OutClr(MXC_GPIO_PORT_INTERRUPT_STATUS, MXC_GPIO_PIN_INTERRUPT_STATUS);
+        // }
+        
+    }
 }

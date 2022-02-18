@@ -36,6 +36,19 @@ int queue__size(queue *q) { return q->num_nodes; }
 
 bool queue__empty(queue *q) { return !q->num_nodes; }
 
+void queue__print(queue *q) {
+  printf("[");
+
+  struct queue_node *tmp = q->front;
+
+  while (tmp) {
+    printf(" %i", tmp->item_type);
+    tmp = tmp->next;
+  }
+
+  printf(" ]\n");
+}
+
 queue Queue() {
   queue q;
 
