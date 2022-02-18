@@ -6,8 +6,10 @@
 #sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/sorting_running/build/max78000.elf verify reset exit"
 
 #sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/sort_aug/build/max78000.elf verify reset exit"
-#sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbn/build/max78000.elf verify reset exit"
+#sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbn2/build/max78000.elf verify reset exit"
 #sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/scrap_sort/build/max78000.elf verify reset exit"
 #sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbnbb/build/max78000.elf verify reset exit"
 #sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbnbb2/build/max78000.elf verify reset exit"
-sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbnbbl1/build/max78000.elf verify reset exit"
+#sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbnbbl1/build/max78000.elf verify reset exit"
+#sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbnbbl12/build/max78000.elf verify reset exit"
+sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbno/build/max78000.elf verify reset exit"

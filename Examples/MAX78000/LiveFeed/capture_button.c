@@ -8,6 +8,7 @@
 #include "camera.h"
 
 #define TFT_BUFF_SIZE   50    // TFT buffer size
+#define QUIT_IDX 7
 
 // ========================================================================================= //
 // =================================== GLOBAL VARIABLES ==================================== //
@@ -23,10 +24,10 @@ volatile int class_clicked = 0;
 char a = 'a';
 
 // class category names (directory names)
-char* classes[] = {"Cup", "Hex", "Trap", "Can","Bottle","None"};
+char* classes[] = {"Cup", "Hex", "Trap", "Can","Bottle","Other","None"};
 
 // number of images in each directory
-uint16_t img_amnts[] = {0,0,0,0,0,0};
+uint16_t img_amnts[] = {0,0,0,0,0,0,0};
 
 // the current class directory you are in
 int class_idx = 0;
@@ -45,7 +46,8 @@ char class2[] = "sorting_imgs/Hex/num_imgs";
 char class3[] = "sorting_imgs/Trap/num_imgs";
 char class4[] = "sorting_imgs/Can/num_imgs";
 char class5[] = "sorting_imgs/Bottle/num_imgs";
-char class6[] = "sorting_imgs/None/num_imgs";
+char class6[] = "sorting_imgs/Other/num_imgs";
+char class7[] = "sorting_imgs/None/num_imgs";
 
 // ========================================================================================= //
 // ================================ FUNCTION DEFINITIONS =================================== //
@@ -66,8 +68,8 @@ void switch_class()
     // clear the last class text
     MXC_TFT_FillRect(&cover_text,BLACK);
 
-    // go to quit button if get to idx 6
-    if(class_idx == 6)
+    // go to quit button if get to idx 7
+    if(class_idx == QUIT_IDX)
     {
         printf("Quit?\n");
         TFT_Print(buff,96,240,font_1,sprintf(buff,"QUIT?"));
@@ -75,7 +77,7 @@ void switch_class()
     else // otherwise go to the next class button
     {
         // if reseting
-        if(class_idx == 7)
+        if(class_idx == (QUIT_IDX+1))
         {
             // clear the quit button
             class_idx = 0;
@@ -99,7 +101,7 @@ void switch_class()
 void capture()
 {
     // quit
-    if(class_idx == 6)
+    if(class_idx == QUIT_IDX)
     {
         printf("quit");
         // mount the SD card
@@ -112,6 +114,7 @@ void capture()
         num_to_file(class4,&img_amnts[3]);
         num_to_file(class5,&img_amnts[4]);
         num_to_file(class6,&img_amnts[5]);
+        num_to_file(class7,&img_amnts[6]);
 
         // confirm they are saved
         get_num_from_file(class1,&img_amnts[0]);
@@ -120,6 +123,7 @@ void capture()
         get_num_from_file(class4,&img_amnts[3]);
         get_num_from_file(class5,&img_amnts[4]);
         get_num_from_file(class6,&img_amnts[5]);
+        get_num_from_file(class7,&img_amnts[6]);
 
         // quit
         umount();
@@ -236,7 +240,8 @@ void init_class_button()
     get_num_from_file("../Trap/num_imgs",&img_amnts[2]);
     get_num_from_file("../Can/num_imgs",&img_amnts[3]);
     get_num_from_file("../Bottle/num_imgs",&img_amnts[4]);
-    get_num_from_file("../None/num_imgs",&img_amnts[5]);
+    get_num_from_file("../Other/num_imgs",&img_amnts[5]);
+    get_num_from_file("../None/num_imgs",&img_amnts[6]);
 
     reset();
     TFT_Print(buff,class_idx*48,280,font_1,sprintf(buff,classes[class_idx]));
