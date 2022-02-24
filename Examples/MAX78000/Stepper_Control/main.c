@@ -146,8 +146,11 @@ int main()
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
 
+    // CNN accelerator
+    // @geffen todo
 
-    int sanity_check = 0;
+
+    // int sanity_check = 0;
     while(1) {
         // sanity_check++;
         // if (sanity_check >= 100000000) {
