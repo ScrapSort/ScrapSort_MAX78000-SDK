@@ -11,6 +11,10 @@
 #include "cnn.h"
 #include "camera_tft_funcs.h"
 #include "tft_fthr.h"
+#include "mxc.h"
+#include "camera.h"
+#include "camera_tft_funcs.h"
+#include "string.h"
 
 
 // ========================================================================================= //
@@ -25,6 +29,10 @@
 #define NUM_CLASSES 6 // number of output classes
 #define NUM_OUTPUTS 10 // number of output neurons
 #define CNN_INPUT_SIZE 16384 // data is 128 x 128 px = 16,384 px each word is 0RGB, byte for each
+
+#define TFT_BUFF_SIZE   50    // TFT buffer size
+#define BB_COLOR YELLOW // the bounding box color
+#define BB_W 2 // the bounding box width in pixels
 
 // ========================================================================================= //
 // ================================== GLOBAL VARIABLES ===================================== //
@@ -42,6 +50,11 @@ output_classes_t class_names[] = {CUP, TRAPEZOID, HEXAGON, CAN, BOTTLE, NONE};
 // gpios for capturing interrupt
 mxc_gpio_cfg_t trigger_gpio;
 volatile int triggered = 0;
+
+char buff[TFT_BUFF_SIZE];
+int font_1 = (int)&Arial12x12[0];
+volatile uint32_t cnn_time; // Stopwatch
+char* class_strings[] = {"CUP","HEXAGON","TRAPEZOID","CAN","BOTTLE","NONE"};
 
 // ========================================================================================= //
 // ================================ FUNCTION DEFINITIONS =================================== //
@@ -164,6 +177,71 @@ void startup_cnn()
     cnn_load_weights(); // Load kernels
     cnn_load_bias();
     cnn_configure(); // Configure state machine
+}
+
+
+// ========================================================================================= //
+
+
+void show_cnn_output(cnn_output_t output)
+{
+  static area_t top = {56, 140, 4, 4};
+  static area_t left = {56, 140, 4, 4};
+  static area_t bottom = {56, 140, 4, 4};
+  static area_t right = {56, 140, 4, 4};
+
+  memset(buff,32,TFT_BUFF_SIZE);
+  
+  TFT_Print(buff, 0, 0, font_1, sprintf(buff, "Class: %s", class_strings[output.output_class]));
+  
+  if(output.output_class != 5)
+  {
+      // bounding box
+      top.x = (output.x >= 0 && output.x < SCREEN_W) ? output.x : 0;
+      top.y = (output.y >= 0 && output.y < SCREEN_H) ? output.y : 0;
+      top.w = (top.x+output.w) < SCREEN_W ? output.w : SCREEN_W-top.x-1;
+      top.h = BB_W;
+
+      // Format the bottom side of the bounding box
+      // The bottom should not go off of the screen
+      bottom.x = top.x;
+      bottom.y = (output.y+output.h-BB_W) < SCREEN_H-BB_W ? output.y+output.h-BB_W : SCREEN_H-BB_W-1;
+      bottom.w = top.w;
+      bottom.h = BB_W;
+
+      // Format the left side of the bounding box
+      // The left should not go off of the screen
+      left.x = top.x;
+      left.y = top.y;
+      left.w = BB_W;
+      left.h = (left.y+output.h) < SCREEN_H ? output.h : SCREEN_H-left.y-1;
+
+      // Format the right side of the bounding box
+      // The right should not go off of the screen
+      right.x = (output.x+output.w) < SCREEN_W-BB_W ? (output.x+output.w): SCREEN_W-BB_W-1;
+      right.y = top.y;
+      right.w = BB_W;
+      right.h = left.h;
+
+      // shift the box y-coordinates to the screen Y position
+      top.y += SCREEN_Y;
+      bottom.y += SCREEN_Y;
+      left.y += SCREEN_Y;
+      right.y += SCREEN_Y;
+
+      // flip the box over horizontally and shift it to the screen X position
+      top.x += SCREEN_X;
+      bottom.x += SCREEN_X;
+      left.x += SCREEN_X;
+      right.x += SCREEN_X;
+
+      // draw the box
+      MXC_TFT_FillRect(&top, BB_COLOR);
+      MXC_TFT_FillRect(&bottom, BB_COLOR);
+      MXC_TFT_FillRect(&left, BB_COLOR);
+      MXC_TFT_FillRect(&right, BB_COLOR);
+    }
+    printf("\033[0;0f");
 }
 
 

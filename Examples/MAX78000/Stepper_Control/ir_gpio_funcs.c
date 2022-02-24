@@ -16,6 +16,8 @@
 
 #include "sorter.h"
 
+#include "cnn_helper_funcs.h"
+
 // sorter s = Sorter(5);
 sorter s;
 
@@ -26,6 +28,7 @@ int systick_wait = 1500;
 /***** Functions *****/
 
 void ir_camera_handler(void* cbdata) {
+    static cnn_output_t output;
     if (global_counter - last_camera_interrupt < systick_wait) return;
     // if (pause_camera_interrupts) return;
 
@@ -34,8 +37,10 @@ void ir_camera_handler(void* cbdata) {
     sorter* s_ptr = cbdata;
 
     // call camera take picture
+    output = *run_cnn();
+    show_cnn_output(output);
 
-    int class_type = 1; // ex
+    int class_type = output.output_class;
 
     // add to queues w/ return val from classifier
     sorter__add_item(s_ptr, class_type);
@@ -91,8 +96,8 @@ void ir_motor_handler_0(void* cbdata) {
 void gpio_init(void) {
 
     s = Sorter(5);
-    sorter__add_item(&s, 1);
-    sorter__add_item(&s, 1);
+    //sorter__add_item(&s, 1);
+    //sorter__add_item(&s, 1);
 
     // CAMERA IR
     mxc_gpio_cfg_t ir_camera_interrupt;

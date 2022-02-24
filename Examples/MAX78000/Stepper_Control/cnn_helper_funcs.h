@@ -102,4 +102,11 @@ void trigger_callback();
 */
 int trigger_check();
 
+/*
+    Description: This function shows the output of the CNN
+    Parameters: output of the CNN.
+    Return: Nine
+*/
+void show_cnn_output(cnn_output_t output);
+
 #endif

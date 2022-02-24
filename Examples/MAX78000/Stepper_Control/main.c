@@ -67,9 +67,53 @@
 
 #include "sorter.h"
 
+#include "mxc.h"
+#include "cnn.h"
+#include "camera.h"
+#include "tft_fthr.h"
+#include "camera_tft_funcs.h"
+#include "cnn_helper_funcs.h"
+
+
+#define CAMERA_FREQ   (10 * 1000 * 1000)
+
 // *****************************************************************************
 int main()
 {
+    // ============ CNN and Camera and LCD INIT =============
+    MXC_ICC_Enable(MXC_ICC0); // Enable cache
+
+    // Initialize DMA for camera interface
+	MXC_DMA_Init();
+	int dma_channel = MXC_DMA_AcquireChannel();
+
+    // Initialize TFT display.
+    init_LCD();
+    MXC_TFT_ClearScreen();
+
+    // Initialize camera.
+    printf("Init Camera.\n");
+    camera_init(CAMERA_FREQ);
+  
+    set_image_dimensions(128, 128);
+
+    // Setup the camera image dimensions, pixel format and data acquiring details.
+    // four bytes because each pixel is 2 bytes, can get 2 pixels at a time
+	int ret = camera_setup(get_image_x(), get_image_y(), PIXFORMAT_RGB565, FIFO_FOUR_BYTE, USE_DMA, dma_channel);
+    if (ret != STATUS_OK) 
+    {
+		printf("Error returned from setting up camera. Error %d\n", ret);
+		return -1;
+	}
+  
+    MXC_TFT_SetBackGroundColor(4);
+    MXC_TFT_SetForeGroundColor(YELLOW);
+
+    // init the CNN accelerator
+    startup_cnn();
+
+    // ============ CNN and Camera and LCD INIT DONE =============    
+
     printf("\n\n***** STARTED *****\n\n");
     printf("Push PB1 to start the PWM\n");
 
