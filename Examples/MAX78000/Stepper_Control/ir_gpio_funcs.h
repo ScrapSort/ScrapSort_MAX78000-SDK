@@ -3,8 +3,8 @@
 /***** Definitions *****/
 
 // CAMERA IR
-#define IR_CAMERA_PORT      MXC_GPIO0
-#define IR_CAMERA_PIN       MXC_GPIO_PIN_19
+#define IR_CAMERA_PORT      MXC_GPIO1
+#define IR_CAMERA_PIN       MXC_GPIO_PIN_6
 
 
 // MOTOR IR 
