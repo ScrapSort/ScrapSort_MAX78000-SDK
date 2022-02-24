@@ -149,9 +149,14 @@ int main()
     // CNN accelerator
     // @geffen todo
 
-
+    #define CNN_INPUT_SIZE 16384 // data is 128 x 128 px = 16,384 px each word is 0RGB, byte for each
+    uint32_t cnn_buffer[CNN_INPUT_SIZE]; 
+    #define SCREEN_X 56 // image output top left corner
+    #define SCREEN_Y 140 // image output top left corner
     // int sanity_check = 0;
     while(1) {
+        capture_camera_img();
+        display_RGB565_img(SCREEN_X,SCREEN_Y, cnn_buffer);
         // sanity_check++;
         // if (sanity_check >= 100000000) {
         //     sanity_check = 0;
