@@ -74,11 +74,18 @@ export CMSIS_ROOT
 
 # Source files for this test (add path to VPATH below)
 SRCS  = main.c I2C_funcs.c motor_funcs.c tmr_funcs.c ir_gpio_funcs.c motor_funcs.c queue_node.c queue.c sorter.c stats.c
+SRCS += cnn.c cnn_helper_funcs.c
+SRCS += softmax.c
+SRCS += camera_tft_funcs.c
+SRCS += tft_fthr/Arial12x12.c
+SRCS += tft_fthr/SansSerif16x16.c
+SRCS += tft_fthr/SansSerif19x19.c
 #SRCS += sla_header.c
 
 # Where to find source files for this test
 VPATH=.
 VPATH += $(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source
+VPATH += ./tft_fthr
 
 # Where to find header files for this test
 IPATH = .
