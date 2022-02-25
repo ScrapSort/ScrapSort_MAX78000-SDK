@@ -100,7 +100,7 @@ void capture_camera_img(void)
 }
 
 
-void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer)
+void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer, int load_cnn)
 {
 	uint8_t   *raw;
 	uint32_t  imgLen;
@@ -112,24 +112,27 @@ void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer)
   // Get the details of the image from the camera driver.
 	camera_get_image(&raw, &imgLen, &w, &h);
 
-  // iterate over all pixels
-  for(int i = 0; i < w; i++) // rows
+  if(load_cnn)
   {
-    for(int j = 0; j < h; j++) // cols
+    // iterate over all pixels
+    for(int i = 0; i < w; i++) // rows
     {
-      // extract the RGB values
-      // RGB565 normally:   RRRRRGGG GGGBBBBB --> 16 bits
-      ur = (raw[2*(w*i+j)] & 0b11111000);
-      ug = ((((raw[2*(w*i+j)] & 0b00000111)<<5) | ((raw[2*(w*i+j)+1] & 0b11100000)>>3)));
-      ub = (((raw[2*(w*i+j)+1] & 0b00011111))<<3);
+      for(int j = 0; j < h; j++) // cols
+      {
+        // extract the RGB values
+        // RGB565 normally:   RRRRRGGG GGGBBBBB --> 16 bits
+        ur = (raw[2*(w*i+j)] & 0b11111000);
+        ug = ((((raw[2*(w*i+j)] & 0b00000111)<<5) | ((raw[2*(w*i+j)+1] & 0b11100000)>>3)));
+        ub = (((raw[2*(w*i+j)+1] & 0b00011111))<<3);
 
-      // convert from uint8_t to int8_t because CNN uses signed 8-bit data [-128, 127]
-      r = ur-128;
-      g = ug-128;
-      b = ub-128;
-      
-      // load a word into the CNN buffer [00 BB GG RR] --> HWC format
-      cnn_buffer[w*i+j] = 0x00FFFFFF & ((((uint8_t)b) << 16) | (((uint8_t)g) << 8) | ((uint8_t)r));
+        // convert from uint8_t to int8_t because CNN uses signed 8-bit data [-128, 127]
+        r = ur-128;
+        g = ug-128;
+        b = ub-128;
+        
+        // load a word into the CNN buffer [00 BB GG RR] --> HWC format
+        cnn_buffer[w*i+j] = 0x00FFFFFF & ((((uint8_t)b) << 16) | (((uint8_t)g) << 8) | ((uint8_t)r));
+      }
     }
   }
 
