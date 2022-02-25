@@ -7,6 +7,8 @@
 
 #include <stdint.h>
 
+extern char* class_strings[];
+
 // this is the class output types
 typedef enum
 {

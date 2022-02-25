@@ -1,4 +1,8 @@
+#include "sorter.h"
 
+extern sorter scrappy;
+volatile extern int add_to_sorter;
+volatile extern int pop_from_0;
 
 /***** Definitions *****/
 

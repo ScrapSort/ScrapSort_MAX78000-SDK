@@ -111,7 +111,7 @@ cnn_output_t* run_cnn()
     // first get an image from the camera and load it into the CNN buffer
     capture_camera_img();
     display_RGB565_img(SCREEN_X,SCREEN_Y, cnn_buffer,true);
-    
+
     // Enable CNN clock
     MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_CNN);
 
@@ -149,7 +149,7 @@ cnn_output_t* run_cnn()
     output.w = ml_data[8]/33000;
     output.h = ml_data[9]/33000;
     printf("x: %i\ny: %i\nw: %i\nh: %i\n",output.x,output.y,output.w,output.h);
-    printf("\033[0;0f");
+    // printf("\033[0;0f");
     // Disable CNN clock to save power
     cnn_stop();
     MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_CNN);
@@ -241,7 +241,7 @@ void show_cnn_output(cnn_output_t output)
       MXC_TFT_FillRect(&left, BB_COLOR);
       MXC_TFT_FillRect(&right, BB_COLOR);
     }
-    printf("\033[0;0f");
+    // printf("\033[0;0f");
 }
 
 

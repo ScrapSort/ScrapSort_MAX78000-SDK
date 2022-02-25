@@ -153,8 +153,48 @@ int main()
     #define SCREEN_Y 140 // image output top left corner
     // int sanity_check = 0;
     while(1) {
-        capture_camera_img();
-        display_RGB565_img(SCREEN_X,SCREEN_Y,NULL,0);
+        // printf("add_to_sorter: %d", add_to_sorter);
+        if (add_to_sorter) {
+            static cnn_output_t output;
+
+            // call camera take picture
+            output = *run_cnn();
+
+            show_cnn_output(output);
+
+            int class_type = output.output_class;
+            printf("class type: %s\n", class_strings[class_type]);
+
+            // add to queues w/ return val from classifier
+            sorter__add_item(&scrappy, class_type);
+
+            add_to_sorter = 0;
+        }
+
+        if (pop_from_0) {            
+            printf("Queue status BEFORE pop\n");
+            // sorter__print(s_ptr);
+            // queue__print(&(scrappy.queues[1]));
+
+            // mxc_gpio_cfg_t* cfg = cbdata;
+            // MXC_GPIO_OutToggle(MXC_GPIO2, MXC_GPIO_PIN_1);
+            
+            // if (pause_motor_interrupts) return;
+
+            if (sorter__detected_item(&scrappy, 1)) { // same motor address as IR sensor address
+                target_tics(0, -40); 
+            }
+
+            printf("Queue status AFTER pop\n");
+            // sorter__print(s_ptr);
+            // queue__print(&(scrappy.queues[1]));
+
+            pop_from_0 = 0;
+        }
+
+
+        // capture_camera_img();
+        // display_RGB565_img(SCREEN_X,SCREEN_Y,NULL,0);
         // sanity_check++;
         // if (sanity_check >= 100000000) {
         //     sanity_check = 0;

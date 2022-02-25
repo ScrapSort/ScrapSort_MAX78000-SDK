@@ -11,6 +11,9 @@
 #include "tmr_funcs.h"
 #include "motor_funcs.h"
 
+#include "sorter.h"
+#include "ir_gpio_funcs.h"
+
 /***** Globals *****/
 int pause_camera_interrupts = 0;
 int ost_counter = 0;
@@ -133,6 +136,9 @@ void OneshotTimer()
 
 void PB1Handler()
 {
+    // printf("Sorter:\n");
+    // sorter__print(&scrappy);
+
     printf("PWM button pressed\n");
     PWMTimer();    
 }
