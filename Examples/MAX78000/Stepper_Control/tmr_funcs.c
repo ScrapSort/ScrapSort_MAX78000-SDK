@@ -139,7 +139,7 @@ void PB1Handler()
     // printf("Sorter:\n");
     // sorter__print(&scrappy);
 
-    printf("PWM button pressed\n");
+    //printf("PWM button pressed\n");
     PWMTimer();    
 }
 

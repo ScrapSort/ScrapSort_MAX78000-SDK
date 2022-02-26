@@ -24,24 +24,18 @@ volatile int pop_from_0 = 0;
 
 int last_motor_interrupt_0 = 0;
 int last_camera_interrupt = 0;
-int systick_wait = 1500;
+int systick_wait = 1000;
+flag_callback flag_callbacks[num_flags];
 
 /***** Functions *****/
 
-// int get_add_to_sorter() {
-//     return add_to_sorter;
-// }
 
-void ir_camera_handler(void* cbdata) {
-    if (global_counter - last_camera_interrupt < systick_wait) return;
-    // if (pause_camera_interrupts) return;
+// ======================= Interrupt Callbacks =====================
 
-    printf("\nir camera interrupt: adding to queue\n");
-
-    add_to_sorter = 1;
-    /*** MOVING TO MAIN
+void camera_handler()
+{
+    //printf("4\n");
     static cnn_output_t output;
-    sorter* s_ptr = cbdata;
 
     // call camera take picture
     output = *run_cnn();
@@ -49,65 +43,48 @@ void ir_camera_handler(void* cbdata) {
     show_cnn_output(output);
 
     int class_type = output.output_class;
+    printf("class type: %s\n", class_strings[class_type]);
 
     // add to queues w/ return val from classifier
-    sorter__add_item(s_ptr, class_type);
-    MOVING TO MAIN *****/
+    sorter__add_item(&scrappy, class_type);
 
-    // printf("here\n");
-    // sorter__print(s_ptr);
+    add_to_sorter = 0;
+}
 
-    // NVIC_SetVector(TMR5_IRQn, OneshotTimerHandler);
-    // NVIC_EnableIRQ(TMR5_IRQn);
+void flipper_1_handler()
+{
+    if (sorter__detected_item(&scrappy, 1)) { // same motor address as IR sensor address
+        target_tics(0, -40); 
+    }
+
+    printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
+}
+
+// ======================= Interrupt Handlers =====================
+
+void ir_camera_handler(void* cbdata) 
+{
+    if (global_counter - last_camera_interrupt < systick_wait) return;
     
-    // OneshotTimer();
+    set_flag(Camera);
+    //printf("1\n");
+
     last_camera_interrupt = global_counter;
 
 }
 
 
-void ir_motor_handler_0(void* cbdata) {
+void ir_motor_handler_0(void* cbdata) 
+{
     if (global_counter - last_motor_interrupt_0 < systick_wait) return;
-    // if (pause_motor_interrupts_0) return;
-
-    // pause_motor_interrupts_0 = 1;
-    printf("\nir motor interrupt: %d\n", global_counter);
-
-    pop_from_0 = 1;
     
-    /**** MOVING TO MAIN
-    
-    sorter* s_ptr = cbdata;
-
-    printf("Queue status BEFORE pop\n");
-    // sorter__print(s_ptr);
-    queue__print(&(s_ptr->queues[1]));
-
-    // mxc_gpio_cfg_t* cfg = cbdata;
-    // MXC_GPIO_OutToggle(MXC_GPIO2, MXC_GPIO_PIN_1);
-    
-    // if (pause_motor_interrupts) return;
-
-    if (sorter__detected_item(s_ptr, 1)) { // same motor address as IR sensor address
-        target_tics(0, -40); 
-    }
-
-    printf("Queue status AFTER pop\n");
-    // sorter__print(s_ptr);
-    queue__print(&(s_ptr->queues[1]));
-
-    MOVING TO MAIN ***/
-
-
-    // NVIC_SetVector(TMR5_IRQn, OneshotTimerHandler);
-    // NVIC_EnableIRQ(TMR5_IRQn);
-    
-    // OneshotTimer();
-    // pause_motor_interrupts_0 = 0;
+    set_flag(Flipper1);
+    //printf("2\n");
 
     last_motor_interrupt_0 = global_counter;
 }
 
+// set up interrupts
 void gpio_init(void) {
 
     scrappy = Sorter(6);
@@ -128,7 +105,7 @@ void gpio_init(void) {
     MXC_GPIO_EnableInt(ir_camera_interrupt.port, ir_camera_interrupt.mask);
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_CAMERA_PORT)));
     printf("Camera IR Priority: %u\n", NVIC_GetPriority(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_CAMERA_PORT))));
-
+    flag_callbacks[Camera] = camera_handler;
 
     // MOTOR IR
 
@@ -145,5 +122,18 @@ void gpio_init(void) {
     MXC_GPIO_EnableInt(gpio_interrupt.port, gpio_interrupt.mask);
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_MOTOR_PORT_0)));
     printf("Motor IR Priority: %u\n", NVIC_GetPriority(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_MOTOR_PORT_0))));
-    
+    flag_callbacks[Flipper1] = flipper_1_handler;
+}
+
+void check_all_callbacks()
+{
+    for (Flag f = 0; f < num_flags; f++) 
+    {
+        // if a flag is set, call its handler code, then reset the flag
+        if (is_flag_set(f))
+        {
+            (*flag_callbacks[f])();
+            unset_flag(f);
+        }
+    } 
 }

@@ -80,6 +80,7 @@ SRCS += camera_tft_funcs.c
 SRCS += tft_fthr/Arial12x12.c
 SRCS += tft_fthr/SansSerif16x16.c
 SRCS += tft_fthr/SansSerif19x19.c
+SRCS += flags.c
 #SRCS += sla_header.c
 
 # Where to find source files for this test

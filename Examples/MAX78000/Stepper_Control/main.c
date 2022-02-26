@@ -54,7 +54,6 @@
 #include "i2c_regs.h"
 #include "i2c.h"
 #include "dma.h"
-// #include "led.h"
 #include "pb.h"
 #include "board.h"
 
@@ -66,146 +65,60 @@
 #include "ir_gpio_funcs.h"
 
 #include "sorter.h"
-
-#include "mxc.h"
-#include "cnn.h"
-#include "camera.h"
-#include "tft_fthr.h"
-#include "camera_tft_funcs.h"
 #include "cnn_helper_funcs.h"
+#include "camera_tft_funcs.h"
 
-
-#define CAMERA_FREQ   (10 * 1000 * 1000)
 
 // *****************************************************************************
 int main()
 {
-    // ============ CNN and Camera and LCD INIT =============
-    MXC_ICC_Enable(MXC_ICC0); // Enable cache
-
-    // Initialize DMA for camera interface
-	MXC_DMA_Init();
-	int dma_channel = MXC_DMA_AcquireChannel();
-
-    // Initialize TFT display.
-    init_LCD();
-    MXC_TFT_ClearScreen();
-
-    // Initialize camera.
-    printf("Init Camera.\n");
-    camera_init(CAMERA_FREQ);
-  
-    set_image_dimensions(128, 128);
-
-    // Setup the camera image dimensions, pixel format and data acquiring details.
-    // four bytes because each pixel is 2 bytes, can get 2 pixels at a time
-	int ret = camera_setup(get_image_x(), get_image_y(), PIXFORMAT_RGB565, FIFO_FOUR_BYTE, USE_DMA, dma_channel);
-    if (ret != STATUS_OK) 
-    {
-		printf("Error returned from setting up camera. Error %d\n", ret);
-		return -1;
-	}
-  
-    MXC_TFT_SetBackGroundColor(4);
-    MXC_TFT_SetForeGroundColor(YELLOW);
+    // set up the camera and LCD
+    LCD_Camera_Setup();
 
     // init the CNN accelerator
     startup_cnn();
 
-    // ============ CNN and Camera and LCD INIT DONE =============    
-
-    printf("\n\n***** STARTED *****\n\n");
-    printf("Push PB1 to start the PWM\n");
-
     // SYSTICK
     SysTick_Setup();
 
-    // GPIO
+    // init the IR GPIOs
     gpio_init();
 
-    // PWM & TMR
-    PB_RegisterCallback(0, (pb_callback) PB1Handler);
+    // init the PWM & TMR
+    PWMTimer();
 
-    // I2C
-    if (I2C_Init() != E_NO_ERROR) {
+    // init I2C
+    if (I2C_Init() != E_NO_ERROR) 
+    {
         printf("I2C INITIALIZATION FAILURE\n");
-    } else {
+    } 
+    else 
+    {
         printf("I2C INITIALIZED :)\n");
     } 
     
     // Initialize test data
-    for (int i = 0; i < I2C_BYTES; i++) {
+    for (int i = 0; i < I2C_BYTES; i++) 
+    {
         txdata[i] = 0;
         rxdata[i] = 0;
     }
 
-    // MOTORS
-    if (Motor_Init_Settings() != E_NO_ERROR) {
+    // init MOTORS
+    if (Motor_Init_Settings() != E_NO_ERROR) 
+    {
         printf("MOTOR SETTINGS INITIALIZATION FAILURE\n");
-    } else {
+    } 
+    else 
+    {
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
 
-    // CNN accelerator
-    // @geffen todo
-
-    #define SCREEN_X 56 // image output top left corner
-    #define SCREEN_Y 140 // image output top left corner
-    // int sanity_check = 0;
-    while(1) {
-        // printf("add_to_sorter: %d", add_to_sorter);
-        if (add_to_sorter) {
-            static cnn_output_t output;
-
-            // call camera take picture
-            output = *run_cnn();
-
-            show_cnn_output(output);
-
-            int class_type = output.output_class;
-            printf("class type: %s\n", class_strings[class_type]);
-
-            // add to queues w/ return val from classifier
-            sorter__add_item(&scrappy, class_type);
-
-            add_to_sorter = 0;
-        }
-
-        if (pop_from_0) {            
-            printf("Queue status BEFORE pop\n");
-            // sorter__print(s_ptr);
-            // queue__print(&(scrappy.queues[1]));
-
-            // mxc_gpio_cfg_t* cfg = cbdata;
-            // MXC_GPIO_OutToggle(MXC_GPIO2, MXC_GPIO_PIN_1);
-            
-            // if (pause_motor_interrupts) return;
-
-            if (sorter__detected_item(&scrappy, 1)) { // same motor address as IR sensor address
-                target_tics(0, -40); 
-            }
-
-            printf("Queue status AFTER pop\n");
-            // sorter__print(s_ptr);
-            // queue__print(&(scrappy.queues[1]));
-
-            pop_from_0 = 0;
-        }
-
-
-        // capture_camera_img();
-        // display_RGB565_img(SCREEN_X,SCREEN_Y,NULL,0);
-        // sanity_check++;
-        // if (sanity_check >= 100000000) {
-        //     sanity_check = 0;
-        //     printf("\nnot stalled :)\n");
-        // }
-
-        // if (MXC_GPIO_InGet(IR_MOTOR_PORT_0, IR_MOTOR_PIN_0)) {
-        //     MXC_GPIO_OutSet(MXC_GPIO_PORT_INTERRUPT_STATUS, MXC_GPIO_PIN_INTERRUPT_STATUS);
-        // } else {
-        //     MXC_GPIO_OutClr(MXC_GPIO_PORT_INTERRUPT_STATUS, MXC_GPIO_PIN_INTERRUPT_STATUS);
-        // }
-        
+   
+    // ======================== Main Loop =========================
+    while(1) 
+    {
+        // keep checking for interrupt flags
+        check_all_callbacks();
     }
 }

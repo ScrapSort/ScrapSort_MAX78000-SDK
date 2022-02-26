@@ -44,7 +44,13 @@
 #include "camera_tft_funcs.h"
 #include "tft_fthr.h"
 #include "camera.h"
+#include "mxc.h"
+#include "cnn.h"
+#include "camera_tft_funcs.h"
+#include "cnn_helper_funcs.h"
 
+
+#define CAMERA_FREQ   (10 * 1000 * 1000)
 
 // ========================================================================================= //
 // ================================== GLOBAL VARIABLES ===================================== //
@@ -112,6 +118,7 @@ void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer, int load_
   // Get the details of the image from the camera driver.
 	camera_get_image(&raw, &imgLen, &w, &h);
 
+  // if want to load to the CNN
   if(load_cnn)
   {
     // iterate over all pixels
@@ -162,4 +169,34 @@ void TFT_Print(char *str, int x, int y, int font, int length)
   text.len = 36;
 
   MXC_TFT_PrintFont(x, y, font, &text, NULL);
+}
+
+
+void LCD_Camera_Setup()
+{
+    MXC_ICC_Enable(MXC_ICC0); // Enable cache
+
+    // Initialize DMA for camera interface
+    MXC_DMA_Init();
+    int dma_channel = MXC_DMA_AcquireChannel();
+
+    // Initialize TFT display.
+    init_LCD();
+
+    // Initialize camera.
+    printf("Init Camera.\n");
+    camera_init(CAMERA_FREQ);
+  
+    set_image_dimensions(128, 128);
+
+    // Setup the camera image dimensions, pixel format and data acquiring details.
+    // four bytes because each pixel is 2 bytes, can get 2 pixels at a time
+  	int ret = camera_setup(get_image_x(), get_image_y(), PIXFORMAT_RGB565, FIFO_FOUR_BYTE, USE_DMA, dma_channel);
+    if (ret != STATUS_OK) 
+    {
+      printf("Error returned from setting up camera. Error %d\n", ret);
+	  }
+  
+    MXC_TFT_SetBackGroundColor(4);
+    MXC_TFT_SetForeGroundColor(YELLOW);
 }

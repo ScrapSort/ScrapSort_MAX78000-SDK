@@ -21,12 +21,16 @@ int queue__pop(queue *q) {
   q->num_nodes--;
 
   if (!q->front->next) {
+    printf("free1\n");
     free(q->front);
+    printf("free1d\n");
     q->front = q->back = NULL;
   } else {
     struct queue_node *tmp = q->front;
     q->front = q->front->next;
+    printf("free2\n");
     free(tmp);
+    printf("free2d\n");
   }
 
   return val;

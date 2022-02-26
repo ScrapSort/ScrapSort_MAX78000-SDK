@@ -118,9 +118,12 @@ void init_LCD();
                  writes the image data to the LCD display using RGB565. RGB565
                  means that the RGB channels are 5, 6, and 5 bits accordingly.
                  Overall this is an even 16 bits (2 bytes). This method is much
-                 faster than RGB888, use this for continuous streaming.
+                 faster than RGB888, use this for continuous streaming. This method
+                 also loads the image into the CNN buffer if load_cnn is true.
 
-    Parameters: The location to display the image on the LCD (top left corner)
+    Parameters: The location to display the image on the LCD (top left corner), 
+                a buffer for the image (can be NULL if not loading CNN), and a bool
+                for wanting to load the CNN as well as displaying the image.
 
     Return: none
 */
@@ -137,5 +140,22 @@ void display_RGB565_img(int x_coord, int y_coord, uint32_t* cnn_buffer, int load
 void TFT_Print(char *str, int x, int y, int font, int length);
 
 
+/*
+    Description: This function reinitializes the LCD
+
+    Parameters: none
+
+    Return: none
+*/
 void reset();
+
+
+/*
+    Description: This function sets up the camera and LCD
+
+    Parameters: none
+
+    Return: none
+*/
+void LCD_Camera_Setup();
 #endif

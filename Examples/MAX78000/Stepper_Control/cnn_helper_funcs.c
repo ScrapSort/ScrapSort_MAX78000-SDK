@@ -127,7 +127,7 @@ cnn_output_t* run_cnn()
     // classify the output
     softmax_layer();
 
-    printf("Classification results:\n");
+    //printf("Classification results:\n");
 
     for (int i = 0; i < NUM_CLASSES; i++) 
     {
@@ -135,7 +135,7 @@ cnn_output_t* run_cnn()
       digs = (1000 * ml_softmax[i] + 0x4000) >> 15;
       tens = digs % 10; // get the fractional part
       digs = digs / 10; // get the integer part
-      printf("[%7d] -> Class %d: %d.%d%%\n", ml_data[i], i, digs, tens);
+      //printf("[%7d] -> Class %d: %d.%d%%\n", ml_data[i], i, digs, tens);
       // keep track of the max class
       if(digs > max)
       {
@@ -143,12 +143,12 @@ cnn_output_t* run_cnn()
           max_i = i;
       }
     }
-    printf("BB coords:\n");
+    //printf("BB coords:\n");
     output.x = ml_data[6]/29000;
     output.y = ml_data[7]/29000;
     output.w = ml_data[8]/33000;
     output.h = ml_data[9]/33000;
-    printf("x: %i\ny: %i\nw: %i\nh: %i\n",output.x,output.y,output.w,output.h);
+    //printf("x: %i\ny: %i\nw: %i\nh: %i\n",output.x,output.y,output.w,output.h);
     // printf("\033[0;0f");
     // Disable CNN clock to save power
     cnn_stop();

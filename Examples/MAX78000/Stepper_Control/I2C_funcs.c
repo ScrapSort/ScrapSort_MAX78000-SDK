@@ -123,8 +123,8 @@ int I2C_Broadcast_Message(int tx_len, int rx_len, int restart) {
             printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
             error += E_COMM_ERR;
         }
-
-        printTransaction(slave_addr, tx_len, rx_len);
+        MXC_Delay(4000);
+        //printTransaction(slave_addr, tx_len, rx_len);
     }
 
     return error;
@@ -149,7 +149,7 @@ int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
         return E_COMM_ERR;
     }
 
-    printTransaction(slave_addr, tx_len, rx_len);
+    //printTransaction(slave_addr, tx_len, rx_len);
 
     return E_NO_ERROR;
 }
