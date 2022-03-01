@@ -72,6 +72,8 @@
 // *****************************************************************************
 int main()
 {
+    //int* test = malloc(sizeof(int));
+    //printf("mallocd: %p\n",(void*)test);
     // set up the camera and LCD
     LCD_Camera_Setup();
 

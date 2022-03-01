@@ -28,7 +28,7 @@ void ir_camera_handler(void* cbdata);
 // these functions get called by main when
 // the corresponding interrupt flag has been set
 void camera_handler();
-void flipper_1_handler();
+void flipper_0_handler();
 
 // checks all interrupt flags
 void check_all_callbacks();
