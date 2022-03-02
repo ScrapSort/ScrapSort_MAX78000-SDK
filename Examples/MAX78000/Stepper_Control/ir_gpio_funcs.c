@@ -19,8 +19,8 @@
 
 // sorter s = Sorter(5);
 sorter scrappy;
-volatile int add_to_sorter = 0;
-volatile int pop_from_0 = 0;
+//volatile int add_to_sorter = 0;
+//volatile int pop_from_0 = 0;
 
 int last_motor_interrupt_0 = 0;
 int last_camera_interrupt = 0;
@@ -43,53 +43,51 @@ void camera_handler()
     show_cnn_output(output);
 
     int class_type = output.output_class;
-    printf("class type: %s\n", class_strings[class_type]);
+    //printf("class type: %s\n", class_strings[class_type]);
 
     // add to queues w/ return val from classifier
     sorter__add_item(&scrappy, class_type);
-
-    add_to_sorter = 0;
 }
 
 void flipper_0_handler()
 {
     if (sorter__detected_item(&scrappy, 0)) { // same motor address as IR sensor address
         target_tics(0, 30); 
-        MXC_Delay(500000);
-        target_tics(0, -15); 
+        MXC_Delay(450000);
+        target_tics(0, -11); 
     }
 
-    printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
+    //printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
 }
 
 // ======================= Interrupt Handlers =====================
 
 void ir_camera_handler(void* cbdata) 
 {
-    //if (global_counter - last_camera_interrupt < systick_wait) return;
+    if (global_counter - last_camera_interrupt < systick_wait) return;
     
     set_flag(Camera);
     //printf("1\n");
 
-    //last_camera_interrupt = global_counter;
+    last_camera_interrupt = global_counter;
 
 }
 
 
 void ir_motor_handler_0(void* cbdata) 
 {
-   // if (global_counter - last_motor_interrupt_0 < systick_wait) return;
+    if (global_counter - last_motor_interrupt_0 < systick_wait) return;
     
     set_flag(Flipper0);
     //printf("2\n");
 
-    //last_motor_interrupt_0 = global_counter;
+    last_motor_interrupt_0 = global_counter;
 }
 
 // set up interrupts
 void gpio_init(void) {
 
-    scrappy = Sorter(6);
+    scrappy = Sorter(6,5);
     //sorter__add_item(&scrappy, 1);
     //sorter__add_item(&scrappy, 1);
 
@@ -98,15 +96,15 @@ void gpio_init(void) {
 
     ir_camera_interrupt.port = IR_CAMERA_PORT;
     ir_camera_interrupt.mask = IR_CAMERA_PIN;
-    ir_camera_interrupt.pad = MXC_GPIO_PAD_PULL_DOWN;
+    ir_camera_interrupt.pad = MXC_GPIO_PAD_PULL_UP;
     ir_camera_interrupt.func = MXC_GPIO_FUNC_IN;
     ir_camera_interrupt.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&ir_camera_interrupt);
     MXC_GPIO_RegisterCallback(&ir_camera_interrupt, ir_camera_handler, &scrappy);
-    MXC_GPIO_IntConfig(&ir_camera_interrupt, MXC_GPIO_INT_RISING);
+    MXC_GPIO_IntConfig(&ir_camera_interrupt, MXC_GPIO_INT_FALLING);
     MXC_GPIO_EnableInt(ir_camera_interrupt.port, ir_camera_interrupt.mask);
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_CAMERA_PORT)));
-    printf("Camera IR Priority: %u\n", NVIC_GetPriority(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_CAMERA_PORT))));
+    //printf("Camera IR Priority: %u\n", NVIC_GetPriority(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_CAMERA_PORT))));
     flag_callbacks[Camera] = camera_handler;
 
     // MOTOR IR
@@ -115,16 +113,16 @@ void gpio_init(void) {
 
     gpio_interrupt.port = IR_MOTOR_PORT_0;
     gpio_interrupt.mask = IR_MOTOR_PIN_0;
-    gpio_interrupt.pad = MXC_GPIO_PAD_PULL_DOWN;
+    gpio_interrupt.pad = MXC_GPIO_PAD_PULL_UP;
     gpio_interrupt.func = MXC_GPIO_FUNC_IN;
     gpio_interrupt.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&gpio_interrupt);
     MXC_GPIO_RegisterCallback(&gpio_interrupt, ir_motor_handler_0, &scrappy);
-    MXC_GPIO_IntConfig(&gpio_interrupt, MXC_GPIO_INT_RISING);
+    MXC_GPIO_IntConfig(&gpio_interrupt, MXC_GPIO_INT_FALLING);
     MXC_GPIO_EnableInt(gpio_interrupt.port, gpio_interrupt.mask);
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_MOTOR_PORT_0)));
-    printf("Motor IR Priority: %u\n", NVIC_GetPriority(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_MOTOR_PORT_0))));
-    flag_callbacks[Flipper1] = flipper_0_handler;
+    //printf("Motor IR Priority: %u\n", NVIC_GetPriority(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_MOTOR_PORT_0))));
+    flag_callbacks[Flipper0] = flipper_0_handler;
 }
 
 void check_all_callbacks()

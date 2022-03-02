@@ -1,65 +1,51 @@
 #include "queue.h"
-#include "queue_node.h"
 
 void queue__push(queue *q, int item_type) {
-  q->num_nodes++;
-
-  if (!q->front) {
-    q->front = q->back = QueueNode(item_type);
-  } else {
-    q->back->next = QueueNode(item_type);
-    q->back = q->back->next;
+  if (q->num_items == q->max_items) {
+    return;
   }
+
+  q->num_items++;
+  q->items[q->produce] = item_type;
+  q->produce = (q->produce + 1) % q->max_items;
 }
 
 int queue__pop(queue *q) {
-  if (!q->num_nodes) {
+  if (!q->num_items) {
     return -1;
   }
 
-  int val = q->front->item_type;
-  q->num_nodes--;
-
-  if (!q->front->next) {
-    printf("free1: %p\n",(void*)q->front);
-    free(q->front);
-    printf("free1d\n");
-    q->front = q->back = NULL;
-  } else {
-    struct queue_node *tmp = q->front;
-    q->front = q->front->next;
-    printf("free1: %p\n",(void*)tmp);
-    free(tmp);
-    printf("free2d\n");
-  }
+  q->num_items--;
+  int val = q->items[q->consume];
+  q->consume = (q->consume + 1) % q->max_items;
 
   return val;
 }
 
-int queue__size(queue *q) { return q->num_nodes; }
+int queue__size(queue *q) { return q->num_items; }
 
-bool queue__empty(queue *q) { return !q->num_nodes; }
+bool queue__empty(queue *q) { return !q->num_items; }
 
 void queue__print(queue *q) {
   printf("[");
 
-  struct queue_node *tmp = q->front;
-
-  while (tmp) {
-    printf(" %i", tmp->item_type);
-    tmp = tmp->next;
+  for (int i = 0; i < q->max_items; q++) {
+    printf(" %i", q->items[i]);
   }
 
   printf(" ]\n");
 }
 
-queue Queue() {
+queue Queue(int max_items) {
   queue q;
 
   // Define variables
-  q.front = NULL;
-  q.back = NULL;
-  q.num_nodes = 0;
+  q.produce = 0;
+  q.consume = 0;
+  q.num_items = 0;
+  q.max_items = max_items;
+
+  q.items = malloc(sizeof(int) * (unsigned int)(q.max_items));
 
   return q;
 }

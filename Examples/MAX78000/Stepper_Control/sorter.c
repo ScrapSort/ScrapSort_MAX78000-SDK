@@ -20,14 +20,15 @@ void sorter__print(sorter *s) {
   }
 }
 
-sorter Sorter(int num_types) {
+sorter Sorter(int num_types, int queue_size) {
   sorter s;
 
   s.num_types = num_types;
+  s.queue_size = queue_size;
   s.queues = malloc(sizeof(queue) * (unsigned int)(num_types));
 
   for (int i = 0; i < num_types; i++) {
-    s.queues[i] = Queue();
+    s.queues[i] = Queue(queue_size);
   }
 
   return s;

@@ -72,8 +72,10 @@
 // *****************************************************************************
 int main()
 {
-    //int* test = malloc(sizeof(int));
-    //printf("mallocd: %p\n",(void*)test);
+    // Switch to 100 MHz clock
+    MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
+    SystemCoreClockUpdate();
+    
     // set up the camera and LCD
     LCD_Camera_Setup();
 

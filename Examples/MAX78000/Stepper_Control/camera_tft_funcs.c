@@ -150,7 +150,7 @@ void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer, int load_
 /***** LCD Functions *****/
 void init_LCD()
 {
-  printf("Init LCD.\n");
+  //printf("Init LCD.\n");
   MXC_TFT_Init(MXC_SPI0, 1, &tft_reset_pin, NULL);
   MXC_TFT_ClearScreen();
 }
@@ -184,7 +184,7 @@ void LCD_Camera_Setup()
     init_LCD();
 
     // Initialize camera.
-    printf("Init Camera.\n");
+    //printf("Init Camera.\n");
     camera_init(CAMERA_FREQ);
   
     set_image_dimensions(128, 128);
@@ -194,7 +194,7 @@ void LCD_Camera_Setup()
   	int ret = camera_setup(get_image_x(), get_image_y(), PIXFORMAT_RGB565, FIFO_FOUR_BYTE, USE_DMA, dma_channel);
     if (ret != STATUS_OK) 
     {
-      printf("Error returned from setting up camera. Error %d\n", ret);
+      //printf("Error returned from setting up camera. Error %d\n", ret);
 	  }
   
     MXC_TFT_SetBackGroundColor(4);

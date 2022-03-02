@@ -6,8 +6,9 @@
 #include "queue.h"
 
 typedef struct sorter {
-  queue *queues; // Holds array of queues (one per item type / flipper)
-  int num_types; // Length of queues array
+  queue *queues;  // Holds array of queues (one per item type / flipper)
+  int num_types;  // Length of queues array
+  int queue_size; // Max number of items in each queue
 } sorter;
 
 // Add item type prediction from CNN when first IR sensor detects an object
@@ -21,6 +22,6 @@ bool sorter__detected_item(sorter *s, int flipper);
 
 void sorter__print(sorter *s);
 
-sorter Sorter(int num_types);
+sorter Sorter(int num_types, int queue_size);
 
 #endif // SCRAPSORT_INTEGRATION_SORTER_H

@@ -29,7 +29,7 @@ int error;
 //I2C callback function
 void I2C_Callback(mxc_i2c_req_t* req, int error)
 {
-    printf("in callback\n");
+    //printf("in callback\n");
     I2C_FLAG = error;
     return;
 }
@@ -91,7 +91,7 @@ int I2C_Init() {
     }
     
     if (error != E_NO_ERROR) {
-        printf("-->Failed master\n");
+        //printf("-->Failed master\n");
         return E_COMM_ERR;
     }
     else {

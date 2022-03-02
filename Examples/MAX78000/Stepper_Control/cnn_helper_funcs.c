@@ -47,9 +47,6 @@ static q15_t ml_softmax[NUM_CLASSES]; // softmax output data
 
 output_classes_t class_names[] = {CUP, TRAPEZOID, HEXAGON, CAN, BOTTLE, NONE};
 
-// gpios for capturing interrupt
-mxc_gpio_cfg_t trigger_gpio;
-volatile int triggered = 0;
 
 char buff[TFT_BUFF_SIZE];
 int font_1 = (int)&Arial12x12[0];
@@ -246,37 +243,3 @@ void show_cnn_output(cnn_output_t output)
 
 
 // ========================================================================================= //
-
-void init_trigger()
-{
-    trigger_gpio.port = MXC_GPIO2;
-    trigger_gpio.mask = MXC_GPIO_PIN_3;
-    trigger_gpio.pad = MXC_GPIO_PAD_PULL_UP; // HI by default
-    trigger_gpio.func = MXC_GPIO_FUNC_IN;
-    trigger_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
-
-    MXC_GPIO_Config(&trigger_gpio);
-    MXC_GPIO_RegisterCallback(&trigger_gpio, trigger_callback, NULL);
-    MXC_GPIO_IntConfig(&trigger_gpio, MXC_GPIO_INT_FALLING);
-    MXC_GPIO_EnableInt(MXC_GPIO2, MXC_GPIO_PIN_3);
-    NVIC_EnableIRQ(GPIO2_IRQn);
-}
-
-void trigger_callback()
-{
-  printf("TRIGGERED!\n");
-  triggered = 1;
-}
-
-int trigger_check()
-{
-  if(triggered == 1)
-  {
-      triggered = 0;
-      return 1;
-  }
-  else
-  {
-      return 0;
-  }
-}
