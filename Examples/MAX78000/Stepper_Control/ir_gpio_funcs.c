@@ -29,6 +29,7 @@ sorter scrappy;
 //volatile int pop_from_0 = 0;
 
 int last_motor_interrupt_0 = 0;
+int last_motor_interrupt_1 = 0;
 int last_camera_interrupt = 0;
 int systick_wait = 1000;
 flag_callback flag_callbacks[num_flags];
@@ -109,6 +110,16 @@ void ir_motor_handler_1(void* cbdata)
     //printf("3\n");
 
     //last_motor_interrupt_0 = global_counter;
+}
+
+void ir_motor_handler_1(void* cbdata) 
+{
+    if (global_counter - last_motor_interrupt_1 < systick_wait) return;
+    
+    set_flag(Flipper1);
+    //printf("2\n");
+
+    last_motor_interrupt_1 = global_counter;
 }
 
 // set up interrupts

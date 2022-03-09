@@ -17,6 +17,9 @@ extern sorter scrappy;
 #define IR_MOTOR_PORT_0      MXC_GPIO2
 #define IR_MOTOR_PIN_0       MXC_GPIO_PIN_3
 
+#define IR_MOTOR_PORT_1      MXC_GPIO2
+#define IR_MOTOR_PIN_1       MXC_GPIO_PIN_7
+
 
 
 #define MXC_GPIO_PORT_INTERRUPT_STATUS  MXC_GPIO2
