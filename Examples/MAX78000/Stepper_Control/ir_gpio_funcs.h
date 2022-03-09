@@ -1,3 +1,6 @@
+#ifndef IR_GPIO_FUNCS_H
+#define IR_GPIO_FUNCS_H
+
 #include "sorter.h"
 #include "flags.h"
 
@@ -21,12 +24,16 @@ extern sorter scrappy;
 
 void gpio_init(void);
 void ir_motor_handler_0(void* cbdata);
+void ir_motor_handler_1(void* cbdata);
 void ir_camera_handler(void* cbdata);
 
 // these functions get called by main when
 // the corresponding interrupt flag has been set
 void camera_handler();
 void flipper_0_handler();
+void flipper_1_handler();
 
 // checks all interrupt flags
 void check_all_callbacks();
+
+#endif

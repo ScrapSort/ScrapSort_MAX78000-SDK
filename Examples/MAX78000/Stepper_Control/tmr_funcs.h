@@ -1,3 +1,6 @@
+#ifndef TMR_FUNCS_H
+#define TMR_FUNCS_H
+
 // PWM
 #define OST_CLOCK_SOURCE    MXC_TMR_8K_CLK       // \ref mxc_tmr_clock_t
 #define PWM_CLOCK_SOURCE    MXC_TMR_32K_CLK      // \ref mxc_tmr_clock_t
@@ -32,3 +35,5 @@ void PB1Handler();
 
 void SysTick_Setup();
 void SysTick_Handler();
+
+#endif

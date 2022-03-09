@@ -115,6 +115,9 @@ void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer, int load_
   uint8_t ur,ug,ub;
   int8_t r,g,b;
 
+  uint8_t px1;
+  uint8_t px2;
+
   // Get the details of the image from the camera driver.
 	camera_get_image(&raw, &imgLen, &w, &h);
 
@@ -126,11 +129,13 @@ void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer, int load_
     {
       for(int j = 0; j < h; j++) // cols
       {
+        px1 = raw[2*(w*i+j)];
+        px2 = raw[2*(w*i+j)+1];
         // extract the RGB values
         // RGB565 normally:   RRRRRGGG GGGBBBBB --> 16 bits
-        ur = (raw[2*(w*i+j)] & 0b11111000);
-        ug = ((((raw[2*(w*i+j)] & 0b00000111)<<5) | ((raw[2*(w*i+j)+1] & 0b11100000)>>3)));
-        ub = (((raw[2*(w*i+j)+1] & 0b00011111))<<3);
+        ur = (px2 & 0b11111000);
+        ug = ((((px1 & 0b00000111)<<5) | ((px2 & 0b11100000)>>3)));
+        ub = (((px2 & 0b00011111))<<3);
 
         // convert from uint8_t to int8_t because CNN uses signed 8-bit data [-128, 127]
         r = ur-128;

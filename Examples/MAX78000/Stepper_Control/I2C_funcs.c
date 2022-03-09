@@ -131,7 +131,7 @@ int I2C_Broadcast_Message(int tx_len, int rx_len, int restart) {
 }
 
 int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
-    if (!slave_addr) return I2C_Broadcast_Message(tx_len, rx_len, restart);
+    //if (!slave_addr) return I2C_Broadcast_Message(tx_len, rx_len, restart);
 
     mxc_i2c_req_t reqMaster;
     reqMaster.i2c = I2C_MASTER;

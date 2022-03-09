@@ -68,6 +68,12 @@
 #include "cnn_helper_funcs.h"
 #include "camera_tft_funcs.h"
 
+//#define COLLECT_DATA
+
+#ifdef COLLECT_DATA
+#include "capture_button.h"
+#endif
+
 
 // *****************************************************************************
 int main()
@@ -79,7 +85,13 @@ int main()
     // set up the camera and LCD
     LCD_Camera_Setup();
 
+    #ifdef COLLECT_DATA
+    init_class_button();
+    init_capture_button();
+    #endif
+
     // init the CNN accelerator
+    #ifndef COLLECT_DATA
     startup_cnn();
 
     // SYSTICK
@@ -90,6 +102,7 @@ int main()
 
     // init the PWM & TMR
     PWMTimer();
+    
 
     // init I2C
     if (I2C_Init() != E_NO_ERROR) 
@@ -117,12 +130,28 @@ int main()
     {
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
-
+    #endif
    
     // ======================== Main Loop =========================
     while(1) 
     {
+        #ifndef COLLECT_DATA
         // keep checking for interrupt flags
         check_all_callbacks();
+        #endif
+        
+        #ifdef COLLECT_DATA
+        capture_camera_img();
+      
+        display_RGB565_img(56,96,NULL,false);
+        if(clicked() == 1)
+        {
+            capture();
+        }
+        if(switched() == 1)
+        {
+            switch_class();
+        }
+        #endif
     }
 }
