@@ -101,7 +101,7 @@ int main()
     gpio_init();
 
     // init the PWM & TMR
-    PWMTimer();
+    //PWMTimer();
     
 
     // init I2C

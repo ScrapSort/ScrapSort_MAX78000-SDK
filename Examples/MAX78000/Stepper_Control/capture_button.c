@@ -189,6 +189,7 @@ int switched()
 void button_isr(void* action)
 {
     capture_clicked = 1;
+    MXC_Delay(10000);
 }
 
 
@@ -197,6 +198,7 @@ void button_isr(void* action)
 void button_isr2(void* action)
 {
     class_clicked = 1;
+    MXC_Delay(10000);
 }
 
 // GPIO port 0 pin 2 is button 1 on the board

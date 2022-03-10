@@ -28,15 +28,22 @@ extern sorter scrappy;
 void gpio_init(void);
 void ir_motor_handler_0(void* cbdata);
 void ir_motor_handler_1(void* cbdata);
+void ir_motor_handler_2(void* cbdata);
 void ir_camera_handler(void* cbdata);
 
 // these functions get called by main when
 // the corresponding interrupt flag has been set
 void camera_handler();
+void close_handler();
 void flipper_0_handler();
 void flipper_1_handler();
+void flipper_2_handler();
 
 // checks all interrupt flags
 void check_all_callbacks();
+
+// timer stuff
+void expiration_handler();
+int init_arm_timer();
 
 #endif

@@ -15,6 +15,7 @@ typedef enum Flag
   Flipper4,
   Flipper5,
   Camera,
+  Close,
   num_flags
 } Flag;
 

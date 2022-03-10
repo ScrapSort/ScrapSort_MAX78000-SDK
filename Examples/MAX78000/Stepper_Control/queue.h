@@ -18,6 +18,7 @@ int queue__pop(queue *q);
 int queue__size(queue *q);
 bool queue__empty(queue *q);
 void queue__print(queue *q);
+int queue__peak(queue *q);
 
 queue Queue(int max_items);
 

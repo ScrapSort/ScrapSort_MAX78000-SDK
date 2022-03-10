@@ -21,10 +21,10 @@
 
 
 #include "cnn_helper_funcs.h"
-#include "geffen_timer_funcs.h"
 
 // sorter s = Sorter(5);
 sorter scrappy;
+queue expirations;
 //volatile int add_to_sorter = 0;
 //volatile int pop_from_0 = 0;
 
@@ -32,7 +32,13 @@ int last_motor_interrupt_0 = 0;
 int last_motor_interrupt_1 = 0;
 int last_camera_interrupt = 0;
 int systick_wait = 1000;
+uint8_t curr_stepper_idx;
+uint8_t next_stepper_idx;
 flag_callback flag_callbacks[num_flags];
+
+int exp_times[] = {0,0,0,0,0};
+
+bool is_first = true;
 
 /***** Functions *****/
 
@@ -55,12 +61,42 @@ void camera_handler()
     sorter__add_item(&scrappy, class_type);
 }
 
+// closes correpsonding arm
+void close_handler()
+{
+    //printf("close_handler\n");
+    // need to find current arm
+    target_tics(curr_stepper_idx, -11);
+}
+
 void flipper_0_handler()
 {
+    // check if the item passing is this stepper's class
     if (sorter__detected_item(&scrappy, 0)) { // same motor address as IR sensor address
-        target_tics(0, 30); 
-        MXC_Delay(450000);
-        target_tics(0, -11); 
+        // open the arm
+        target_tics(0, 30);
+
+        // add this arm to the expiration queue with the expiration time (500ms delay)
+        queue__push(&expirations, 0);
+        exp_times[0] = global_counter + 512;
+
+        // something needs to start the expiration timer, only execute if this is the first item placed
+        if(is_first)
+        {
+            printf("startup: 0\n");
+            // clear flag
+            is_first = false;
+            
+            // get the next deadline and set the expiration time
+            int next_deadline = exp_times[0]; // do we need to reset this?
+            MXC_TMR1->cnt = 512 - (next_deadline - global_counter);
+
+            // start the next timer
+            MXC_TMR_Start(MXC_TMR1);
+        }
+
+        // MXC_Delay(450000);
+        // target_tics(0, -11); 
     }
 
     //printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
@@ -69,10 +105,56 @@ void flipper_0_handler()
 void flipper_1_handler()
 {
     if (sorter__detected_item(&scrappy, 1)) { // same motor address as IR sensor address
-
         target_tics(1, 30); 
-        MXC_Delay(450000);
-        target_tics(1, -11); 
+        queue__push(&expirations, 1);
+        exp_times[1] = global_counter + 512;
+
+        // something needs to start the expiration timer, only execute if this is the first item placed
+        if(is_first)
+        {
+            printf("startup: 1\n");
+            // clear flag
+            is_first = false;
+            
+            // get the next deadline and set the expiration time
+            int next_deadline = exp_times[1]; // do we need to reset this?
+            MXC_TMR1->cnt = 512 - (next_deadline - global_counter);
+
+            // start the next timer
+            MXC_TMR_Start(MXC_TMR1);
+        }
+
+        // MXC_Delay(450000);
+        // target_tics(1, -17); 
+    }
+
+    //printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
+}
+
+void flipper_2_handler()
+{
+    if (sorter__detected_item(&scrappy, 2)) { // same motor address as IR sensor address
+        target_tics(2, 30); 
+        queue__push(&expirations, 2);
+        exp_times[2] = global_counter + 512;
+
+        // something needs to start the expiration timer, only execute if this is the first item placed
+        if(is_first)
+        {
+            printf("startup: 2\n");
+            // clear flag
+            is_first = false;
+            
+            // get the next deadline and set the expiration time
+            int next_deadline = exp_times[2]; // do we need to reset this?
+            MXC_TMR1->cnt = 512 - (next_deadline - global_counter);
+
+            // start the next timer
+            MXC_TMR_Start(MXC_TMR1);
+        }
+
+        // MXC_Delay(450000);
+        // target_tics(2, -17); 
     }
 
     //printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
@@ -85,7 +167,7 @@ void ir_camera_handler(void* cbdata)
     //if (global_counter - last_camera_interrupt < systick_wait) return;
     
     set_flag(Camera);
-    printf("1\n");
+    //printf("1\n");
 
     //last_camera_interrupt = global_counter;
 
@@ -112,20 +194,31 @@ void ir_motor_handler_1(void* cbdata)
     //last_motor_interrupt_0 = global_counter;
 }
 
-void ir_motor_handler_1(void* cbdata) 
+void ir_motor_handler_2(void* cbdata) 
 {
-    if (global_counter - last_motor_interrupt_1 < systick_wait) return;
+    //if (global_counter - last_motor_interrupt_0 < systick_wait) return;
     
-    set_flag(Flipper1);
-    //printf("2\n");
+    set_flag(Flipper2);
+    //printf("4\n");
 
-    last_motor_interrupt_1 = global_counter;
+    //last_motor_interrupt_0 = global_counter;
 }
 
 // set up interrupts
 void gpio_init(void) {
 
-    scrappy = Sorter(6,5);
+    // sorting queues
+    scrappy = Sorter(7,7);
+
+    // timer expiration queue for closing arm
+    expirations = Queue(10);
+
+    // initialize the timer
+    init_arm_timer();
+
+    // callback for closing the arm
+    flag_callbacks[Close] = close_handler;
+    
     //sorter__add_item(&scrappy, 1);
     //sorter__add_item(&scrappy, 1);
 
@@ -174,9 +267,25 @@ void gpio_init(void) {
     MXC_GPIO_RegisterCallback(&flipper1_interrupt, ir_motor_handler_1, &scrappy);
     MXC_GPIO_IntConfig(&flipper1_interrupt, MXC_GPIO_INT_FALLING);
     MXC_GPIO_EnableInt(flipper1_interrupt.port, flipper1_interrupt.mask);
-    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO_PORT_2)));
+    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO2)));
     //printf("Motor IR Priority: %u\n", NVIC_GetPriority(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_MOTOR_PORT_0))));
     flag_callbacks[Flipper1] = flipper_1_handler;
+
+
+    mxc_gpio_cfg_t flipper2_interrupt;
+
+    flipper2_interrupt.port = MXC_GPIO1;
+    flipper2_interrupt.mask = MXC_GPIO_PIN_1;
+    flipper2_interrupt.pad = MXC_GPIO_PAD_PULL_UP;
+    flipper2_interrupt.func = MXC_GPIO_FUNC_IN;
+    flipper2_interrupt.vssel = MXC_GPIO_VSSEL_VDDIOH;
+    MXC_GPIO_Config(&flipper2_interrupt);
+    MXC_GPIO_RegisterCallback(&flipper2_interrupt, ir_motor_handler_2, &scrappy);
+    MXC_GPIO_IntConfig(&flipper2_interrupt, MXC_GPIO_INT_FALLING);
+    MXC_GPIO_EnableInt(flipper2_interrupt.port, flipper2_interrupt.mask);
+    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO1)));
+    //printf("Motor IR Priority: %u\n", NVIC_GetPriority(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(IR_MOTOR_PORT_0))));
+    flag_callbacks[Flipper2] = flipper_2_handler;
 }
 
 void check_all_callbacks()
@@ -198,41 +307,58 @@ void check_all_callbacks()
 // Global variables
 mxc_tmr_cfg_t tmr;
 volatile int timer_period = 0;
-volatile int current_seconds_count = 0;
+volatile int current_periods_count = 0;
 
-void expiration_handler(flag_callback cb_func)
+
+// timer expired
+void expiration_handler()
 {
-    // Clear interrupt
+    //printf("expired\n");
+    // Clear interrupt, stop timer
     MXC_TMR_ClearFlags(MXC_TMR1);
+    MXC_TMR_Stop(MXC_TMR1);
     
-    // increments a second
-    current_seconds_count += 1;
+    // get next item on the queue, says which stepper needs to close
+    curr_stepper_idx = queue__pop(&expirations);
+    //printf("curr:%i\n",curr_stepper_idx);
 
-    // check if expired
-    if(current_seconds_count >= timer_period)
+    // set up the next timer interrupt by looking at the next item on the queue
+    int next_stepper = queue__peak(&expirations);
+
+    // if there is no next item, we need to reset
+    if(next_stepper == -1)
     {
-        current_seconds_count = 0;
-        stop_state_timer();
-        set_flag(Flipper1);
+        printf("queue empty: reset\n");
+        is_first = true;
     }
+    else // there is a next item waiting
+    {
+        printf("next: %i\n",next_stepper);
+        int next_deadline = exp_times[next_stepper];
+
+        // set the next deadline
+        MXC_TMR1->cnt = 512 - (next_deadline - global_counter);
+
+        // start the next timer
+        MXC_TMR_Start(MXC_TMR1);
+    }
+    // close the current arm
+    set_flag(Close); 
 }
 
-int init_state_timer(int expiration_period, flag_callback cb_func)
+int init_arm_timer()
 {
-    // init timer variables
-    timer_period = expiration_period;
-
     // setup the interrupt for timer 0
     NVIC_SetVector(TMR1_IRQn, expiration_handler);
     NVIC_EnableIRQ(TMR1_IRQn);
 
-    // init timer 0 to interrupt every 1s (32KHz clock with prescaler 32 and count compare 1024)
+    // init timer 0 to interrupt every expiration period 500 ms (32KHz clock with prescaler 32 and count compare 1024)
     MXC_TMR_Shutdown(MXC_TMR1);
-    tmr.pres = TMR_PRES_32;
+    tmr.pres = TMR_PRES_32; // counts every 1/1024 seconds
     tmr.mode = TMR_MODE_CONTINUOUS;
     tmr.bitMode = TMR_BIT_MODE_32;
     tmr.clock = MXC_TMR_32K_CLK;
-    tmr.cmp_cnt = 1024;
+    tmr.cmp_cnt = 512; //expiration_period*1024/1000; // approximation, can only get exact for multiples of 2
     tmr.pol = 0;
     
     // init the timer
@@ -246,38 +372,5 @@ int init_state_timer(int expiration_period, flag_callback cb_func)
     MXC_TMR_EnableInt(MXC_TMR1);
 
     printf("State timer initialized.\n\n");
-    flag_callbacks[Flipper1] = flipper_1_handler;
     return 0;
-}
-
-void set_expiration_period(int expiration_period)
-{
-    timer_period = expiration_period;
-}
-
-int get_expiration_period()
-{
-    return timer_period;
-}
-
-int get_state_time_left()
-{
-    return (timer_period - current_seconds_count);
-}
-
-void reset_state_timer()
-{
-    MXC_TMR_Stop(MXC_TMR1);
-    current_seconds_count = 0;
-    MXC_TMR1->cnt = 1; // this is the reset value for the timer count
-}
-
-void start_state_timer()
-{
-    MXC_TMR_Start(MXC_TMR1);
-}
-
-void stop_state_timer()
-{
-    MXC_TMR_Stop(MXC_TMR1);
 }

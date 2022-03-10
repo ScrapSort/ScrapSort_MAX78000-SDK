@@ -36,6 +36,14 @@ void queue__print(queue *q) {
   printf(" ]\n");
 }
 
+int queue__peak(queue *q)
+{
+  if(!q->num_items){
+    return -1;
+  }
+  return q->items[q->consume];
+}
+
 queue Queue(int max_items) {
   queue q;
 
