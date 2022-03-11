@@ -284,7 +284,7 @@ void expiration_handler()
     }
     else // there is a next item waiting
     {
-        int next_deadline = exp_times[next_stepper];
+        uint32_t next_deadline = exp_times[next_stepper];
         printf("next tmr start: %i, exp in %ims\n",next_stepper, next_deadline - global_counter);
         printf("next deadline: %i, global cntr: %i\n", next_deadline, global_counter);
 
