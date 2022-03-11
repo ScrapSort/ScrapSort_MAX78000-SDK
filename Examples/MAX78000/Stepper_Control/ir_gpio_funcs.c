@@ -48,6 +48,7 @@ bool is_first = true;
 
 void camera_handler()
 {
+    printf("Camera_handler\n");
     static cnn_output_t output;
 
     // call camera take picture
@@ -67,7 +68,8 @@ void close_handler()
 {
     //printf("close_handler\n");
     // need to find current arm
-    target_tics(curr_stepper_idx, -11);
+    printf("Close Arm:%d\n --------------\n",curr_stepper_idx);
+    target_tics(curr_stepper_idx, 0);
 }
 
 void flipper_callback(uint8_t flipperNum){
@@ -75,6 +77,7 @@ void flipper_callback(uint8_t flipperNum){
     if (sorter__detected_item(&scrappy, flipperNum)) { // same motor address as IR sensor address
         // open the arm
         target_tics(flipperNum, 30);
+        printf("Open Arm:%d\n",flipperNum);
 
         // add this arm to the expiration queue with the expiration time (500ms delay)
         queue__push(&expirations, flipperNum);
@@ -83,7 +86,7 @@ void flipper_callback(uint8_t flipperNum){
         // something needs to start the expiration timer, only execute if this is the first item placed
         if(is_first)
         {
-            printf("startup: %d\n", flipperNum);
+            printf("startup timer: %d\n", flipperNum);
             // clear flag
             is_first = false;
             
@@ -200,7 +203,7 @@ void ir_camera_handler(void* cbdata)
     //if (global_counter - last_camera_interrupt < systick_wait) return;
     
     set_flag(CAMERA);
-    //printf("1\n");
+    //printf("cam\n");
 
     //last_camera_interrupt = global_counter;
 
@@ -212,7 +215,7 @@ void ir_motor_handler_0(void* cbdata)
     //if (global_counter - last_motor_interrupt_0 < systick_wait) return;
     
     set_flag(FLIPPER_0);
-    //printf("2\n");
+    //printf("f0\n");
 
     //last_motor_interrupt_0 = global_counter;
 }
@@ -222,7 +225,7 @@ void ir_motor_handler_1(void* cbdata)
     //if (global_counter - last_motor_interrupt_0 < systick_wait) return;
     
     set_flag(FLIPPER_1);
-    //printf("3\n");
+    //printf("f1\n");
 
     //last_motor_interrupt_0 = global_counter;
 }
@@ -232,7 +235,7 @@ void ir_motor_handler_2(void* cbdata)
     //if (global_counter - last_motor_interrupt_0 < systick_wait) return;
     
     set_flag(FLIPPER_2);
-    //printf("4\n");
+    //printf("f2\n");
 
     //last_motor_interrupt_0 = global_counter;
 }
@@ -351,13 +354,13 @@ volatile int current_periods_count = 0;
 // timer expired
 void expiration_handler()
 {
-    //printf("expired\n");
     // Clear interrupt, stop timer
     MXC_TMR_ClearFlags(MXC_TMR1);
     MXC_TMR_Stop(MXC_TMR1);
     
     // get next item on the queue, says which stepper needs to close
     curr_stepper_idx = queue__pop(&expirations);
+    printf("timer expired: %i\n", curr_stepper_idx);
     //printf("curr:%i\n",curr_stepper_idx);
 
     // set up the next timer interrupt by looking at the next item on the queue
@@ -371,7 +374,7 @@ void expiration_handler()
     }
     else // there is a next item waiting
     {
-        printf("next: %i\n",next_stepper);
+        printf("next timer start: %i\n",next_stepper);
         int next_deadline = exp_times[next_stepper];
 
         // set the next deadline
