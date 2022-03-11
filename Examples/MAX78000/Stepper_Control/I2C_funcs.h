@@ -14,7 +14,7 @@ extern uint8_t txdata[I2C_BYTES]; //was static
 extern uint8_t rxdata[I2C_BYTES]; //was static 
 
 void I2C_Callback(mxc_i2c_req_t* req, int error);
-void fill_tx_32b(uint32_t step_speed);
+void fill_tx_32b(uint32_t num);
 void printTransaction(int slave_addr, int tx_len, int rx_len);
 void printData(void);
 int I2C_Init();
