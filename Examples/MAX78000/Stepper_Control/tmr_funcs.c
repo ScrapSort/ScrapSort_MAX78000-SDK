@@ -147,7 +147,7 @@ void SysTick_Setup() {
     NVIC_SetVector(SysTick_IRQn, SysTick_Handler);
     NVIC_EnableIRQ(SysTick_IRQn);
 
-    SysTick_Config(SystemCoreClock/100000);
+    SysTick_Config(SystemCoreClock/1000);
 }
 
 void SysTick_Handler() {
