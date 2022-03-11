@@ -34,12 +34,12 @@ void I2C_Callback(mxc_i2c_req_t* req, int error)
     return;
 }
 
-void fill_tx_32b(uint32_t step_speed) {
+void fill_tx_32b(uint32_t num) {
     // leave [0] to be filled separately with command hex
-    txdata[1] = step_speed & 0xFF;
-    txdata[2] = (step_speed & 0xFF00) >> 8;
-    txdata[3] = (step_speed & 0xFF0000) >> 16;
-    txdata[4] = (step_speed & 0xFF000000) >> 24;
+    txdata[1] = num & 0xFF;
+    txdata[2] = (num & 0xFF00) >> 8;
+    txdata[3] = (num & 0xFF0000) >> 16;
+    txdata[4] = (num & 0xFF000000) >> 24;
 }
 
 void printTransaction(int slave_addr, int tx_len, int rx_len) {

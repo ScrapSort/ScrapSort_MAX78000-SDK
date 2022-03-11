@@ -13,7 +13,7 @@
 // personal
 #include "motor_funcs.h"
 #include "I2C_funcs.h"
-
+#include "tic.h"
 
 void Debug_Motors(void) {
     // PRINT OUT STATUS/ERROR VARS FOR DEBUG
@@ -61,6 +61,42 @@ void Debug_Motors(void) {
 
         
     }
+}
+
+
+
+void deenergize(uint8_t slave_addr){
+    txdata[0] = TicCommand__Deenergize;
+    I2C_Send_Message(slave_addr, 1, 0, 0);
+}
+
+void energize(uint8_t slave_addr){
+    txdata[0] = TicCommand__Energize;
+    I2C_Send_Message(slave_addr, 1, 0, 0);
+}
+
+void set_target_velocity(){
+    //TODO
+}
+
+void set_accel_max(){
+    //TODO
+}
+
+void set_decel_max(){
+    //TODO
+}
+
+void set_step_mode(){
+    //TODO
+}
+
+void set_current_limit(){
+    //TODO
+}
+
+void set_decay_mode(){
+    //TODO
 }
 
 void rotate_revs(int slave_addr, float rotations) {

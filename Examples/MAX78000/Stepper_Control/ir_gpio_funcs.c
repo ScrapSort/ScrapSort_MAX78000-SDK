@@ -24,7 +24,7 @@
 
 // sorter s = Sorter(5);
 sorter scrappy;
-queue expirations;
+volatile queue expirations;
 //volatile int add_to_sorter = 0;
 //volatile int pop_from_0 = 0;
 
@@ -32,12 +32,12 @@ int last_motor_interrupt_0 = 0;
 int last_motor_interrupt_1 = 0;
 int last_camera_interrupt = 0;
 int systick_wait = 1000;
-uint8_t curr_stepper_idx;
-uint8_t next_stepper_idx;
+volatile uint8_t curr_stepper_idx;
+volatile uint8_t next_stepper_idx;
 flag_callback flag_callback_funcs[NUM_FLAGS];
 uint8_t flag_callback_params[NUM_FLAGS] = {0};
 
-int exp_times[] = {0,0,0,0,0};
+volatile int exp_times[] = {0,0,0,0,0};
 
 bool is_first = true;
 
@@ -66,22 +66,24 @@ void camera_handler()
 // closes correpsonding arm
 void close_handler()
 {
-    //printf("close_handler\n");
+    printf("close_handler\n");
     // need to find current arm
-    printf("Close Arm:%d\n --------------\n",curr_stepper_idx);
     target_tics(curr_stepper_idx, 0);
+    //deenergize(curr_stepper_idx);
 }
 
 void flipper_callback(uint8_t flipperNum){
     // check if the item passing is this stepper's class
     if (sorter__detected_item(&scrappy, flipperNum)) { // same motor address as IR sensor address
         // open the arm
+        energize(flipperNum);
         target_tics(flipperNum, 30);
         printf("Open Arm:%d\n",flipperNum);
 
         // add this arm to the expiration queue with the expiration time (500ms delay)
         queue__push(&expirations, flipperNum);
-        exp_times[flipperNum] = global_counter + 512;
+        exp_times[flipperNum] = global_counter + 1024;
+        printf("exp time added: %i\n", exp_times[flipperNum]);
 
         // something needs to start the expiration timer, only execute if this is the first item placed
         if(is_first)
@@ -92,7 +94,7 @@ void flipper_callback(uint8_t flipperNum){
             
             // get the next deadline and set the expiration time
             int next_deadline = exp_times[flipperNum]; // do we need to reset this?
-            MXC_TMR1->cnt = 512 - (next_deadline - global_counter);
+            MXC_TMR1->cnt = 1024 - (next_deadline - global_counter);
 
             // start the next timer
             MXC_TMR_Start(MXC_TMR1);
@@ -104,98 +106,6 @@ void flipper_callback(uint8_t flipperNum){
 
     //printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
 }
-
-// void flipper_0_handler()
-// {
-//     // check if the item passing is this stepper's class
-//     if (sorter__detected_item(&scrappy, 0)) { // same motor address as IR sensor address
-//         // open the arm
-//         target_tics(0, 30);
-
-//         // add this arm to the expiration queue with the expiration time (500ms delay)
-//         queue__push(&expirations, 0);
-//         exp_times[0] = global_counter + 512;
-
-//         // something needs to start the expiration timer, only execute if this is the first item placed
-//         if(is_first)
-//         {
-//             printf("startup: 0\n");
-//             // clear flag
-//             is_first = false;
-            
-//             // get the next deadline and set the expiration time
-//             int next_deadline = exp_times[0]; // do we need to reset this?
-//             MXC_TMR1->cnt = 512 - (next_deadline - global_counter);
-
-//             // start the next timer
-//             MXC_TMR_Start(MXC_TMR1);
-//         }
-
-//         // MXC_Delay(450000);
-//         // target_tics(0, -11); 
-//     }
-
-//     //printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
-// }
-
-// void flipper_1_handler()
-// {
-//     if (sorter__detected_item(&scrappy, 1)) { // same motor address as IR sensor address
-//         target_tics(1, 30); 
-//         queue__push(&expirations, 1);
-//         exp_times[1] = global_counter + 512;
-
-//         // something needs to start the expiration timer, only execute if this is the first item placed
-//         if(is_first)
-//         {
-//             printf("startup: 1\n");
-//             // clear flag
-//             is_first = false;
-            
-//             // get the next deadline and set the expiration time
-//             int next_deadline = exp_times[1]; // do we need to reset this?
-//             MXC_TMR1->cnt = 512 - (next_deadline - global_counter);
-
-//             // start the next timer
-//             MXC_TMR_Start(MXC_TMR1);
-//         }
-
-//         // MXC_Delay(450000);
-//         // target_tics(1, -17); 
-//     }
-
-//     //printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
-// }
-
-// void flipper_2_handler()
-// {
-//     if (sorter__detected_item(&scrappy, 2)) { // same motor address as IR sensor address
-//         target_tics(2, 30); 
-//         queue__push(&expirations, 2);
-//         exp_times[2] = global_counter + 512;
-
-//         // something needs to start the expiration timer, only execute if this is the first item placed
-//         if(is_first)
-//         {
-//             printf("startup: 2\n");
-//             // clear flag
-//             is_first = false;
-            
-//             // get the next deadline and set the expiration time
-//             int next_deadline = exp_times[2]; // do we need to reset this?
-//             MXC_TMR1->cnt = 512 - (next_deadline - global_counter);
-
-//             // start the next timer
-//             MXC_TMR_Start(MXC_TMR1);
-//         }
-
-//         // MXC_Delay(450000);
-//         // target_tics(2, -17); 
-//     }
-
-//     //printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
-// }
-
 // ======================= Interrupt Handlers =====================
 
 void ir_camera_handler(void* cbdata) 
@@ -379,7 +289,7 @@ void expiration_handler()
         printf("next deadline: %i, global cntr: %i\n", next_deadline, global_counter);
 
         // set the next deadline
-        MXC_TMR1->cnt = 512 - (next_deadline - global_counter);
+        MXC_TMR1->cnt = 1024 - (next_deadline - global_counter);
 
         // start the next timer
         MXC_TMR_Start(MXC_TMR1);
@@ -400,7 +310,7 @@ int init_arm_timer()
     tmr.mode = TMR_MODE_CONTINUOUS;
     tmr.bitMode = TMR_BIT_MODE_32;
     tmr.clock = MXC_TMR_32K_CLK;
-    tmr.cmp_cnt = 512; //expiration_period*1024/1000; // approximation, can only get exact for multiples of 2
+    tmr.cmp_cnt = 1024; //expiration_period*1024/1000; // approximation, can only get exact for multiples of 2
     tmr.pol = 0;
     
     // init the timer
