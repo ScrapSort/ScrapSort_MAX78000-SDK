@@ -48,7 +48,7 @@ bool is_first = true;
 
 void camera_handler()
 {
-    printf("Camera_handler\n");
+    printf("Cam handler\n");
     static cnn_output_t output;
 
     // call camera take picture
@@ -86,7 +86,7 @@ void flipper_callback(uint8_t flipperNum){
         // something needs to start the expiration timer, only execute if this is the first item placed
         if(is_first)
         {
-            printf("startup timer: %d\n", flipperNum);
+            printf("start tmr: %d\n", flipperNum);
             // clear flag
             is_first = false;
             
@@ -360,7 +360,7 @@ void expiration_handler()
     
     // get next item on the queue, says which stepper needs to close
     curr_stepper_idx = queue__pop(&expirations);
-    printf("timer expired: %i\n", curr_stepper_idx);
+    printf("tmr exp: %i\n", curr_stepper_idx);
     //printf("curr:%i\n",curr_stepper_idx);
 
     // set up the next timer interrupt by looking at the next item on the queue
@@ -369,13 +369,14 @@ void expiration_handler()
     // if there is no next item, we need to reset
     if(next_stepper == -1)
     {
-        printf("queue empty: reset\n");
+        printf("q empty, rst\n");
         is_first = true;
     }
     else // there is a next item waiting
     {
-        printf("next timer start: %i\n",next_stepper);
         int next_deadline = exp_times[next_stepper];
+        printf("next tmr start: %i, exp in %ims\n",next_stepper, next_deadline - global_counter);
+        printf("next deadline: %i, global cntr: %i\n", next_deadline, global_counter);
 
         // set the next deadline
         MXC_TMR1->cnt = 512 - (next_deadline - global_counter);
