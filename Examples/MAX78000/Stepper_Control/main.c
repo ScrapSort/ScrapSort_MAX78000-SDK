@@ -90,12 +90,12 @@ int main()
     init_capture_button();
     #endif
 
+    // SYSTICK
+    SysTick_Setup();
+
     // init the CNN accelerator
     #ifndef COLLECT_DATA
     startup_cnn();
-
-    // SYSTICK
-    SysTick_Setup();
 
     // init the IR GPIOs
     gpio_init();

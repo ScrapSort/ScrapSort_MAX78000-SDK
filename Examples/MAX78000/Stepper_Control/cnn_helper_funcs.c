@@ -132,7 +132,7 @@ cnn_output_t* run_cnn()
       digs = (1000 * ml_softmax[i] + 0x4000) >> 15;
       tens = digs % 10; // get the fractional part
       digs = digs / 10; // get the integer part
-      //printf("[%7d] -> Class %d: %d.%d%%\n", ml_data[i], i, digs, tens);
+      printf("[%7d] -> Class %d: %d.%d%%\n", ml_data[i], i, digs, tens);
       // keep track of the max class
       if(digs > max)
       {
@@ -146,7 +146,7 @@ cnn_output_t* run_cnn()
     output.w = ml_data[8]/33000;
     output.h = ml_data[9]/33000;
     //printf("x: %i\ny: %i\nw: %i\nh: %i\n",output.x,output.y,output.w,output.h);
-    // printf("\033[0;0f");
+    printf("\033[0;0f");
     // Disable CNN clock to save power
     cnn_stop();
     MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_CNN);
@@ -233,10 +233,10 @@ void show_cnn_output(cnn_output_t output)
       right.x += SCREEN_X;
 
       // draw the box
-      MXC_TFT_FillRect(&top, BB_COLOR);
-      MXC_TFT_FillRect(&bottom, BB_COLOR);
-      MXC_TFT_FillRect(&left, BB_COLOR);
-      MXC_TFT_FillRect(&right, BB_COLOR);
+      // MXC_TFT_FillRect(&top, BB_COLOR);
+      // MXC_TFT_FillRect(&bottom, BB_COLOR);
+      // MXC_TFT_FillRect(&left, BB_COLOR);
+      // MXC_TFT_FillRect(&right, BB_COLOR);
     }
     // printf("\033[0;0f");
 }

@@ -133,7 +133,7 @@ void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer, int load_
         px2 = raw[2*(w*i+j)+1];
         // extract the RGB values
         // RGB565 normally:   RRRRRGGG GGGBBBBB --> 16 bits
-        ur = (px2 & 0b11111000);
+        ur = (px1 & 0b11111000);
         ug = ((((px1 & 0b00000111)<<5) | ((px2 & 0b11100000)>>3)));
         ub = (((px2 & 0b00011111))<<3);
 

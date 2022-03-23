@@ -292,7 +292,7 @@ int write_image(TCHAR* file_name)
     }
     
     //printf("file size: %d\n",f_size(&file));
-    printf("File Closed!\n");
+    printf("File Closed!\n------------------\n");
 
     return err;
 
@@ -419,7 +419,7 @@ int createFile()
         return err;
     }
     
-    printf("File Closed!\n");
+    printf("File Closed!\n-------------\n");
     return err;
 }
 

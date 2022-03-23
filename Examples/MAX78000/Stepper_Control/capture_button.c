@@ -6,6 +6,7 @@
 #include "sd_card_funcs.h"
 #include "tft_fthr.h"
 #include "camera.h"
+#include "tmr_funcs.h"
 
 #define TFT_BUFF_SIZE   50    // TFT buffer size
 #define QUIT_IDX 7
@@ -19,6 +20,8 @@ mxc_gpio_cfg_t capture_gpio;
 mxc_gpio_cfg_t cd_gpio;
 volatile int capture_clicked = 0;
 volatile int class_clicked = 0;
+volatile int last_capture_interrupt = 0;
+volatile int tick_wait = 1500;
 
 // dummy variable
 char a = 'a';
@@ -188,8 +191,13 @@ int switched()
 // that gets called when the capture button press is triggered.
 void button_isr(void* action)
 {
+    //printf("global_counter: %i\n",global_counter);
+    if (global_counter - last_capture_interrupt < tick_wait) return;
+
     capture_clicked = 1;
-    MXC_Delay(10000);
+
+    last_capture_interrupt = global_counter;
+    //MXC_Delay(10000);
 }
 
 
@@ -198,7 +206,8 @@ void button_isr(void* action)
 void button_isr2(void* action)
 {
     class_clicked = 1;
-    MXC_Delay(10000);
+    //MXC_Delay(10000);
+    //printf("interrupt =======================\n");
 }
 
 // GPIO port 0 pin 2 is button 1 on the board

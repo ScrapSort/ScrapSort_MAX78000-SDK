@@ -6,7 +6,7 @@
 **************************************************************************************************/
 
 /*
- * This header file was automatically generated for the simplesortbnbbl1 network from a template.
+ * This header file was automatically generated for the simplesortbnbbl13 network from a template.
  * Please do not edit; instead, edit the template and regenerate.
  */
 
