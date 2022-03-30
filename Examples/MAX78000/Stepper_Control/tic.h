@@ -29,17 +29,17 @@ typedef enum TicCommand
 
 typedef enum TicStepMode
 {
-  Full    = 0,
-  Half    = 1,
+  TicStepMode__Full    = (uint8_t)0,
+  TicStepMode__Half    = (uint8_t)1,
 
-  TicStepMode__Microstep1  = 0,
-  TicStepMode__Microstep2  = 1,
-  TicStepMode__Microstep4  = 2,
-  TicStepMode__Microstep8  = 3,
-  TicStepMode__Microstep16 = 4,
-  TicStepMode__Microstep32 = 5,
-  TicStepMode__Microstep2__100p = 6,
-  TicStepMode__Microstep64 = 7,
-  TicStepMode__Microstep128 = 8,
-  TicStepMode__Microstep256 = 9,
+  TicStepMode__Microstep1  = (uint8_t)0,
+  TicStepMode__Microstep2  = (uint8_t)1,
+  TicStepMode__Microstep4  = (uint8_t)2,
+  TicStepMode__Microstep8  = (uint8_t)3,
+  TicStepMode__Microstep16 = (uint8_t)4,
+  TicStepMode__Microstep32 = (uint8_t)5,
+  TicStepMode__Microstep2__100p = (uint8_t)6,
+  TicStepMode__Microstep64 = (uint8_t)7,
+  TicStepMode__Microstep128 = (uint8_t)8,
+  TicStepMode__Microstep256 = (uint8_t)9,
 }TicStepMode;

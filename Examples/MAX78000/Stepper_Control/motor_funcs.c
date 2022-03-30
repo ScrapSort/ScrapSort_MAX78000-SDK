@@ -64,6 +64,36 @@ void Debug_Motors(void) {
 }
 
 
+void set_motor_profile(uint8_t slave_addr, MOTOR_PROFILE profile){
+    uint32_t profile_accel_max, profile_decel_max, profile_speed_max, profile_speed_start;
+    uint8_t profile_step_mode; 
+
+    if(profile==MOTOR_PROFILE_TORQUE){
+        profile_accel_max = 200*100;
+        profile_decel_max = profile_accel_max;
+        profile_speed_max = 400*10000;
+        // profile_speed_max = 900*10000;
+        profile_speed_start = 0;
+        profile_step_mode = TicStepMode__Full;
+    }
+    else if(profile == MOTOR_PROFILE_SPEED){
+        profile_accel_max = 5000*100;
+        profile_decel_max = profile_accel_max;
+        profile_speed_max = 2000*10000;
+        profile_speed_start = 0;
+        profile_step_mode = TicStepMode__Full;
+    }
+    else{
+        printf("Invalid Motor Profile Set");
+        return;
+    }
+
+    set_accel_max(slave_addr, profile_accel_max);
+    set_decel_max(slave_addr, profile_decel_max);
+    set_speed_max(slave_addr, profile_speed_max);
+    set_speed_start(slave_addr, profile_speed_start);
+    set_step_mode(slave_addr, profile_step_mode);
+}
 
 void deenergize(uint8_t slave_addr){
     txdata[0] = TicCommand__Deenergize;
@@ -81,33 +111,45 @@ void set_target_velocity(uint8_t slave_addr, uint32_t target_velocity){
     I2C_Send_Message(slave_addr, 5, 0, 0);
 }
 
+void set_speed_max(uint8_t slave_addr, uint32_t speed_max){
+    txdata[0] = TicCommand__SetSpeedMax;
+    fill_tx_32b(speed_max);
+    I2C_Send_Message(slave_addr, 5, 0, 0);
+}
+
+void set_speed_start(uint8_t slave_addr, uint32_t speed_start){
+    txdata[0] = TicCommand__SetStartingSpeed;
+    fill_tx_32b(speed_start);
+    I2C_Send_Message(slave_addr, 5, 0, 0);
+}
+
 void set_accel_max(uint8_t slave_addr, uint32_t accel_max){
     txdata[0] = TicCommand__SetAccelMax;
-    fill_tx_32b(target_velocity);
+    fill_tx_32b(accel_max);
     I2C_Send_Message(slave_addr, 5, 0, 0);
 }
 
 void set_decel_max(uint8_t slave_addr, uint32_t decel_max){
     txdata[0] = TicCommand__SetDecelMax;
-    fill_tx_32b(target_velocity);
+    fill_tx_32b(decel_max);
     I2C_Send_Message(slave_addr, 5, 0, 0);
 }
 
 void set_step_mode(uint8_t slave_addr, uint8_t step_mode){
     txdata[0] = TicCommand__SetStepMode;
-    fill_tx_32b(target_velocity);
+    fill_tx_32b(step_mode);
     I2C_Send_Message(slave_addr, 5, 0, 0);
 }
 
 void set_current_limit(uint8_t slave_addr, uint8_t current_limit){
     txdata[0] = TicCommand__SetCurrentLimit;
-    fill_tx_32b(target_velocity);
+    fill_tx_32b(current_limit);
     I2C_Send_Message(slave_addr, 5, 0, 0);
 }
 
 void set_decay_mode(uint8_t slave_addr, uint8_t decay_mode){
     txdata[0] = TicCommand__SetDecayMode;
-    fill_tx_32b(target_velocity);
+    fill_tx_32b(decay_mode);
     I2C_Send_Message(slave_addr, 5, 0, 0);
 }
 
