@@ -27,7 +27,7 @@ volatile int tick_wait = 1500;
 char a = 'a';
 
 // class category names (directory names)
-char* classes[] = {"Cup", "Hex", "Trap", "Can","Bottle","Other","None"};
+char* classes[] = {"Cup", "Hex", "Trap", "Can","Paper","Other","None"};
 
 // number of images in each directory
 uint16_t img_amnts[] = {0,0,0,0,0,0,0};
@@ -44,13 +44,13 @@ area_t cover_text = {0, 280, 240, 30};
 char file_prefix[8] = "img0000";
 
 // file paths
-char class1[] = "sorting_imgs/Cup/num_imgs";
-char class2[] = "sorting_imgs/Hex/num_imgs";
-char class3[] = "sorting_imgs/Trap/num_imgs";
-char class4[] = "sorting_imgs/Can/num_imgs";
-char class5[] = "sorting_imgs/Bottle/num_imgs";
-char class6[] = "sorting_imgs/Other/num_imgs";
-char class7[] = "sorting_imgs/None/num_imgs";
+char class1[] = "sorting_imgs2/Cup/num_imgs";
+char class2[] = "sorting_imgs2/Hexagon/num_imgs";
+char class3[] = "sorting_imgs2/Trapezoid/num_imgs";
+char class4[] = "sorting_imgs2/Can/num_imgs";
+char class5[] = "sorting_imgs2/Paper/num_imgs";
+char class6[] = "sorting_imgs2/Other/num_imgs";
+char class7[] = "sorting_imgs2/None/num_imgs";
 
 // ========================================================================================= //
 // ================================ FUNCTION DEFINITIONS =================================== //
@@ -154,7 +154,7 @@ void capture()
     // go to the corresponding directory, save the image
     // mount the SD card
     mount();
-    cd("sorting_imgs");
+    cd("sorting_imgs2");
     cd(classes[class_idx]);
     write_image(file_prefix);
     reset();
@@ -241,16 +241,16 @@ void init_class_button()
     MXC_GPIO_EnableInt(MXC_GPIO2, MXC_GPIO_PIN_3);
     NVIC_EnableIRQ(GPIO2_IRQn);
 
-    cd("sorting_imgs");
+    cd("sorting_imgs2");
     ls();
     cd(classes[class_idx]);
     ls();
 
     get_num_from_file("../Cup/num_imgs",&img_amnts[0]);
-    get_num_from_file("../Hex/num_imgs",&img_amnts[1]);
-    get_num_from_file("../Trap/num_imgs",&img_amnts[2]);
+    get_num_from_file("../Hexagon/num_imgs",&img_amnts[1]);
+    get_num_from_file("../Trapezoid/num_imgs",&img_amnts[2]);
     get_num_from_file("../Can/num_imgs",&img_amnts[3]);
-    get_num_from_file("../Bottle/num_imgs",&img_amnts[4]);
+    get_num_from_file("../Paper/num_imgs",&img_amnts[4]);
     get_num_from_file("../Other/num_imgs",&img_amnts[5]);
     get_num_from_file("../None/num_imgs",&img_amnts[6]);
 

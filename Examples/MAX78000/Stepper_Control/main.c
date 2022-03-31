@@ -56,6 +56,7 @@
 #include "dma.h"
 #include "pb.h"
 #include "board.h"
+#include "mxc.h"
 
 
 // personal
@@ -69,6 +70,7 @@
 #include "camera_tft_funcs.h"
 
 //#define COLLECT_DATA
+#define STREAM_MODE
 
 #ifdef COLLECT_DATA
 #include "capture_button.h"
@@ -78,6 +80,8 @@
 // *****************************************************************************
 int main()
 {
+    MXC_ICC_Enable(MXC_ICC0); // Enable cache
+
     // Switch to 100 MHz clock
     MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
     SystemCoreClockUpdate();
@@ -86,24 +90,29 @@ int main()
     LCD_Camera_Setup();
 
     #ifdef COLLECT_DATA
+    init_card();
     init_class_button();
     init_capture_button();
     #endif
 
+    #ifndef STREAM_MODE
     // SYSTICK
     SysTick_Setup();
-
-    // init the CNN accelerator
+    #endif
+    
     #ifndef COLLECT_DATA
+    // init the CNN accelerator
     startup_cnn();
 
+    #ifndef STREAM_MODE
     // init the IR GPIOs
     gpio_init();
+    #endif
 
     // init the PWM & TMR
     //PWMTimer();
     
-
+    #ifndef STREAM_MODE
     // init I2C
     if (I2C_Init() != E_NO_ERROR) 
     {
@@ -131,13 +140,18 @@ int main()
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
     #endif
-   
+    #endif
+
+    cnn_output_t output;
+    
     // ======================== Main Loop =========================
     while(1) 
     {
         #ifndef COLLECT_DATA
+        #ifndef STREAM_MODE
         // keep checking for interrupt flags
         check_all_callbacks();
+        #endif
         #endif
         
         #ifdef COLLECT_DATA
@@ -152,6 +166,11 @@ int main()
         {
             switch_class();
         }
+        #endif
+
+        #ifdef STREAM_MODE
+        output = *run_cnn();
+        show_cnn_output(output);
         #endif
     }
 }

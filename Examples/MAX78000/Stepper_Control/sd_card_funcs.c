@@ -209,7 +209,7 @@ int init_card()
 
     printf("Initializing SD Card \n");
 
-    sprintf(directory,"sorting_imgs");
+    sprintf(directory,"sorting_imgs2");
     status = make_directory(directory);
     
     if(status < 0)
@@ -220,28 +220,38 @@ int init_card()
     else
     {
         // make directories for object categories
-        sprintf(directory,"sorting_imgs/Cup");
-        sprintf(filename,"sorting_imgs/Cup/num_imgs");
+        sprintf(directory,"sorting_imgs2/Cup");
+        sprintf(filename,"sorting_imgs2/Cup/num_imgs");
         make_directory(directory);
         create_file(filename);
 
-        sprintf(directory,"sorting_imgs/Hex");
-        sprintf(filename,"sorting_imgs/Hex/num_imgs");
+        sprintf(directory,"sorting_imgs2/Hexagon");
+        sprintf(filename,"sorting_imgs2/Hexagon/num_imgs");
         make_directory(directory);
         create_file(filename);
 
-        sprintf(directory,"sorting_imgs/Trap");
-        sprintf(filename,"sorting_imgs/Trap/num_imgs");
+        sprintf(directory,"sorting_imgs2/Trapezoid");
+        sprintf(filename,"sorting_imgs2/Trapezoid/num_imgs");
         make_directory(directory);
         create_file(filename);
 
-        sprintf(directory,"sorting_imgs/Can");
-        sprintf(filename,"sorting_imgs/Can/num_imgs");
+        sprintf(directory,"sorting_imgs2/Can");
+        sprintf(filename,"sorting_imgs2/Can/num_imgs");
         make_directory(directory);
         create_file(filename);
 
-        sprintf(directory,"sorting_imgs/Bottle");
-        sprintf(filename,"sorting_imgs/Bottle/num_imgs");
+        sprintf(directory,"sorting_imgs2/Paper");
+        sprintf(filename,"sorting_imgs2/Paper/num_imgs");
+        make_directory(directory);
+        create_file(filename);
+
+        sprintf(directory,"sorting_imgs2/Other");
+        sprintf(filename,"sorting_imgs2/Other/num_imgs");
+        make_directory(directory);
+        create_file(filename);
+
+        sprintf(directory,"sorting_imgs2/None");
+        sprintf(filename,"sorting_imgs2/None/num_imgs");
         make_directory(directory);
         create_file(filename);
     }
