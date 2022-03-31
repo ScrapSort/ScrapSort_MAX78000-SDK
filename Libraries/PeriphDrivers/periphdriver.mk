@@ -54,6 +54,7 @@ ifeq "$(MFLOAT_FLAGS)" "hard"
 LIBRARY_VARIANT=hardfp
 else
 LIBRARY_VARIANT=softfp
+$(info LIBRARY_VARIANT is $(LIBRARY_VARIANT))
 endif
 endif
 
@@ -93,6 +94,7 @@ export PERIPH_DRIVER_BUILD_DIR
 # Add to library list
 LIBS += ${PERIPH_DRIVER_BUILD_DIR}/${PERIPH_DRIVER_LIB}
 # Add rule to build the Driver Library
+$(info Reached peripheral driver rule)
 ${PERIPH_DRIVER_BUILD_DIR}/${PERIPH_DRIVER_LIB}: ${PERIPH_DRIVER_C_FILES} ${PERIPH_DRIVER_A_FILES} ${PERIPH_DRIVER_H_FILES}
 	$(MAKE) -f ${PERIPH_DRIVER_DIR}/libPeriphDriver.mk  lib BUILD_DIR=${PERIPH_DRIVER_BUILD_DIR} 
 

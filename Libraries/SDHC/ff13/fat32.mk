@@ -45,6 +45,7 @@ endif
 
 # Specify the build directory if not defined by the project
 ifeq "$(SDHC_DIR)" ""
+$(info Current Directory is $(CURDIR))
 FAT32_DRIVER_BUILD_DIR=$(CURDIR)/build/Fat32Driver
 else
 FAT32_DRIVER_BUILD_DIR=$(SDHC_DIR)/Fat32Driver
@@ -76,4 +77,7 @@ IPATH += ${FAT32_DRIVER_DIR}/Source
 # Add rule to build the Driver Library
 ${FAT32_DRIVER_BUILD_DIR}/FAT32.a: FORCE
 	$(MAKE) -C ${FAT32_DRIVER_DIR} lib BUILD_DIR=${FAT32_DRIVER_BUILD_DIR}
+
+
+	
 
