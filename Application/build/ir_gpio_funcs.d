@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/ir_gpio_funcs.o: \
- ir_gpio_funcs.c \
+ lib/ir_sensor/ir_gpio_funcs.c \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdio.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/_ansi.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/newlib.h \
@@ -112,9 +112,11 @@
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/wdt_regs.h \
  ../Libraries/PeriphDrivers/Include/MAX78000/wut.h \
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/wut_regs.h \
- ../Libraries/PeriphDrivers/Include/MAX78000/mxc_sys.h tmr_funcs.h \
- ir_gpio_funcs.h sorter.h queue.h \
+ ../Libraries/PeriphDrivers/Include/MAX78000/mxc_sys.h \
+ lib/timer/tmr_funcs.h lib/ir_sensor/ir_gpio_funcs.h lib/sorter/sorter.h \
+ lib/queue/queue.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdlib.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/machine/stdlib.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/alloca.h \
- flags.h motor_funcs.h cnn_helper_funcs.h
+ lib/flags/flags.h lib/stepper_motor/motor_funcs.h \
+ lib/cnn/cnn_helper_funcs.h

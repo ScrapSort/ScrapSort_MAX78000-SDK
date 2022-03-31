@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/queue_node.o: \
- queue_node.c queue_node.h \
+ lib/queue/queue_node.c lib/queue/queue_node.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include/stdbool.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdlib.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/machine/ieeefp.h \

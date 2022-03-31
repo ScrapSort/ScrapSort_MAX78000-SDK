@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/capture_button.o: \
- capture_button.c capture_button.h \
+ lib/capture/capture_button.c lib/capture/capture_button.h \
  ../Libraries/PeriphDrivers/Include/MAX78000/mxc_device.h \
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/max78000.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h \
@@ -46,7 +46,7 @@
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/sys/sched.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/machine/types.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/sys/stdio.h \
- camera_tft_funcs.h sd_card_funcs.h \
+ lib/display/camera_tft_funcs.h lib/sd/sd_card_funcs.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/string.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/xlocale.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/strings.h \

@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/softmax.o: \
- softmax.c ../Libraries/PeriphDrivers/Include/MAX78000/mxc.h \
+ lib/cnn/softmax.c ../Libraries/PeriphDrivers/Include/MAX78000/mxc.h \
  ../Libraries/PeriphDrivers/Include/MAX78000/mxc_device.h \
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/max78000.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h \
@@ -104,4 +104,4 @@
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/wdt_regs.h \
  ../Libraries/PeriphDrivers/Include/MAX78000/wut.h \
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/wut_regs.h \
- cnn.h
+ lib/cnn/cnn.h

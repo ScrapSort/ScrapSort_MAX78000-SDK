@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/sd_card_funcs.o: \
- sd_card_funcs.c sd_card_funcs.h \
+ lib/sd/sd_card_funcs.c lib/sd/sd_card_funcs.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdio.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/_ansi.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/newlib.h \

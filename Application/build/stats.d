@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/stats.o: \
- stats.c stats.h \
+ lib/stats/stats.c lib/stats/stats.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdlib.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/machine/ieeefp.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/_ansi.h \

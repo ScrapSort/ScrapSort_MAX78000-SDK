@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/sorter.o: \
- sorter.c sorter.h \
+ lib/sorter/sorter.c lib/sorter/sorter.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdio.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/_ansi.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/newlib.h \
@@ -29,7 +29,7 @@
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/sys/sched.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/machine/types.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/sys/stdio.h \
- queue.h \
+ lib/queue/queue.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include/stdbool.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdlib.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/machine/stdlib.h \

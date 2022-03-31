@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/motor_funcs.o: \
- motor_funcs.c \
+ lib/stepper_motor/motor_funcs.c \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdio.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/_ansi.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/newlib.h \
@@ -62,5 +62,6 @@
  ../Libraries/PeriphDrivers/Include/MAX78000/mxc_assert.h \
  ../Libraries/Boards/MAX78000/FTHR_RevA/Include/board.h \
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/spi_regs.h \
- ../Libraries/PeriphDrivers/Include/MAX78000/gpio.h motor_funcs.h \
- I2C_funcs.h tic.h
+ ../Libraries/PeriphDrivers/Include/MAX78000/gpio.h \
+ lib/stepper_motor/motor_funcs.h lib/i2c/I2C_funcs.h \
+ lib/stepper_motor/tic.h

@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/cnn_helper_funcs.o: \
- cnn_helper_funcs.c cnn_helper_funcs.h \
+ lib/cnn/cnn_helper_funcs.c lib/cnn/cnn_helper_funcs.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdint.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/machine/_default_types.h \
@@ -26,7 +26,7 @@
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/bbfc_regs.h \
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/gcfr_regs.h \
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/fcr_regs.h \
- cnn.h camera_tft_funcs.h \
+ lib/cnn/cnn.h lib/display/camera_tft_funcs.h \
  ../Libraries/Boards/MAX78000/FTHR_RevA/../Include/tft_fthr.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdio.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/_ansi.h \

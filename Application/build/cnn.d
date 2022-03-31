@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/cnn.o: \
- cnn.c \
+ lib/cnn/cnn.c \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdlib.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/machine/ieeefp.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/_ansi.h \
@@ -113,4 +113,4 @@
  ../Libraries/PeriphDrivers/Include/MAX78000/wut.h \
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/wut_regs.h \
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/gcfr_regs.h \
- cnn.h weights.h
+ lib/cnn/cnn.h lib/cnn/weights.h

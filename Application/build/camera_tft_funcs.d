@@ -1,5 +1,5 @@
 /home/taco650/Programming/ScrapSort_MAX78000-SDK/Application/build/camera_tft_funcs.o: \
- camera_tft_funcs.c camera_tft_funcs.h \
+ lib/display/camera_tft_funcs.c lib/display/camera_tft_funcs.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdint.h \
  /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/machine/_default_types.h \
@@ -107,4 +107,4 @@
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/wdt_regs.h \
  ../Libraries/PeriphDrivers/Include/MAX78000/wut.h \
  /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/wut_regs.h \
- cnn.h cnn_helper_funcs.h
+ lib/cnn/cnn.h lib/cnn/cnn_helper_funcs.h
