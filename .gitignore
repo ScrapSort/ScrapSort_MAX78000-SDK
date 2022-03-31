@@ -5,3 +5,4 @@ Examples/*/*/*/buildrv
 .vscode/settings.json
 Libraries/PeriphDrivers/bin
 Examples/MAX78000/PowerTest
+Application/build
