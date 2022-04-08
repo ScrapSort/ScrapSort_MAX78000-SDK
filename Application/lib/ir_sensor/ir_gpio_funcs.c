@@ -82,7 +82,7 @@ void flipper_callback(uint8_t flipperNum){
         set_motor_profile(flipperNum, MOTOR_PROFILE_SPEED);
 
         // open the arm
-        target_tics(flipperNum, 30);
+        target_tics(flipperNum, 40);
         printf("Open Arm:%d\n",flipperNum);
 
         // add this arm to the expiration queue with the expiration time (500ms delay)
