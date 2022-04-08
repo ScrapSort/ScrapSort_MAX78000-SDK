@@ -1,0 +1,24 @@
+/home/taco650/Programming/ScrapSort_MAX78000-SDK/Tests/motor/build/pb.o: \
+ ../../Libraries/Boards/MAX78000/FTHR_RevA/../Source/pb.c \
+ /opt/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h \
+ ../../Libraries/PeriphDrivers/Include/MAX78000/mxc_device.h \
+ /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/max78000.h \
+ /opt/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h \
+ /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/stdint.h \
+ /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/machine/_default_types.h \
+ /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/sys/features.h \
+ /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/_newlib_version.h \
+ /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/sys/_intsup.h \
+ /opt/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include/sys/_stdint.h \
+ /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Include/core_cm4.h \
+ /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Include/core_cmInstr.h \
+ /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Include/core_cmFunc.h \
+ /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Include/core_cm4_simd.h \
+ /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/system_max78000.h \
+ ../../Libraries/PeriphDrivers/Include/MAX78000/mxc_errors.h \
+ ../../Libraries/PeriphDrivers/Include/MAX78000/mxc_pins.h \
+ ../../Libraries/PeriphDrivers/Include/MAX78000/gpio.h \
+ /home/taco650/Programming/ScrapSort_MAX78000-SDK/Libraries/CMSIS/Device/Maxim/MAX78000/Include/gpio_regs.h \
+ ../../Libraries/PeriphDrivers/Include/MAX78000/mxc_assert.h \
+ ../../Libraries/Boards/MAX78000/FTHR_RevA/../Include/pb.h \
+ ../../Libraries/PeriphDrivers/Include/MAX78000/gpio.h
