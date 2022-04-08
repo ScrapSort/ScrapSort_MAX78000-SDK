@@ -4,10 +4,11 @@
 
 #define I2C_MASTER      MXC_I2C1
 
-#define I2C_FREQ        100000
+// #define I2C_FREQ        100000
+#define I2C_FREQ        50000
 #define I2C_BYTES       16
 
-#define NUM_SLAVES 2
+#define NUM_SLAVES 1
 #define START_SLAVE_ADDR 0
 
 extern uint8_t txdata[I2C_BYTES]; //was static 
