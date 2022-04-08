@@ -699,7 +699,7 @@ void MXC_TFT_ShowImage(int x0, int y0, int id)
 
 void MXC_TFT_ShowImageCameraRGB565(int x0, int y0, uint8_t *image, int width, int height)
 {
-    unsigned int  j, i;
+    int  j, i;
 
     if(tft_rotation == ROTATE_0 || tft_rotation == ROTATE_180)
 		window(x0, y0, height, width);
@@ -722,6 +722,13 @@ void MXC_TFT_ShowImageCameraRGB565(int x0, int y0, uint8_t *image, int width, in
             write_data(*(image + (i*width+j) * 2+1));
         }
     }
+
+    // for (i = height-1; i >= 0; i--) {         //Lines
+    //     for (j = width-1; j >= 0; j--) {     // one line
+    //         write_data(*(image + (i*width+j) * 2));
+    //         write_data(*(image + (i*width+j) * 2+1));
+    //     }
+    // }
 
     WindowMax();
 }

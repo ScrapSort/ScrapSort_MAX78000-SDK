@@ -13,4 +13,5 @@
 #sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbnbbl1/build/max78000.elf verify reset exit"
 #sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbnbbl12/build/max78000.elf verify reset exit"
 #sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/CNN/simplesortbno/build/max78000.elf verify reset exit"
-sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/Stepper_Control/build/max78000.elf verify reset exit"
+#sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Examples/MAX78000/Stepper_Control/build/max78000.elf verify reset exit"
+sudo ./openocd -f interface/cmsis-dap.cfg -f target/max78000.cfg -s ./scripts -c "program ../../Application/build/max78000.elf verify reset exit"
