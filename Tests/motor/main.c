@@ -1,5 +1,7 @@
-#define MOTOR_TEST_NUM 0
-
+#define FIRST_MOTOR_TEST_NUM 0
+#define LAST_MOTOR_TEST_NUM 0
+#define IN_TIC_NUM 10
+#define OUT_TIC_NUM -110
 
 /***** Includes *****/
 #include <stdio.h>
@@ -65,10 +67,14 @@ int main()
     // ======================== Main Loop =========================
     while(1) 
     {
-        target_tics(MOTOR_TEST_NUM, 20);
+        for(int currMotor = FIRST_MOTOR_TEST_NUM; currMotor < LAST_MOTOR_TEST_NUM+1; currMotor++){
+            target_tics(currMotor, OUT_TIC_NUM);
+        }
         printf("OUT\n");
         MXC_Delay(SEC(2));
-        target_tics(MOTOR_TEST_NUM, 0);
+         for(int currMotor = FIRST_MOTOR_TEST_NUM; currMotor < LAST_MOTOR_TEST_NUM+1; currMotor++){
+            target_tics(currMotor, IN_TIC_NUM);
+        }
         printf("IN\n");
         MXC_Delay(SEC(2));
     
