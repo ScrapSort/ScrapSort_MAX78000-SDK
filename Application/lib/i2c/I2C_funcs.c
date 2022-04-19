@@ -91,16 +91,16 @@ int I2C_Init() {
     }
 
     // configure scl pin to be pullup
-    mxc_gpio_cfg_t scl;
-    scl.port = MXC_GPIO0;
-    scl.mask = MXC_GPIO_PIN_16;
-    scl.pad = MXC_GPIO_PAD_PULL_UP;
+    // mxc_gpio_cfg_t scl;
+    // scl.port = MXC_GPIO0;
+    // scl.mask = MXC_GPIO_PIN_16;
+    // scl.pad = MXC_GPIO_PAD_PULL_UP;
     // MXC_GPIO_Config(&scl);
 
-    mxc_gpio_cfg_t sda;
-    sda.port = MXC_GPIO0;
-    sda.mask = MXC_GPIO_PIN_17;
-    sda.pad = MXC_GPIO_PAD_PULL_UP;
+    // mxc_gpio_cfg_t sda;
+    // sda.port = MXC_GPIO0;
+    // sda.mask = MXC_GPIO_PIN_17;
+    // sda.pad = MXC_GPIO_PAD_PULL_UP;
     // MXC_GPIO_Config(&sda);
 
 
