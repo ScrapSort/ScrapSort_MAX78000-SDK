@@ -148,6 +148,7 @@ int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
         printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
         return E_COMM_ERR;
     }
+    printf("sent\n");
 
     //printTransaction(slave_addr, tx_len, rx_len);
 

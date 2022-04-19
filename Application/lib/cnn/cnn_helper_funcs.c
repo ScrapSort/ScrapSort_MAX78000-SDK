@@ -51,7 +51,7 @@ output_classes_t class_names[] = {CUP, TRAPEZOID, HEXAGON, CAN, BOTTLE, NONE};
 char buff[TFT_BUFF_SIZE];
 int font_1 = (int)&Arial12x12[0];
 volatile uint32_t cnn_time; // Stopwatch
-char* class_strings[] = {"CUP","HEXAGON","TRAPEZOID","CAN","BOTTLE","NONE"};
+char* class_strings[] = {"CUP","TRAPEZOID","HEXAGON","CAN","BOTTLE","NONE"};
 
 // ========================================================================================= //
 // ================================ FUNCTION DEFINITIONS =================================== //

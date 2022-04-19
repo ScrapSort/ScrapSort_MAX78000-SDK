@@ -13,8 +13,8 @@ extern char* class_strings[];
 typedef enum
 {
     CUP = 0,
-    HEXAGON,
     TRAPEZOID,
+    HEXAGON,
     CAN,
     BOTTLE,
     NONE
