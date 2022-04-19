@@ -89,6 +89,21 @@ int I2C_Init() {
     for (int slave_addr = START_SLAVE_ADDR; slave_addr < START_SLAVE_ADDR + NUM_SLAVES; slave_addr++) {
         error += MXC_I2C_Init(I2C_MASTER, 1, slave_addr);
     }
+
+    // configure scl pin to be pullup
+    // mxc_gpio_cfg_t scl;
+    // scl.port = MXC_GPIO0;
+    // scl.mask = MXC_GPIO_PIN_16;
+    // scl.pad = MXC_GPIO_PAD_PULL_UP;
+    // MXC_GPIO_Config(&scl);
+
+    // mxc_gpio_cfg_t sda;
+    // sda.port = MXC_GPIO0;
+    // sda.mask = MXC_GPIO_PIN_17;
+    // sda.pad = MXC_GPIO_PAD_PULL_UP;
+    // MXC_GPIO_Config(&sda);
+
+
     
     if (error != E_NO_ERROR) {
         //printf("-->Failed master\n");
@@ -98,7 +113,11 @@ int I2C_Init() {
         printf("\n-->I2C Master Initialization Complete\n");
     }
     
-    MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ);
+    int err = MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ);
+    if(err < 0)
+    {
+        printf("I2C clk err: %d\n",err);
+    }
 
 
     return E_NO_ERROR;

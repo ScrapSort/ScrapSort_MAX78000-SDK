@@ -247,7 +247,7 @@ int Motor_Init_Settings() {
             txdata[1] = 0x02;
 
             I2C_Send_Message(slave_addr, 2, 1, 0);
-            printf("\tERROR CODE: %d\n", rxdata[0]);
+            printf("ERROR CODE: %d\n", rxdata[0]);
             return -1;
         }
     }
