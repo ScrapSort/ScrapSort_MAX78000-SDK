@@ -44,6 +44,8 @@
 #include "i2c_reva.h"
 #include "dma.h"
 
+#include "../../../../Application/lib/timer/tmr_funcs.h"
+
 /* **** Variable Declaration **** */
 typedef struct {
     mxc_i2c_reva_req_t *req;
@@ -753,7 +755,7 @@ int MXC_I2C_RevA_MasterTransaction (mxc_i2c_reva_req_t* req)
             return E_COMM_ERR;
         }
     }
-    
+    printf("loop1\n");
     MXC_I2C_ClearFlags ((mxc_i2c_regs_t*) i2c, MXC_F_I2C_REVA_INTFL0_DONE | MXC_F_I2C_REVA_INTFL0_RX_THD, 0);
     
     if (req->rx_len != 0) {
@@ -767,6 +769,7 @@ int MXC_I2C_RevA_MasterTransaction (mxc_i2c_reva_req_t* req)
         MXC_I2C_Start ((mxc_i2c_regs_t*) i2c); // Start or Restart as needed
         
         while (i2c->mstctrl & MXC_F_I2C_REVA_MSTCTRL_RESTART);
+        printf("loop2\n");
         
         i2c->fifo = (req->addr << 1) | 0x1;     // Load slave address with read bit.
     }
@@ -797,16 +800,34 @@ int MXC_I2C_RevA_MasterTransaction (mxc_i2c_reva_req_t* req)
         }
     }
     
+    
     if (req->restart) {
         i2c->mstctrl |= MXC_F_I2C_REVA_MSTCTRL_RESTART;
     }
     else {
         i2c->mstctrl |= MXC_F_I2C_REVA_MSTCTRL_STOP;
     }
-    
-    while (!(i2c->intfl0 & MXC_F_I2C_REVA_INTFL0_STOP)); // Wait for Transaction to finish
-    while (!(i2c->intfl0 & MXC_F_I2C_REVA_INTFL0_DONE)); // Wait for Transaction to finish
-    
+    printf("loop3\n");
+    int counter = global_counter;
+    while (!(i2c->intfl0 & MXC_F_I2C_REVA_INTFL0_STOP)) // Wait for Transaction to finish
+    {
+        if(global_counter - counter > 50)
+        {
+            printf("TIMEOUT\n");
+            break;
+        }
+    }
+    printf("loop4\n");
+    counter = global_counter;
+    while (!(i2c->intfl0 & MXC_F_I2C_REVA_INTFL0_DONE)) // Wait for Transaction to finish
+    {
+        if(global_counter - counter > 50)
+        {
+            printf("TIMEOUT2\n");
+            return E_COMM_ERR;
+        }
+    }
+    printf("loop5\n");
     i2c->intfl0 = MXC_F_I2C_REVA_INTFL0_DONE | MXC_F_I2C_REVA_INTFL0_STOP;
     
     if (i2c->intfl0 & MXC_I2C_REVA_ERROR) {

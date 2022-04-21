@@ -237,9 +237,9 @@ int Motor_Init_Settings() {
         // GET VARIABLE: OPERATION STATE
         txdata[0] = 0xA1;
         txdata[1] = 0x00;
-
+        printf("Sending...\n");
         I2C_Send_Message(slave_addr, 2, 1, 0);
-
+        printf("Sent\n");
         if (rxdata[0] != 10) { // normal operation state
             printf("ERROR could not init motor %d\n", slave_addr);
             // GET ERROR STATUS

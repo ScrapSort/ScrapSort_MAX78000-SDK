@@ -163,10 +163,18 @@ int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
     reqMaster.callback = I2C_Callback;
     I2C_FLAG = 1;
     
+    printf("Sending...\n");
     if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
         printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
+        if(error == -99)
+        {
+            if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
+                printf("second try failed\n");
+            }
+        }
         return E_COMM_ERR;
     }
+    printf("Sent\n");
 
     //printTransaction(slave_addr, tx_len, rx_len);
 

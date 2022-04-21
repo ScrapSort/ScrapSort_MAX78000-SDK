@@ -148,8 +148,8 @@ int main()
     set_motor_profile(1, MOTOR_PROFILE_SPEED);
     set_motor_profile(2, MOTOR_PROFILE_SPEED);
     
-    init_trigger();
-    init_echo();
+    // init_trigger();
+    // init_echo();
 
     // ======================== Main Loop =========================
     while(1) 

@@ -10,7 +10,7 @@
 #define I2C_FREQ        50000 //New freq after vector board
 #define I2C_BYTES       16
 
-#define NUM_SLAVES 3
+#define NUM_SLAVES 1
 #define START_SLAVE_ADDR 0
 
 extern uint8_t txdata[I2C_BYTES]; //was static 

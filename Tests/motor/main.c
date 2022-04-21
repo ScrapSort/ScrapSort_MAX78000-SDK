@@ -1,7 +1,7 @@
 #define FIRST_MOTOR_TEST_NUM 0
 #define LAST_MOTOR_TEST_NUM 0
 #define IN_TIC_NUM 10
-#define OUT_TIC_NUM -110
+#define OUT_TIC_NUM -120
 
 /***** Includes *****/
 #include <stdio.h>
@@ -35,6 +35,7 @@ int main()
     MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
     SystemCoreClockUpdate();
     
+    SysTick_Setup();
 
     // init I2C
     if (I2C_Init() != E_NO_ERROR) 
