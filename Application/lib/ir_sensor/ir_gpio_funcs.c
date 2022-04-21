@@ -69,10 +69,10 @@ void close_handler()
 {
     printf("close_handler\n");
     //set to high torque mode
-    set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
+    //set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
 
     //set to home
-    target_tics(curr_stepper_idx, 10);
+    target_tics(curr_stepper_idx, 0);
     
 }
 
@@ -82,7 +82,7 @@ void flipper_callback(uint8_t flipperNum){
     if (sorter__detected_item(&scrappy, flipperNum)) { // same motor address as IR sensor address
         //set to high speed profile
         printf("Open Arm:%d\n",flipperNum);
-        set_motor_profile(flipperNum, MOTOR_PROFILE_SPEED);
+        //set_motor_profile(flipperNum, MOTOR_PROFILE_SPEED);
 
         // open the arm
         target_tics(flipperNum, -30);

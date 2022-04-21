@@ -68,6 +68,7 @@
 #include "sorter.h"
 #include "cnn_helper_funcs.h"
 #include "camera_tft_funcs.h"
+#include "ultrasonic.h"
 
 //#define COLLECT_DATA
 //#define STREAM_MODE
@@ -143,7 +144,13 @@ int main()
     #endif
 
     cnn_output_t output;
+    set_motor_profile(0, MOTOR_PROFILE_SPEED);
+    set_motor_profile(1, MOTOR_PROFILE_SPEED);
+    set_motor_profile(2, MOTOR_PROFILE_SPEED);
     
+    init_trigger();
+    init_echo();
+
     // ======================== Main Loop =========================
     while(1) 
     {
