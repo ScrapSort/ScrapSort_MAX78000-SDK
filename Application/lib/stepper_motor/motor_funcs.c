@@ -188,6 +188,14 @@ void target_tics(int slave_addr, int enc_tics) {
     I2C_Send_Message(slave_addr, 5, 0, 0);
 }
 
+void go_home_forward(){
+
+}
+
+void go_home_reverse(){
+    
+}
+
 int Motor_Init_Settings() {
 
     // RESET COMMAND TIMEOUT
