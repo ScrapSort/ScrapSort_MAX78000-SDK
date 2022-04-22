@@ -21,6 +21,10 @@ void set_step_mode(uint8_t slave_addr, uint8_t step_mode);
 void set_current_limit(uint8_t slave_addr, uint8_t current_limit);
 void set_decay_mode(uint8_t slave_addr, uint8_t decay_mode);
 void set_motor_profile(uint8_t slave_addr, MOTOR_PROFILE motor_profile);
+
+void go_home_forward(int slave_addr);
+void go_home_reverse(int slave_addr);
+
 int Motor_Init_Settings();
 
 

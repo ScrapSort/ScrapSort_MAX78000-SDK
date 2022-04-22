@@ -188,12 +188,16 @@ void target_tics(int slave_addr, int enc_tics) {
     I2C_Send_Message(slave_addr, 5, 0, 0);
 }
 
-void go_home_forward(){
-
+void go_home_forward(int slave_addr){
+    txdata[0] = TicCommand__GoHome;
+    fill_tx_32b(1);
+    I2C_Send_Message(slave_addr, 2, 0, 0);
 }
 
-void go_home_reverse(){
-    
+void go_home_reverse(int slave_addr){
+    txdata[0] = TicCommand__GoHome;
+    fill_tx_32b(0);
+    I2C_Send_Message(slave_addr, 2, 0, 0);
 }
 
 int Motor_Init_Settings() {
