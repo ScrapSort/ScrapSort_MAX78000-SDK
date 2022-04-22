@@ -68,12 +68,14 @@ int main()
     while(1) 
     {
         for(int currMotor = FIRST_MOTOR_TEST_NUM; currMotor < LAST_MOTOR_TEST_NUM+1; currMotor++){
-            target_tics(currMotor, OUT_TIC_NUM);
+            // target_tics(currMotor, OUT_TIC_NUM);
+            go_home_forward(currMotor);
         }
         printf("OUT\n");
         MXC_Delay(SEC(2));
          for(int currMotor = FIRST_MOTOR_TEST_NUM; currMotor < LAST_MOTOR_TEST_NUM+1; currMotor++){
-            target_tics(currMotor, IN_TIC_NUM);
+            // target_tics(currMotor, IN_TIC_NUM);
+            go_home_reverse(currMotor);
         }
         printf("IN\n");
         MXC_Delay(SEC(2));
