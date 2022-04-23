@@ -30,6 +30,7 @@ volatile queue expirations;
 
 int last_motor_interrupt_0 = 0;
 int last_motor_interrupt_1 = 0;
+int last_motor_interrupt_2 = 0;
 int last_camera_interrupt = 0;
 int systick_wait = 1000;
 volatile uint8_t curr_stepper_idx;
@@ -48,7 +49,7 @@ bool is_first = true;
 
 void camera_handler()
 {
-    printf("Cam handler\n");
+    //printf("Cam handler\n");
     static cnn_output_t output;
 
     // call camera take picture
@@ -57,7 +58,7 @@ void camera_handler()
     show_cnn_output(output);
 
     int class_type = output.output_class;
-    //printf("class type: %s\n", class_strings[class_type]);
+    printf("class type: %s\n", class_strings[class_type]);
 
     // add to queues w/ return val from classifier
     sorter__add_item(&scrappy, class_type);
@@ -68,7 +69,7 @@ void close_handler()
 {
     printf("close_handler\n");
     //set to high torque mode
-    set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
+    //set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
 
     //set to home
     target_tics(curr_stepper_idx, 0);
@@ -76,14 +77,15 @@ void close_handler()
 }
 
 void flipper_callback(uint8_t flipperNum){
+    //printf("cb: %i\n",flipperNum);
     // check if the item passing is this stepper's class
     if (sorter__detected_item(&scrappy, flipperNum)) { // same motor address as IR sensor address
         //set to high speed profile
-        set_motor_profile(flipperNum, MOTOR_PROFILE_SPEED);
+        printf("Open Arm:%d\n",flipperNum);
+        //set_motor_profile(flipperNum, MOTOR_PROFILE_SPEED);
 
         // open the arm
-        target_tics(flipperNum, 40);
-        printf("Open Arm:%d\n",flipperNum);
+        target_tics(flipperNum, -30);
 
         // add this arm to the expiration queue with the expiration time (500ms delay)
         queue__push(&expirations, flipperNum);
@@ -115,44 +117,44 @@ void flipper_callback(uint8_t flipperNum){
 
 void ir_camera_handler(void* cbdata) 
 {
-    //if (global_counter - last_camera_interrupt < systick_wait) return;
+    if (global_counter - last_camera_interrupt < systick_wait) return;
     
     set_flag(CAMERA);
     //printf("cam\n");
 
-    //last_camera_interrupt = global_counter;
+    last_camera_interrupt = global_counter;
 
 }
 
 
 void ir_motor_handler_0(void* cbdata) 
 {
-    //if (global_counter - last_motor_interrupt_0 < systick_wait) return;
+    if (global_counter - last_motor_interrupt_0 < systick_wait) return;
     
     set_flag(FLIPPER_0);
     //printf("f0\n");
 
-    //last_motor_interrupt_0 = global_counter;
+    last_motor_interrupt_0 = global_counter;
 }
 
 void ir_motor_handler_1(void* cbdata) 
 {
-    //if (global_counter - last_motor_interrupt_0 < systick_wait) return;
+    if (global_counter - last_motor_interrupt_1 < systick_wait) return;
     
     set_flag(FLIPPER_1);
     //printf("f1\n");
 
-    //last_motor_interrupt_0 = global_counter;
+    last_motor_interrupt_1 = global_counter;
 }
 
 void ir_motor_handler_2(void* cbdata) 
 {
-    //if (global_counter - last_motor_interrupt_0 < systick_wait) return;
+    if (global_counter - last_motor_interrupt_2 < systick_wait) return;
     
     set_flag(FLIPPER_2);
     //printf("f2\n");
 
-    //last_motor_interrupt_0 = global_counter;
+    last_motor_interrupt_2 = global_counter;
 }
 
 // set up interrupts
