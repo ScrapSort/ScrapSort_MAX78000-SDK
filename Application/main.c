@@ -147,10 +147,9 @@ int main()
     // set_motor_profile(0, MOTOR_PROFILE_SPEED);
     // set_motor_profile(1, MOTOR_PROFILE_SPEED);
     // set_motor_profile(2, MOTOR_PROFILE_SPEED);
-    
-    init_trigger();
-    init_echo_cam();
-    init_echo_flipper0();
+
+    init_trigger();  
+    init_ultrasonic_gpios();
 
     // ======================== Main Loop =========================
     while(1) 
