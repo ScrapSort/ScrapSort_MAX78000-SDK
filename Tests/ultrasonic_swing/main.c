@@ -22,18 +22,20 @@
 #include "I2C_funcs.h"
 #include "motor_funcs.h"
 #include "tmr_funcs.h"
-#include "ir_gpio_funcs.h"
+//#include "ir_gpio_funcs.h"
 
+#include "ultrasonic.h"
 
 
 
 // *****************************************************************************
 int main()
 {
-    
+    MXC_ICC_Enable(MXC_ICC0); // Enable cache
     // Switch to 100 MHz clock
     MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
     SystemCoreClockUpdate();
+    SysTick_Setup();
     
 
     // init I2C
@@ -63,22 +65,12 @@ int main()
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
     
-    
+    init_trigger();  
+    init_ultrasonic_gpios();
     // ======================== Main Loop =========================
     while(1) 
     {
-        for(int currMotor = FIRST_MOTOR_TEST_NUM; currMotor < LAST_MOTOR_TEST_NUM+1; currMotor++){
-            // target_tics(currMotor, OUT_TIC_NUM);
-            go_home_forward(currMotor);
-        }
-        printf("OUT\n");
-        MXC_Delay(SEC(2));
-         for(int currMotor = FIRST_MOTOR_TEST_NUM; currMotor < LAST_MOTOR_TEST_NUM+1; currMotor++){
-            // target_tics(currMotor, IN_TIC_NUM);
-            go_home_reverse(currMotor);
-        }
-        printf("IN\n");
-        MXC_Delay(SEC(2));
-    
+        // only activate the arm outside the interrupt
+        triggered();
     }
 }

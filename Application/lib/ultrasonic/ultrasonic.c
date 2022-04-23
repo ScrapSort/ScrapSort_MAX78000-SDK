@@ -1,4 +1,9 @@
 #include "ultrasonic.h"
+#include "motor_funcs.h"
+#include "sorter.h"
+#include "flags.h"
+#include "motor_funcs.h"
+
 #include "mxc_device.h"
 #include "mxc_delay.h"
 #include "nvic_table.h"
@@ -35,9 +40,96 @@ mxc_gpio_cfg_t echo_flipper2_gpio;
 
 // state variables for echo pulse
 uint16_t volatile current_pulse_values[] = {0,0,0,0};
-uint16_t volatile time_intervals[] = {0,0,0,0};
+uint16_t volatile time_intervals[] = {10,10,10,10};
 uint16_t volatile object_statuses[] = {0,0,0,0};
 
+uint8_t volatile triggers[] = {0,0,0,0};
+// sorter sorting_queues;
+// volatile queue expirations;
+//volatile int add_to_sorter = 0;
+//volatile int pop_from_0 = 0;
+
+// int last_motor_interrupt_0 = 0;
+// int last_motor_interrupt_1 = 0;
+// int last_motor_interrupt_2 = 0;
+// int last_camera_interrupt = 0;
+// int systick_wait = 1000;
+// volatile uint8_t curr_stepper_idx;
+// volatile uint8_t next_stepper_idx;
+// flag_callback flag_callback_funcs[NUM_FLAGS];
+// uint8_t flag_callback_params[NUM_FLAGS] = {0};
+
+// volatile int exp_times[] = {0,0,0,0,0};
+
+// bool is_first = true;
+
+
+// void camera_callback()
+// {
+//     //printf("Cam handler\n");
+//     //static cnn_output_t output;
+
+//     // call camera take picture
+//     //output = *run_cnn();
+
+//     //show_cnn_output(output);
+
+//     //int class_type = output.output_class;
+//     //printf("class type: %s\n", class_strings[class_type]);
+
+//     // add to queues w/ return val from classifier
+//     //sorter__add_item(&scrappy, class_type);
+// }
+
+// // closes correpsonding arm
+// void close_arm_callback()
+// {
+//     printf("close_handler\n");
+//     //set to high torque mode
+//     //set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
+
+//     //set to home
+//     target_tics(curr_stepper_idx, 0);
+    
+// }
+
+// void flipper_callback(uint8_t flipperNum){
+//     //printf("cb: %i\n",flipperNum);
+//     // check if the item passing is this stepper's class
+//     if (sorter__detected_item(&sorting_queues, flipperNum)) { // same motor address as IR sensor address
+//         //set to high speed profile
+//         printf("Open Arm:%d\n",flipperNum);
+//         //set_motor_profile(flipperNum, MOTOR_PROFILE_SPEED);
+
+//         // open the arm
+//         target_tics(flipperNum, -30);
+
+//         // add this arm to the expiration queue with the expiration time (500ms delay)
+//         queue__push(&expirations, flipperNum);
+//         exp_times[flipperNum] = global_counter + 1024;
+//         printf("exp time added: %i\n", exp_times[flipperNum]);
+
+//         // something needs to start the expiration timer, only execute if this is the first item placed
+//         if(is_first)
+//         {
+//             printf("start tmr: %d\n", flipperNum);
+//             // clear flag
+//             is_first = false;
+            
+//             // get the next deadline and set the expiration time
+//             int next_deadline = exp_times[flipperNum]; // do we need to reset this?
+//             MXC_TMR1->cnt = 1024 - (next_deadline - global_counter);
+
+//             // start the next timer
+//             MXC_TMR_Start(MXC_TMR1);
+//         }
+
+//         // MXC_Delay(450000);
+//         // target_tics(0, -11); 
+//     }
+
+//     //printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
+// }
 
 void echo_handler(void* cb_data)
 {
@@ -55,6 +147,7 @@ void echo_handler(void* cb_data)
     {
         // find the pulse length in ms, reset the current value
         time_intervals[sensor_idx] = global_counter - current_pulse_values[sensor_idx];
+        //printf("dist:%d, cp: %d, gc:%d\n",time_intervals[sensor_idx],current_pulse_values[sensor_idx],global_counter);
         current_pulse_values[sensor_idx] = 0;
     }
 
@@ -63,13 +156,32 @@ void echo_handler(void* cb_data)
     {
         // there is an object in front of the sensor
         object_statuses[sensor_idx] = 1;
-        printf("object %d cam present\n",sensor_idx);
+        triggers[sensor_idx] = 1;
+        printf("object %d present\n",sensor_idx);
     }
     else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH)
     {
         // reset the state
         object_statuses[sensor_idx] = 0;
-        printf("object %d cam left\n", sensor_idx);
+        printf("object %d left\n", sensor_idx);
+    }
+}
+
+void triggered()
+{
+    // check if any arm has been triggered
+    for(int i = 0; i < 3; i++)
+    {
+        if(triggers[i] == 1)
+        {
+            // do the arm movement test
+            go_home_reverse(i);
+            MXC_Delay(SEC(1));
+            go_home_forward(i);
+
+            // reset the trigger
+            triggers[i] = 0;
+        }
     }
 }
 
@@ -84,39 +196,6 @@ void init_ultrasonic_gpios()
     MXC_GPIO_RegisterCallback(&echo_cam_gpio, echo_handler, (void*)&camera_idx);
     MXC_GPIO_IntConfig(&echo_cam_gpio, MXC_GPIO_INT_BOTH);
     MXC_GPIO_EnableInt(echo_cam_gpio.port, echo_cam_gpio.mask);
-    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO1)));
-
-    // flipper 0 echo gpio
-    echo_flipper0_gpio.port = MXC_GPIO2;
-    echo_flipper0_gpio.mask = MXC_GPIO_PIN_3;
-    echo_flipper0_gpio.func = MXC_GPIO_FUNC_IN;
-    echo_flipper0_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
-    MXC_GPIO_Config(&echo_flipper0_gpio);
-    MXC_GPIO_RegisterCallback(&echo_flipper0_gpio, echo_handler, (void*)&flipper0_idx);
-    MXC_GPIO_IntConfig(&echo_flipper0_gpio, MXC_GPIO_INT_BOTH);
-    MXC_GPIO_EnableInt(echo_flipper0_gpio.port, echo_flipper0_gpio.mask);
-    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO2)));
-
-    // flipper 1 echo gpio
-    echo_flipper1_gpio.port = MXC_GPIO2;
-    echo_flipper1_gpio.mask = MXC_GPIO_PIN_7;
-    echo_flipper1_gpio.func = MXC_GPIO_FUNC_IN;
-    echo_flipper1_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
-    MXC_GPIO_Config(&echo_flipper1_gpio);
-    MXC_GPIO_RegisterCallback(&echo_flipper1_gpio, echo_handler, (void*)&flipper1_idx);
-    MXC_GPIO_IntConfig(&echo_flipper1_gpio, MXC_GPIO_INT_BOTH);
-    MXC_GPIO_EnableInt(echo_flipper1_gpio.port, echo_flipper1_gpio.mask);
-    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO2)));
-
-    // flipper 2 echo gpio
-    echo_flipper2_gpio.port = MXC_GPIO1;
-    echo_flipper2_gpio.mask = MXC_GPIO_PIN_1;
-    echo_flipper2_gpio.func = MXC_GPIO_FUNC_IN;
-    echo_flipper2_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
-    MXC_GPIO_Config(&echo_flipper2_gpio);
-    MXC_GPIO_RegisterCallback(&echo_flipper2_gpio, echo_handler, (void*)&flipper2_idx);
-    MXC_GPIO_IntConfig(&echo_flipper2_gpio, MXC_GPIO_INT_BOTH);
-    MXC_GPIO_EnableInt(echo_flipper2_gpio.port, echo_flipper2_gpio.mask);
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO1)));
 }
 
