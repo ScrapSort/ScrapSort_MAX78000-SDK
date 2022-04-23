@@ -71,6 +71,6 @@ int main()
     while(1) 
     {
         // only activate the arm outside the interrupt
-        triggered();
+        //triggered();
     }
 }

@@ -15,8 +15,8 @@
 #include "gcr_regs.h"
 
 // thresholds for ultrasonic distance
-#define CLOSE_THRESH 2
-#define FAR_THRESH 5
+#define CLOSE_THRESH 128
+#define FAR_THRESH 134
 
 typedef enum
 {
@@ -40,7 +40,7 @@ mxc_gpio_cfg_t echo_flipper2_gpio;
 
 // state variables for echo pulse
 uint16_t volatile current_pulse_values[] = {0,0,0,0};
-uint16_t volatile time_intervals[] = {10,10,10,10};
+uint16_t volatile time_intervals[] = {140,140,140,140};
 uint16_t volatile object_statuses[] = {0,0,0,0};
 
 uint8_t volatile triggers[] = {0,0,0,0};
@@ -165,6 +165,7 @@ void echo_handler(void* cb_data)
         object_statuses[sensor_idx] = 0;
         printf("object %d left\n", sensor_idx);
     }
+    //printf("dist:%d\n",time_intervals[sensor_idx]);
 }
 
 void triggered()
