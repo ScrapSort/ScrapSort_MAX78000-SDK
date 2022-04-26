@@ -15,7 +15,7 @@
 #include "gcr_regs.h"
 
 // thresholds for ultrasonic distance
-#define CLOSE_THRESH 10
+#define CLOSE_THRESH 18
 #define FAR_THRESH 20
 
 typedef enum
@@ -32,8 +32,10 @@ ultrasonic_t flipper1_idx = FLIPPER1;
 ultrasonic_t flipper2_idx = FLIPPER2;
 
 // gpios for trigger and echos
-mxc_gpio_cfg_t trigger_set1_gpio;
-mxc_gpio_cfg_t trigger_set0_gpio;
+mxc_gpio_cfg_t trigger1_gpio;
+mxc_gpio_cfg_t trigger0_gpio;
+mxc_gpio_cfg_t trigger2_gpio;
+mxc_gpio_cfg_t triggercam_gpio;
 mxc_gpio_cfg_t echo_cam_gpio;
 mxc_gpio_cfg_t echo_flipper0_gpio;
 mxc_gpio_cfg_t echo_flipper1_gpio;
@@ -147,37 +149,38 @@ void echo_handler(void* cb_data)
     // second interrupt (falling edge)
     else
     {
-        time_intervals[sensor_idx] = global_counter - current_pulse_values[sensor_idx];
+        time_intervals[sensor_idx] = (global_counter - current_pulse_values[sensor_idx])*100/58;
         // printf("S3 dist: %4dcm\n",time_intervals[3]*100/58);
         // printf("S0 dist: %4dcm\n",time_intervals[0]*100/58);
         // printf("S1 dist: %4dcm\n",time_intervals[1]*100/58);
         // printf("S2 dist: %4dcm\n",time_intervals[2]*100/58);
+        // printf("\033[0;0f");
         current_pulse_values[sensor_idx] = 0;
-    }
 
-    // interval less than 10ms means object detected (don't want repeated detection)
-    if(!object_statuses[sensor_idx] && time_intervals[sensor_idx] < CLOSE_THRESH)
-    {
-        // there is an object in front of the sensor
-        object_statuses[sensor_idx] = 1;
-        triggers[sensor_idx] = 1;
-        //printf("object %d present\n",sensor_idx);
-        printf("S2: %d\n",object_statuses[2]);
-        printf("S1: %d\n",object_statuses[1]);
-        printf("S0: %d\n",object_statuses[0]);
-        printf("S3: %d\n",object_statuses[3]);
-        printf("\033[0;0f");
-    }
-    else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH)
-    {
-        // reset the state
-        object_statuses[sensor_idx] = 0;
-        //printf("object %d left\n", sensor_idx);
-        printf("S2: %d\n",object_statuses[2]);
-        printf("S1: %d\n",object_statuses[1]);
-        printf("S0: %d\n",object_statuses[0]);
-        printf("S3: %d\n",object_statuses[3]);
-        printf("\033[0;0f");
+        // interval less than 10ms means object detected (don't want repeated detection)
+        if(!object_statuses[sensor_idx] && time_intervals[sensor_idx] < CLOSE_THRESH)
+        {
+            // there is an object in front of the sensor
+            object_statuses[sensor_idx] = 1;
+            triggers[sensor_idx] = 1;
+            //printf("object %d present\n",sensor_idx);
+            printf("S2: %d\n",object_statuses[2]);
+            printf("S1: %d\n",object_statuses[1]);
+            printf("S0: %d\n",object_statuses[0]);
+            printf("S3: %d\n",object_statuses[3]);
+            printf("\033[0;0f");
+        }
+        else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH)
+        {
+            // reset the state
+            object_statuses[sensor_idx] = 0;
+            //printf("object %d left\n", sensor_idx);
+            printf("S2: %d\n",object_statuses[2]);
+            printf("S1: %d\n",object_statuses[1]);
+            printf("S0: %d\n",object_statuses[0]);
+            printf("S3: %d\n",object_statuses[3]);
+            printf("\033[0;0f");
+        }
     }
 }
 
@@ -248,17 +251,33 @@ void init_ultrasonic_gpios()
 
 void init_trigger()
 {
-    trigger_set1_gpio.port = MXC_GPIO2;
-    trigger_set1_gpio.mask = MXC_GPIO_PIN_4;
-    trigger_set1_gpio.func = MXC_GPIO_FUNC_OUT;
-    trigger_set1_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
-    MXC_GPIO_Config(&trigger_set1_gpio);
+    // cam
+    triggercam_gpio.port = MXC_GPIO2;
+    triggercam_gpio.mask = MXC_GPIO_PIN_4;
+    triggercam_gpio.func = MXC_GPIO_FUNC_OUT;
+    triggercam_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
+    MXC_GPIO_Config(&triggercam_gpio);
 
-    trigger_set0_gpio.port = MXC_GPIO1;
-    trigger_set0_gpio.mask = MXC_GPIO_PIN_0;
-    trigger_set0_gpio.func = MXC_GPIO_FUNC_OUT;
-    trigger_set0_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
-    MXC_GPIO_Config(&trigger_set0_gpio);
+    // flipper 0
+    trigger0_gpio.port = MXC_GPIO1;
+    trigger0_gpio.mask = MXC_GPIO_PIN_0;
+    trigger0_gpio.func = MXC_GPIO_FUNC_OUT;
+    trigger0_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
+    MXC_GPIO_Config(&trigger0_gpio);
+
+    // flipper 2
+    trigger2_gpio.port = MXC_GPIO3;
+    trigger2_gpio.mask = MXC_GPIO_PIN_1;
+    trigger2_gpio.func = MXC_GPIO_FUNC_OUT;
+    trigger2_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
+    MXC_GPIO_Config(&trigger2_gpio);
+
+    // flipper 1
+    trigger1_gpio.port = MXC_GPIO2;
+    trigger1_gpio.mask = MXC_GPIO_PIN_6;
+    trigger1_gpio.func = MXC_GPIO_FUNC_OUT;
+    trigger1_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
+    MXC_GPIO_Config(&trigger1_gpio);
     
 
     // ------- PWM version with timer --------
@@ -292,36 +311,70 @@ void init_trigger()
     // printf("PWM started.\n\n");
 }
 
-void activate_set0()
+void activate0()
 {
-    trigger_set0_high();
+    trigger0_high();
     MXC_Delay(10);
-    trigger_set0_low();
+    trigger0_low();
 }
 
-void activate_set1()
+void activate1()
 {
-    trigger_set1_high();
+    trigger1_high();
     MXC_Delay(10);
-    trigger_set1_low();
+    trigger1_low();
 }
 
-void trigger_set0_high()
+void activate2()
 {
-    MXC_GPIO_OutSet(MXC_GPIO1, MXC_GPIO_PIN_0);
+    trigger2_high();
+    MXC_Delay(10);
+    trigger2_low();
 }
 
-void trigger_set0_low()
+void activatecam()
 {
-    MXC_GPIO_OutClr(MXC_GPIO1, MXC_GPIO_PIN_0);
+    triggercam_high();
+    MXC_Delay(10);
+    triggercam_low();
 }
 
-void trigger_set1_high()
+void triggercam_high()
 {
     MXC_GPIO_OutSet(MXC_GPIO2, MXC_GPIO_PIN_4);
 }
 
-void trigger_set1_low()
+void triggercam_low()
 {
     MXC_GPIO_OutClr(MXC_GPIO2, MXC_GPIO_PIN_4);
+}
+
+void trigger2_high()
+{
+    MXC_GPIO_OutSet(MXC_GPIO3, MXC_GPIO_PIN_1);
+}
+
+void trigger2_low()
+{
+    MXC_GPIO_OutClr(MXC_GPIO3, MXC_GPIO_PIN_1);
+}
+
+void trigger1_high()
+{
+    MXC_GPIO_OutSet(MXC_GPIO2, MXC_GPIO_PIN_6);
+}
+
+void trigger1_low()
+{
+    MXC_GPIO_OutClr(MXC_GPIO2, MXC_GPIO_PIN_6);
+}
+
+void trigger0_high()
+{
+    MXC_GPIO_OutSet(MXC_GPIO1, MXC_GPIO_PIN_0);
+}
+
+void trigger0_low()
+{
+    MXC_GPIO_OutClr(MXC_GPIO1, MXC_GPIO_PIN_0);
 }

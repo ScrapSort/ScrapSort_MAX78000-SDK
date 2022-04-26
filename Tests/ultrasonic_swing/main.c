@@ -73,10 +73,14 @@ int main()
     // ======================== Main Loop =========================
     while(1) 
     {
-        activate_set1();
-        MXC_Delay(38000);
-        activate_set0();
-        MXC_Delay(38000);
+        activatecam();
+        MXC_Delay(20000);
+        activate1();
+        MXC_Delay(20000);
+        activate0();
+        MXC_Delay(20000);
+        activate2();
+        MXC_Delay(20000);
         //triggered();
     }
 }

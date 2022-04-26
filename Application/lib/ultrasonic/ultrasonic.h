@@ -12,14 +12,20 @@ void init_trigger();
 // set0 is even flippers (flipper 0 and 2)
 // set 1 is odd flippers (cam=3 and flipper 1)
 // these functions set the corresponding trigger pin high/low
-void trigger_set0_high();
-void trigger_set0_low();
-void trigger_set1_high();
-void trigger_set1_low();
+void trigger0_high();
+void trigger0_low();
+void trigger1_high();
+void trigger1_low();
+void trigger2_high();
+void trigger2_low();
+void triggercam_high();
+void triggercam_low();
 
 // triggers the corresponding set
-void activate_set0();
-void activate_set1();
+void activate0();
+void activate1();
+void activate2();
+void activatecam();
 
 void triggered();
 
