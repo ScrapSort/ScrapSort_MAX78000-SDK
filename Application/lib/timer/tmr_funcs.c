@@ -147,7 +147,14 @@ void SysTick_Setup() {
     NVIC_SetVector(SysTick_IRQn, SysTick_Handler);
     NVIC_EnableIRQ(SysTick_IRQn);
 
-    SysTick_Config(SystemCoreClock/100000);
+    // num ticks b/t interrupts = 100MHz/10k = 10k
+    // 10k ticks of 100MHz clk = 10k/100MHz = 100us
+    int err = SysTick_Config(SystemCoreClock/10000);
+    //int err = SysTick_Config(0xFFFFFF);
+    if(err != 0)
+    {
+        printf("Systick Failed\n");
+    }
 }
 
 void SysTick_Handler() {
