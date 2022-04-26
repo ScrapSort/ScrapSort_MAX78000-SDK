@@ -73,18 +73,10 @@ int main()
     // ======================== Main Loop =========================
     while(1) 
     {
-        //printf("gc:%d\n",global_counter);
-        //printf("tick:%lu\n",SysTick->VAL);
-        // only activate the arm outside the interrupt
         activate_set1();
-        MXC_Delay(40000);
+        MXC_Delay(38000);
         activate_set0();
-        MXC_Delay(40000);
-        // MXC_Delay(50000);
-        //deactivate_set0();
-        //activate_set1();
-        // MXC_Delay(38000);
-        // deactivate_set1();
+        MXC_Delay(38000);
         //triggered();
     }
 }
