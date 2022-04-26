@@ -35,6 +35,7 @@ int main()
     // Switch to 100 MHz clock
     MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
     SystemCoreClockUpdate();
+    printf("systick init\n");
     SysTick_Setup();
     
 
@@ -67,10 +68,23 @@ int main()
     
     init_trigger();  
     init_ultrasonic_gpios();
+    //printf("reload:%lu\n",SysTick->LOAD);
+    //SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
     // ======================== Main Loop =========================
     while(1) 
     {
+        //printf("gc:%d\n",global_counter);
+        //printf("tick:%lu\n",SysTick->VAL);
         // only activate the arm outside the interrupt
+        activate_set1();
+        MXC_Delay(40000);
+        activate_set0();
+        MXC_Delay(40000);
+        // MXC_Delay(50000);
+        //deactivate_set0();
+        //activate_set1();
+        // MXC_Delay(38000);
+        // deactivate_set1();
         //triggered();
     }
 }
