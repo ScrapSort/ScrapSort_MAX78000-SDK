@@ -23,37 +23,37 @@ void Debug_Motors(void) {
         
         // GET OPERATION STATE
         printf("Operation Status: ");
-        txdata[0] = 0xA1;
-        txdata[1] = 0x00;
+        txdata[0] = TicCommand__GetVariable;
+        txdata[1] = TicVarOffset__OperationState;
 
         I2C_Send_Message(slave_addr, 2, 1, 0);
 
 
         // GET MISC FLAGS
         printf("Misc Flags: ");
-        txdata[0] = 0xA1;
-        txdata[1] = 0x01;
+        txdata[0] = TicCommand__GetVariable;
+        txdata[1] = TicVarOffset__MiscFlags1;
 
         I2C_Send_Message(slave_addr, 2, 1, 0);
 
         // GET ERROR STATUS
         printf("Error Status: ");
-        txdata[0] = 0xA1;
-        txdata[1] = 0x02;
+        txdata[0] = TicCommand__GetVariable;
+        txdata[1] = TicVarOffset__ErrorStatus;
 
         I2C_Send_Message(slave_addr, 2, 2, 0);
 
         // GET ERRORS OCCURRED
         printf("Errors Occurred: ");
-        txdata[0] = 0xA1;
-        txdata[1] = 0x04;
+        txdata[0] = TicCommand__GetVariable;
+        txdata[1] = TicVarOffset__ErrorsOccurred;
 
         I2C_Send_Message(slave_addr, 2, 4, 0);
 
         // GET CURRENT POSITION
         printf("Current Position: ");
-        txdata[0] = 0xA1;
-        txdata[1] = 0x22;
+        txdata[0] = TicCommand__GetVariable;
+        txdata[1] = TicVarOffset__CurrentPosition;
 
         I2C_Send_Message(slave_addr, 2, 4, 0);
 
@@ -63,6 +63,22 @@ void Debug_Motors(void) {
     }
 }
 
+float get_max_microstep(uint8_t slave_addr){
+    //Function that first sets motor to smallest step size
+    //Motor is then homed and then reversed home 
+    //The microstep position is returned 
+
+    set_motor_profile(slave_addr, MOTOR_PROFILE_CALIBRATE);
+    go_home_forward(slave_addr);
+    wait_for_target();
+    go_home_reverse(slave_addr);
+    wait_for_target();
+    return 0;
+}
+
+void wait_for_target(){
+    //Blocks until the stepper is finished 
+}
 
 void set_motor_profile(uint8_t slave_addr, MOTOR_PROFILE profile){
     uint32_t profile_accel_max, profile_decel_max, profile_speed_max, profile_speed_start;
@@ -74,14 +90,21 @@ void set_motor_profile(uint8_t slave_addr, MOTOR_PROFILE profile){
         profile_speed_max = 400*10000;
         // profile_speed_max = 900*10000;
         profile_speed_start = 0;
-        profile_step_mode = TicStepMode__Full;
+        profile_step_mode = TicStepMode__Microstep1;
     }
     else if(profile == MOTOR_PROFILE_SPEED){
         profile_accel_max = 5000*100;
         profile_decel_max = profile_accel_max;
         profile_speed_max = 2000*10000;
         profile_speed_start = 0;
-        profile_step_mode = TicStepMode__Full;
+        profile_step_mode = TicStepMode__Microstep1;
+    }
+    else if(profile == MOTOR_PROFILE_CALIBRATE){
+        profile_accel_max = 5000*100;
+        profile_decel_max = profile_accel_max;
+        profile_speed_max = 2000*10000;
+        profile_speed_start = 0;
+        profile_step_mode = TicStepMode__Microstep8;
     }
     else{
         printf("Invalid Motor Profile Set");
@@ -157,8 +180,8 @@ void rotate_revs(int slave_addr, float rotations) {
     
 
     // GET CURRENT POSITION
-    txdata[0] = 0xA1;
-    txdata[1] = 0x22;
+    txdata[0] = TicCommand__GetVariable;
+    txdata[1] = TicVarOffset__CurrentPosition;
 
     I2C_Send_Message(slave_addr, 2, 4, 0);
 
@@ -171,7 +194,7 @@ void rotate_revs(int slave_addr, float rotations) {
 
     // printf("")
 
-    txdata[0] = 0xE0;
+    txdata[0] = TicCommand__SetTargetPosition;
     fill_tx_32b(enc_target);
 
     I2C_Send_Message(slave_addr, 5, 0, 0);
@@ -182,7 +205,7 @@ void target_tics(int slave_addr, int enc_tics) {
     // SET TARGET POSITION
     // full rotation = 200 encoder ticks
 
-    txdata[0] = 0xE0;
+    txdata[0] = TicCommand__SetTargetPosition;
     fill_tx_32b(enc_tics);
 
     I2C_Send_Message(slave_addr, 5, 0, 0);
@@ -203,27 +226,27 @@ void go_home_reverse(int slave_addr){
 int Motor_Init_Settings() {
 
     // RESET COMMAND TIMEOUT
-    txdata[0] = 0x8C;
+    txdata[0] = TicCommand__ResetCommandTimeout;
 
     I2C_Broadcast_Message(1, 0, 0);
 
     // RESET 
-    txdata[0] = 0xB0;
+    txdata[0] = TicCommand__Reset;
     I2C_Broadcast_Message(1, 0, 0);
 
     MXC_Delay(1000);
 
     // RESET COMMAND TIMEOUT
-    // txdata[0] = 0x8C;
+    // txdata[0] = TicCommand__ResetCommandTimeout;
 
     // I2C_Broadcast_Message(1, 0, 0);
 
     // EXIT SAFE START
-    txdata[0] = 0x83;
+    txdata[0] = TicCommand__ExitSafeStart;
     I2C_Broadcast_Message(1, 0, 0);
 
     // ENERGIZE
-    txdata[0] = 0x85;
+    txdata[0] = TicCommand__Energize;
     I2C_Broadcast_Message(1, 0, 0);
 
     // // SET MAX SPEED
@@ -247,16 +270,16 @@ int Motor_Init_Settings() {
 
     for (int slave_addr = START_SLAVE_ADDR; slave_addr < START_SLAVE_ADDR + NUM_SLAVES; slave_addr++) {
         // GET VARIABLE: OPERATION STATE
-        txdata[0] = 0xA1;
-        txdata[1] = 0x00;
+        txdata[0] = TicCommand__GetVariable;
+        txdata[1] = TicVarOffset__OperationState;
 
         I2C_Send_Message(slave_addr, 2, 1, 0);
 
         if (rxdata[0] != 10) { // normal operation state
             printf("ERROR could not init motor %d\n", slave_addr);
             // GET ERROR STATUS
-            txdata[0] = 0xA2;
-            txdata[1] = 0x02;
+            txdata[0] = TicCommand__GetVariableAndClearErrorsOccurred;
+            txdata[1] = TicVarOffset__ErrorStatus;
 
             I2C_Send_Message(slave_addr, 2, 1, 0);
             printf("ERROR CODE: %d\n", rxdata[0]);
