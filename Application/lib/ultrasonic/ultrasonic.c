@@ -3,6 +3,7 @@
 #include "sorter.h"
 #include "flags.h"
 #include "motor_funcs.h"
+#include "cnn_helper_funcs.h"
 
 #include "mxc_device.h"
 #include "mxc_delay.h"
@@ -15,15 +16,18 @@
 #include "gcr_regs.h"
 
 // thresholds for ultrasonic distance
-#define CLOSE_THRESH 18
-#define FAR_THRESH 20
+// 2 cm null area to avoid oscillation when in between
+#define CLOSE_THRESH 18 /// cm
+#define FAR_THRESH 20 // cm
 
-ultrasonic_t camera_idx = CAM;
-ultrasonic_t flipper0_idx = FLIPPER0;
-ultrasonic_t flipper1_idx = FLIPPER1;
-ultrasonic_t flipper2_idx = FLIPPER2;
+// interrupt function parameters (pass these to echo interrupt)
+Flag camera_idx = CAMERA;
+Flag flipper0_idx = FLIPPER_0;
+Flag flipper1_idx = FLIPPER_1;
+Flag flipper2_idx = FLIPPER_2;
 
-ultrasonic_t active_sensor = CAM;
+// the ultrasonic sensor that is currently firing
+Flag volatile active_sensor = CAMERA;
 
 // gpios for trigger and echos
 mxc_gpio_cfg_t trigger1_gpio;
@@ -35,49 +39,42 @@ mxc_gpio_cfg_t echo_flipper0_gpio;
 mxc_gpio_cfg_t echo_flipper1_gpio;
 mxc_gpio_cfg_t echo_flipper2_gpio;
 
-// state variables for echo pulse
-uint32_t volatile current_pulse_values[] = {0,0,0,0};
-uint32_t volatile time_intervals[] = {100,100,100,100};
-uint16_t volatile object_statuses[] = {0,0,0,0};
-uint16_t volatile overflows = 0;
-uint8_t volatile triggers[] = {0,0,0,0};
+// state variables for ultrasonic sensors
+uint32_t volatile current_pulse_values[] = {0,0,0,0}; // rising edge time
+uint32_t volatile time_intervals[] = {100,100,100,100}; // pulse width in ticks, init to 100 to prevent false alarm on init
+uint16_t volatile object_statuses[] = {0,0,0,0}; // state variable to track if object in front of sensor
+uint8_t volatile trigger_state[] = {0,0,0,0}; // state variable to track if a sensor needs to fire
 
 // sorter sorting_queues;
 // volatile queue expirations;
-//volatile int add_to_sorter = 0;
-//volatile int pop_from_0 = 0;
 
-// int last_motor_interrupt_0 = 0;
-// int last_motor_interrupt_1 = 0;
-// int last_motor_interrupt_2 = 0;
-// int last_camera_interrupt = 0;
-// int systick_wait = 1000;
 // volatile uint8_t curr_stepper_idx;
 // volatile uint8_t next_stepper_idx;
-// flag_callback flag_callback_funcs[NUM_FLAGS];
-// uint8_t flag_callback_params[NUM_FLAGS] = {0};
+
+flag_callback flag_callback_funcs[NUM_FLAGS];
+uint8_t flag_callback_params[NUM_FLAGS] = {0};
 
 // volatile int exp_times[] = {0,0,0,0,0};
 
 // bool is_first = true;
 
 
-// void camera_callback()
-// {
-//     //printf("Cam handler\n");
-//     //static cnn_output_t output;
+void camera_callback()
+{
+    printf("Cam handler\n");
+    // static cnn_output_t output;
 
-//     // call camera take picture
-//     //output = *run_cnn();
+    // // call camera take picture
+    // output = *run_cnn();
 
-//     //show_cnn_output(output);
+    // show_cnn_output(output);
 
-//     //int class_type = output.output_class;
-//     //printf("class type: %s\n", class_strings[class_type]);
+    // int class_type = output.output_class;
+    // printf("class type: %s\n", class_strings[class_type]);
 
-//     // add to queues w/ return val from classifier
-//     //sorter__add_item(&scrappy, class_type);
-// }
+    // // add to queues w/ return val from classifier
+    // sorter__add_item(&sorting_queues, class_type);
+}
 
 // // closes correpsonding arm
 // void close_arm_callback()
@@ -87,53 +84,18 @@ uint8_t volatile triggers[] = {0,0,0,0};
 //     //set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
 
 //     //set to home
-//     target_tics(curr_stepper_idx, 0);
+//     go_home_forward(curr_stepper_idx);
+//     //target_tics(curr_stepper_idx, 0);
     
-// }
-
-// void flipper_callback(uint8_t flipperNum){
-//     //printf("cb: %i\n",flipperNum);
-//     // check if the item passing is this stepper's class
-//     if (sorter__detected_item(&sorting_queues, flipperNum)) { // same motor address as IR sensor address
-//         //set to high speed profile
-//         printf("Open Arm:%d\n",flipperNum);
-//         //set_motor_profile(flipperNum, MOTOR_PROFILE_SPEED);
-
-//         // open the arm
-//         target_tics(flipperNum, -30);
-
-//         // add this arm to the expiration queue with the expiration time (500ms delay)
-//         queue__push(&expirations, flipperNum);
-//         exp_times[flipperNum] = global_counter + 1024;
-//         printf("exp time added: %i\n", exp_times[flipperNum]);
-
-//         // something needs to start the expiration timer, only execute if this is the first item placed
-//         if(is_first)
-//         {
-//             printf("start tmr: %d\n", flipperNum);
-//             // clear flag
-//             is_first = false;
-            
-//             // get the next deadline and set the expiration time
-//             int next_deadline = exp_times[flipperNum]; // do we need to reset this?
-//             MXC_TMR1->cnt = 1024 - (next_deadline - global_counter);
-
-//             // start the next timer
-//             MXC_TMR_Start(MXC_TMR1);
-//         }
-
-//         // MXC_Delay(450000);
-//         // target_tics(0, -11); 
-//     }
-
-//     //printf("queue size: %i\n",queue__size(&scrappy.queues[1]));
 // }
 
 void echo_handler(void* cb_data)
 {
     // get the sensor idx from the callback data
-    ultrasonic_t volatile sensor_idx = *(ultrasonic_t*)(cb_data);
+    Flag volatile sensor_idx = *(Flag*)(cb_data);
 
+    // don't allow nonactive sensors to triger interrupts
+    // for example if there is interference between sensors
     if(sensor_idx != active_sensor)
     {
         return;
@@ -144,95 +106,146 @@ void echo_handler(void* cb_data)
     {
         // store the start time
         current_pulse_values[sensor_idx] = global_counter;
-        //printf("idx: %d ^ cp: %d\n",sensor_idx, current_pulse_values[sensor_idx]);
     }
     // second interrupt (falling edge)
     else
     {
+        // store the end time, convert to cm, reset the start time
         time_intervals[sensor_idx] = (global_counter - current_pulse_values[sensor_idx])*100/58;
-        //printf("idx: %d _ gc: %d ti: %d\n",sensor_idx, global_counter, time_intervals[sensor_idx]);
-        printf("S3 dist: %4dcm\n",time_intervals[3]*100/58);
-        printf("S0 dist: %4dcm\n",time_intervals[0]*100/58);
-        printf("S1 dist: %4dcm\n",time_intervals[1]*100/58);
-        printf("S2 dist: %4dcm\n",time_intervals[2]*100/58);
-        printf("\033[0;0f");
         current_pulse_values[sensor_idx] = 0;
 
-        // interval less than 10ms means object detected (don't want repeated detection)
+        // no object in front of the sensor yet and it is within the threshold, trigger the arm to close
         if(!object_statuses[sensor_idx] && time_intervals[sensor_idx] < CLOSE_THRESH)
         {
             // there is an object in front of the sensor
-            object_statuses[sensor_idx] = 1;
-            triggers[sensor_idx] = 1;
-            //printf("object %d present\n",sensor_idx);
-            // printf("S2: %d\n",object_statuses[2]);
-            // printf("S1: %d\n",object_statuses[1]);
-            // printf("S0: %d\n",object_statuses[0]);
-            // printf("S3: %d\n",object_statuses[3]);
-            // printf("\033[0;0f");
+            object_statuses[sensor_idx] = 1; // state update
+            set_flag(sensor_idx); // will trigger arm to close in main
+            // printf("object %d present\n",sensor_idx);
+            printf("S2: %d\n",object_statuses[2]);
+            printf("S1: %d\n",object_statuses[1]);
+            printf("S0: %d\n",object_statuses[0]);
+            printf("S3: %d\n",object_statuses[3]);
+            printf("\033[0;0f");
         }
+        // object in front of the sensor and beyond the threshold, update the state
         else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH)
         {
             // reset the state
             object_statuses[sensor_idx] = 0;
-            //printf("object %d left\n", sensor_idx);
-            // printf("S2: %d\n",object_statuses[2]);
-            // printf("S1: %d\n",object_statuses[1]);
-            // printf("S0: %d\n",object_statuses[0]);
-            // printf("S3: %d\n",object_statuses[3]);
-            // printf("\033[0;0f");
+            // printf("object %d left\n", sensor_idx);
+            printf("S2: %d\n",object_statuses[2]);
+            printf("S1: %d\n",object_statuses[1]);
+            printf("S0: %d\n",object_statuses[0]);
+            printf("S3: %d\n",object_statuses[3]);
+            printf("\033[0;0f");
         }
 
-        // after receiving a response, go to the next sensor
+        // after receiving a response, tell the next sensor to trigger
+        
         active_sensor += 1;
         if(active_sensor == 4)
         {
             active_sensor = 0;
         }
-        switch (active_sensor)
-        {
-            case CAM:
-                activatecam();
-                break;
+        trigger_state[active_sensor] = 1;
+    }
+}
 
-            case FLIPPER0:
-                activate0();
-                break;
+void flipper_callback(uint8_t flipper_num)
+{   
+    // // check if the item that passed is this flipper's item
+    // if (sorter__detected_item(&sorting_queues, flipper_num)) { // same motor address as IR sensor address
+    //     //set to high speed profile
+    //     printf("Open Arm:%d\n",flipper_num);
+    //     //set_motor_profile(flipper_num, MOTOR_PROFILE_SPEED);
 
-            case FLIPPER1:
-                activate1();
-                break;
+    //     // open the arm
+    //     target_tics(flipper_num, -40);
 
-            case FLIPPER2:
-                activate2();
-                break;
+    //     // add this arm to the expiration queue with the expiration time (500ms delay)
+    //     queue__push(&expirations, flipper_num);
+    //     exp_times[flipper_num] = global_counter + 10240; // about 1 second
+    //     printf("exp time added: %i\n", exp_times[flipper_num]);
+
+    //     // something needs to start the expiration timer, only execute if this is the first item placed
+    //     if(is_first)
+    //     {
+    //         printf("start tmr: %d\n", flipper_num);
+    //         // clear flag
+    //         is_first = false;
             
-            default:
-                break;
-        }
-    }
+    //         // get the next deadline and set the expiration time
+    //         int next_deadline = exp_times[flipper_num]; // do we need to reset this?
+    //         MXC_TMR1->cnt = 1024 - (next_deadline - global_counter);
+
+    //         // start the next timer
+    //         MXC_TMR_Start(MXC_TMR1);
+    //     }
+    // }
+    // do the arm movement test
+    //go_home_reverse(i);
+    target_tics(flipper_num,-40);
+    MXC_Delay(SEC(1));
+    go_home_forward(flipper_num);
 }
 
-void triggered()
+void to_trigger()
 {
-    // check if any arm has been triggered
-    for(int i = 0; i < 3; i++)
+    // check if any sensor needs to be triggered
+    Flag sensor_idx = -1;
+    for(int i = 0; i < 4; i++)
     {
-        if(triggers[i] == 1)
+        if(trigger_state[i] == 1)
         {
-            // do the arm movement test
-            //go_home_reverse(i);
-            target_tics(i,-40);
-            MXC_Delay(SEC(1));
-            go_home_forward(i);
+            sensor_idx = i;
+            break;
+        }
+    }
+    // if none need to be triggered, return
+    if(sensor_idx == -1)
+    {
+        return;
+    }
+    
+    // trigger the corresponding sensor
+    switch (sensor_idx)
+    {
+        case CAMERA:
+        {
+            activatecam();
+            trigger_state[CAMERA] = 0;
+            break;
+        }
 
-            // reset the trigger
-            triggers[i] = 0;
+        case FLIPPER_0:
+        {
+            activate0();
+            trigger_state[FLIPPER_0] = 0;
+            break;
+        }
+
+        case FLIPPER_1:
+        {
+            activate1();
+            trigger_state[FLIPPER_1] = 0;
+            break;
+        }
+
+        case FLIPPER_2:
+        {
+            activate2();
+            trigger_state[FLIPPER_2] = 0;
+            break;
+        }
+        
+        default:
+        {
+            break;
         }
     }
 }
 
-void init_ultrasonic_gpios()
+void init_echo_gpios()
 {
     // cam echo gpio
     echo_cam_gpio.port = MXC_GPIO1;
@@ -244,6 +257,8 @@ void init_ultrasonic_gpios()
     MXC_GPIO_IntConfig(&echo_cam_gpio, MXC_GPIO_INT_BOTH);
     MXC_GPIO_EnableInt(echo_cam_gpio.port, echo_cam_gpio.mask);
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO1)));
+    flag_callback_funcs[CAMERA] = camera_callback;
+    flag_callback_params[CAMERA] = 3; 
 
     // flipper 0 echo gpio
     echo_flipper0_gpio.port = MXC_GPIO2;
@@ -255,6 +270,8 @@ void init_ultrasonic_gpios()
     MXC_GPIO_IntConfig(&echo_flipper0_gpio, MXC_GPIO_INT_BOTH);
     MXC_GPIO_EnableInt(echo_flipper0_gpio.port, echo_flipper0_gpio.mask);
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO2)));
+    flag_callback_funcs[FLIPPER_0] = flipper_callback;
+    flag_callback_params[FLIPPER_0] = 0; 
 
     // // // flipper 1 echo gpio
     echo_flipper1_gpio.port = MXC_GPIO2;
@@ -266,6 +283,8 @@ void init_ultrasonic_gpios()
     MXC_GPIO_IntConfig(&echo_flipper1_gpio, MXC_GPIO_INT_BOTH);
     MXC_GPIO_EnableInt(echo_flipper1_gpio.port, echo_flipper1_gpio.mask);
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO2)));
+    flag_callback_funcs[FLIPPER_1] = flipper_callback;
+    flag_callback_params[FLIPPER_1] = 1; 
 
     // // flipper 2 echo gpio
     echo_flipper2_gpio.port = MXC_GPIO1;
@@ -277,9 +296,11 @@ void init_ultrasonic_gpios()
     MXC_GPIO_IntConfig(&echo_flipper2_gpio, MXC_GPIO_INT_BOTH);
     MXC_GPIO_EnableInt(echo_flipper2_gpio.port, echo_flipper2_gpio.mask);
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO1)));
+    flag_callback_funcs[FLIPPER_2] = flipper_callback;
+    flag_callback_params[FLIPPER_2] = 2; 
 }
 
-void init_trigger()
+void init_trigger_gpios()
 {
     // cam
     triggercam_gpio.port = MXC_GPIO2;
@@ -308,37 +329,19 @@ void init_trigger()
     trigger1_gpio.func = MXC_GPIO_FUNC_OUT;
     trigger1_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&trigger1_gpio);
-    
+}
 
-    // ------- PWM version with timer --------
-    // mxc_tmr_cfg_t tmr;   
-    
-    // MXC_TMR_Shutdown(PWM_TIMER);
-    
-    // tmr.pres = TMR_PRES_8; // 1 MHz --> 8MHz/8
-    // tmr.mode = TMR_MODE_PWM;
-    // tmr.bitMode = TMR_BIT_MODE_32;    
-    // tmr.clock = MXC_TMR_8M_CLK; // 8MHz
-    // tmr.cmp_cnt = 50000; // 50ms period
-    // tmr.pol = 1;
-
-    // int err;
-    // if ((err = MXC_TMR_Init(PWM_TIMER, &tmr, true)) != E_NO_ERROR) {
-    //     printf("Failed PWM timer Initialization: %d\n", err);
-    //     return;
-    // }
-
-    // //MXC_GPIO2->vssel |= MXC_GPIO_VSSEL_VDDIOH;
-
-    // // trigger for 10 us
-    // if ((err = MXC_TMR_SetPWM(PWM_TIMER, 10)) != E_NO_ERROR) {
-    //     printf("Failed TMR_PWMConfig: %d\n", err);
-    //     return;
-    // }
-    
-    // MXC_TMR_Start(PWM_TIMER);
-    
-    // printf("PWM started.\n\n");
+void check_all_callbacks()
+{
+    for (Flag f = 0; f < NUM_FLAGS; f++) 
+    {
+        // if a flag is set, call its handler code, then reset the flag
+        if (is_flag_set(f))
+        {
+            (*flag_callback_funcs[f])(flag_callback_params[f]);
+            unset_flag(f);
+        }
+    } 
 }
 
 void activate0()
