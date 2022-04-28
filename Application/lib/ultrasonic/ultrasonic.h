@@ -3,14 +3,20 @@
 
 #include "tmr_funcs.h"
 
+typedef enum
+{
+    FLIPPER0 = 0,
+    FLIPPER1,
+    FLIPPER2,
+    CAM
+} ultrasonic_t;
+
 // initialize the echo pins
 void init_ultrasonic_gpios();
 
 // initialize the trigger pins
 void init_trigger();
 
-// set0 is even flippers (flipper 0 and 2)
-// set 1 is odd flippers (cam=3 and flipper 1)
 // these functions set the corresponding trigger pin high/low
 void trigger0_high();
 void trigger0_low();
@@ -29,7 +35,7 @@ void activatecam();
 
 void triggered();
 
-// timer stuff
+// // timer stuff
 // void expiration_handler();
 // int init_arm_timer();
 

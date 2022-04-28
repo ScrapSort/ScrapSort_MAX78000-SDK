@@ -68,19 +68,26 @@ int main()
     
     init_trigger();  
     init_ultrasonic_gpios();
+    set_motor_profile(0, MOTOR_PROFILE_SPEED);
+    set_motor_profile(1, MOTOR_PROFILE_SPEED);
+    set_motor_profile(2, MOTOR_PROFILE_SPEED);
     //printf("reload:%lu\n",SysTick->LOAD);
     //SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
     // ======================== Main Loop =========================
+    
+    activatecam();
     while(1) 
     {
-        activatecam();
-        MXC_Delay(20000);
-        activate1();
-        MXC_Delay(20000);
-        activate0();
-        MXC_Delay(20000);
-        activate2();
-        MXC_Delay(20000);
+        // activatecam();
+        // //MXC_Delay(200);
+        // activate0();
+        // MXC_Delay(1000000);
+        // activate1();
+        // MXC_Delay(20000);
+        // activate0();
+        // MXC_Delay(20000);
+        
+        //MXC_Delay(20000);
         //triggered();
     }
 }

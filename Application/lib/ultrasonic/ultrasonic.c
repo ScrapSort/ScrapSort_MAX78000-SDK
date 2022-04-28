@@ -18,18 +18,12 @@
 #define CLOSE_THRESH 18
 #define FAR_THRESH 20
 
-typedef enum
-{
-    FLIPPER0 = 0,
-    FLIPPER1,
-    FLIPPER2,
-    CAM
-} ultrasonic_t;
-
 ultrasonic_t camera_idx = CAM;
 ultrasonic_t flipper0_idx = FLIPPER0;
 ultrasonic_t flipper1_idx = FLIPPER1;
 ultrasonic_t flipper2_idx = FLIPPER2;
+
+ultrasonic_t active_sensor = CAM;
 
 // gpios for trigger and echos
 mxc_gpio_cfg_t trigger1_gpio;
@@ -138,23 +132,30 @@ uint8_t volatile triggers[] = {0,0,0,0};
 void echo_handler(void* cb_data)
 {
     // get the sensor idx from the callback data
-    ultrasonic_t sensor_idx = *(ultrasonic_t*)(cb_data);
+    ultrasonic_t volatile sensor_idx = *(ultrasonic_t*)(cb_data);
+
+    if(sensor_idx != active_sensor)
+    {
+        return;
+    }
 
     // first interrupt (rising edge)
-    if(!current_pulse_values[sensor_idx])
+    if(current_pulse_values[sensor_idx] == 0)
     {
         // store the start time
         current_pulse_values[sensor_idx] = global_counter;
+        //printf("idx: %d ^ cp: %d\n",sensor_idx, current_pulse_values[sensor_idx]);
     }
     // second interrupt (falling edge)
     else
     {
         time_intervals[sensor_idx] = (global_counter - current_pulse_values[sensor_idx])*100/58;
-        // printf("S3 dist: %4dcm\n",time_intervals[3]*100/58);
-        // printf("S0 dist: %4dcm\n",time_intervals[0]*100/58);
-        // printf("S1 dist: %4dcm\n",time_intervals[1]*100/58);
-        // printf("S2 dist: %4dcm\n",time_intervals[2]*100/58);
-        // printf("\033[0;0f");
+        //printf("idx: %d _ gc: %d ti: %d\n",sensor_idx, global_counter, time_intervals[sensor_idx]);
+        printf("S3 dist: %4dcm\n",time_intervals[3]*100/58);
+        printf("S0 dist: %4dcm\n",time_intervals[0]*100/58);
+        printf("S1 dist: %4dcm\n",time_intervals[1]*100/58);
+        printf("S2 dist: %4dcm\n",time_intervals[2]*100/58);
+        printf("\033[0;0f");
         current_pulse_values[sensor_idx] = 0;
 
         // interval less than 10ms means object detected (don't want repeated detection)
@@ -164,22 +165,50 @@ void echo_handler(void* cb_data)
             object_statuses[sensor_idx] = 1;
             triggers[sensor_idx] = 1;
             //printf("object %d present\n",sensor_idx);
-            printf("S2: %d\n",object_statuses[2]);
-            printf("S1: %d\n",object_statuses[1]);
-            printf("S0: %d\n",object_statuses[0]);
-            printf("S3: %d\n",object_statuses[3]);
-            printf("\033[0;0f");
+            // printf("S2: %d\n",object_statuses[2]);
+            // printf("S1: %d\n",object_statuses[1]);
+            // printf("S0: %d\n",object_statuses[0]);
+            // printf("S3: %d\n",object_statuses[3]);
+            // printf("\033[0;0f");
         }
         else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH)
         {
             // reset the state
             object_statuses[sensor_idx] = 0;
             //printf("object %d left\n", sensor_idx);
-            printf("S2: %d\n",object_statuses[2]);
-            printf("S1: %d\n",object_statuses[1]);
-            printf("S0: %d\n",object_statuses[0]);
-            printf("S3: %d\n",object_statuses[3]);
-            printf("\033[0;0f");
+            // printf("S2: %d\n",object_statuses[2]);
+            // printf("S1: %d\n",object_statuses[1]);
+            // printf("S0: %d\n",object_statuses[0]);
+            // printf("S3: %d\n",object_statuses[3]);
+            // printf("\033[0;0f");
+        }
+
+        // after receiving a response, go to the next sensor
+        active_sensor += 1;
+        if(active_sensor == 4)
+        {
+            active_sensor = 0;
+        }
+        switch (active_sensor)
+        {
+            case CAM:
+                activatecam();
+                break;
+
+            case FLIPPER0:
+                activate0();
+                break;
+
+            case FLIPPER1:
+                activate1();
+                break;
+
+            case FLIPPER2:
+                activate2();
+                break;
+            
+            default:
+                break;
         }
     }
 }
@@ -187,12 +216,13 @@ void echo_handler(void* cb_data)
 void triggered()
 {
     // check if any arm has been triggered
-    for(int i = 0; i < 2; i++)
+    for(int i = 0; i < 3; i++)
     {
         if(triggers[i] == 1)
         {
             // do the arm movement test
-            go_home_reverse(i);
+            //go_home_reverse(i);
+            target_tics(i,-40);
             MXC_Delay(SEC(1));
             go_home_forward(i);
 
@@ -237,7 +267,7 @@ void init_ultrasonic_gpios()
     MXC_GPIO_EnableInt(echo_flipper1_gpio.port, echo_flipper1_gpio.mask);
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO2)));
 
-    // // // flipper 2 echo gpio
+    // // flipper 2 echo gpio
     echo_flipper2_gpio.port = MXC_GPIO1;
     echo_flipper2_gpio.mask = MXC_GPIO_PIN_1;
     echo_flipper2_gpio.func = MXC_GPIO_FUNC_IN;
