@@ -22,7 +22,7 @@
 #include "I2C_funcs.h"
 #include "motor_funcs.h"
 #include "tmr_funcs.h"
-//#include "ir_gpio_funcs.h"
+#include "cnn_helper_funcs.h"
 
 #include "ultrasonic.h"
 
@@ -38,7 +38,7 @@ int main()
     printf("systick init\n");
     SysTick_Setup();
 
-    // startup_cnn();
+    startup_cnn();
     
 
     // init I2C

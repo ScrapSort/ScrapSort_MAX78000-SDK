@@ -29,8 +29,8 @@ void activatecam();
 void to_trigger();
 
 // these functions are used to set up a timer for closing the arms
-// void expiration_handler();
-// int init_arm_timer();
+void expiration_handler();
+int init_arm_timer();
 
 // checks all interrupt flags
 void check_all_callbacks();
