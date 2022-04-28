@@ -22,7 +22,6 @@
 #include "I2C_funcs.h"
 #include "motor_funcs.h"
 #include "tmr_funcs.h"
-//#include "ir_gpio_funcs.h"
 
 #include "ultrasonic.h"
 
@@ -32,14 +31,13 @@
 int main()
 {
     MXC_ICC_Enable(MXC_ICC0); // Enable cache
+
     // Switch to 100 MHz clock
     MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
     SystemCoreClockUpdate();
-    printf("systick init\n");
-    SysTick_Setup();
 
-    // startup_cnn();
-    
+    // initialize systick
+    SysTick_Setup();
 
     // init I2C
     if (I2C_Init() != E_NO_ERROR) 
@@ -68,15 +66,20 @@ int main()
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
     
+    // initialize the ultrasonic sensor pins
     init_trigger_gpios();  
     init_echo_gpios();
+
+    // set the motor profile for this test
     set_motor_profile(0, MOTOR_PROFILE_SPEED);
     set_motor_profile(1, MOTOR_PROFILE_SPEED);
     set_motor_profile(2, MOTOR_PROFILE_SPEED);
 
+    // activate the first ultrasonic sensor
+    activate_triggercam();
+
     // ======================== Main Loop =========================
-    
-    activatecam();
+
     while(1) 
     {
         // check interrupt callbacks (code that should be executed outside interrupts)

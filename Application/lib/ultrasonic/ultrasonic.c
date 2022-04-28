@@ -45,49 +45,16 @@ uint32_t volatile time_intervals[] = {100,100,100,100}; // pulse width in ticks,
 uint16_t volatile object_statuses[] = {0,0,0,0}; // state variable to track if object in front of sensor
 uint8_t volatile trigger_state[] = {0,0,0,0}; // state variable to track if a sensor needs to fire
 
-// sorter sorting_queues;
-// volatile queue expirations;
-
-// volatile uint8_t curr_stepper_idx;
-// volatile uint8_t next_stepper_idx;
-
+// store interrupt callback functions
 flag_callback flag_callback_funcs[NUM_FLAGS];
 uint8_t flag_callback_params[NUM_FLAGS] = {0};
-
-// volatile int exp_times[] = {0,0,0,0,0};
-
-// bool is_first = true;
 
 
 void camera_callback()
 {
     printf("Cam handler\n");
-    // static cnn_output_t output;
-
-    // // call camera take picture
-    // output = *run_cnn();
-
-    // show_cnn_output(output);
-
-    // int class_type = output.output_class;
-    // printf("class type: %s\n", class_strings[class_type]);
-
-    // // add to queues w/ return val from classifier
-    // sorter__add_item(&sorting_queues, class_type);
 }
 
-// // closes correpsonding arm
-// void close_arm_callback()
-// {
-//     printf("close_handler\n");
-//     //set to high torque mode
-//     //set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
-
-//     //set to home
-//     go_home_forward(curr_stepper_idx);
-//     //target_tics(curr_stepper_idx, 0);
-    
-// }
 
 void echo_handler(void* cb_data)
 {
@@ -120,7 +87,7 @@ void echo_handler(void* cb_data)
             // there is an object in front of the sensor
             object_statuses[sensor_idx] = 1; // state update
             set_flag(sensor_idx); // will trigger arm to close in main
-            // printf("object %d present\n",sensor_idx);
+            
             printf("S2: %d\n",object_statuses[2]);
             printf("S1: %d\n",object_statuses[1]);
             printf("S0: %d\n",object_statuses[0]);
@@ -132,7 +99,7 @@ void echo_handler(void* cb_data)
         {
             // reset the state
             object_statuses[sensor_idx] = 0;
-            // printf("object %d left\n", sensor_idx);
+            
             printf("S2: %d\n",object_statuses[2]);
             printf("S1: %d\n",object_statuses[1]);
             printf("S0: %d\n",object_statuses[0]);
@@ -141,7 +108,6 @@ void echo_handler(void* cb_data)
         }
 
         // after receiving a response, tell the next sensor to trigger
-        
         active_sensor += 1;
         if(active_sensor == 4)
         {
@@ -153,37 +119,7 @@ void echo_handler(void* cb_data)
 
 void flipper_callback(uint8_t flipper_num)
 {   
-    // // check if the item that passed is this flipper's item
-    // if (sorter__detected_item(&sorting_queues, flipper_num)) { // same motor address as IR sensor address
-    //     //set to high speed profile
-    //     printf("Open Arm:%d\n",flipper_num);
-    //     //set_motor_profile(flipper_num, MOTOR_PROFILE_SPEED);
-
-    //     // open the arm
-    //     target_tics(flipper_num, -40);
-
-    //     // add this arm to the expiration queue with the expiration time (500ms delay)
-    //     queue__push(&expirations, flipper_num);
-    //     exp_times[flipper_num] = global_counter + 10240; // about 1 second
-    //     printf("exp time added: %i\n", exp_times[flipper_num]);
-
-    //     // something needs to start the expiration timer, only execute if this is the first item placed
-    //     if(is_first)
-    //     {
-    //         printf("start tmr: %d\n", flipper_num);
-    //         // clear flag
-    //         is_first = false;
-            
-    //         // get the next deadline and set the expiration time
-    //         int next_deadline = exp_times[flipper_num]; // do we need to reset this?
-    //         MXC_TMR1->cnt = 1024 - (next_deadline - global_counter);
-
-    //         // start the next timer
-    //         MXC_TMR_Start(MXC_TMR1);
-    //     }
-    // }
     // do the arm movement test
-    //go_home_reverse(i);
     target_tics(flipper_num,-40);
     MXC_Delay(SEC(1));
     go_home_forward(flipper_num);
@@ -212,28 +148,28 @@ void to_trigger()
     {
         case CAMERA:
         {
-            activatecam();
+            activate_triggercam();
             trigger_state[CAMERA] = 0;
             break;
         }
 
         case FLIPPER_0:
         {
-            activate0();
+            activate_trigger0();
             trigger_state[FLIPPER_0] = 0;
             break;
         }
 
         case FLIPPER_1:
         {
-            activate1();
+            activate_trigger1();
             trigger_state[FLIPPER_1] = 0;
             break;
         }
 
         case FLIPPER_2:
         {
-            activate2();
+            activate_trigger2();
             trigger_state[FLIPPER_2] = 0;
             break;
         }
@@ -344,28 +280,28 @@ void check_all_callbacks()
     } 
 }
 
-void activate0()
+void activate_trigger0()
 {
     trigger0_high();
     MXC_Delay(10);
     trigger0_low();
 }
 
-void activate1()
+void activate_trigger1()
 {
     trigger1_high();
     MXC_Delay(10);
     trigger1_low();
 }
 
-void activate2()
+void activate_trigger2()
 {
     trigger2_high();
     MXC_Delay(10);
     trigger2_low();
 }
 
-void activatecam()
+void activate_triggercam()
 {
     triggercam_high();
     MXC_Delay(10);

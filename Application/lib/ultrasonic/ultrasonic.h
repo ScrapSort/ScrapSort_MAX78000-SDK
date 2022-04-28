@@ -20,17 +20,13 @@ void triggercam_high();
 void triggercam_low();
 
 // triggers the corresponding sensor
-void activate0();
-void activate1();
-void activate2();
-void activatecam();
+void activate_trigger0();
+void activate_trigger1();
+void activate_trigger2();
+void activate_triggercam();
 
 // checks if a sensor needs to be triggered
 void to_trigger();
-
-// these functions are used to set up a timer for closing the arms
-// void expiration_handler();
-// int init_arm_timer();
 
 // checks all interrupt flags
 void check_all_callbacks();
