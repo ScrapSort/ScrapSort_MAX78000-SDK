@@ -22,8 +22,9 @@
 #include "I2C_funcs.h"
 #include "motor_funcs.h"
 #include "tmr_funcs.h"
-
+#include "cnn_helper_funcs.h"
 #include "ultrasonic.h"
+#include "camera_tft_funcs.h"
 
 
 
@@ -38,6 +39,10 @@ int main()
 
     // initialize systick
     SysTick_Setup();
+
+    LCD_Camera_Setup();
+
+    startup_cnn();
 
     // init I2C
     if (I2C_Init() != E_NO_ERROR) 

@@ -50,9 +50,17 @@ flag_callback flag_callback_funcs[NUM_FLAGS];
 uint8_t flag_callback_params[NUM_FLAGS] = {0};
 
 
-void camera_callback()
+void camera_callback(uint8_t cb_data)
 {
-    printf("Cam handler\n");
+    static cnn_output_t output;
+
+    // call camera take picture
+    output = *run_cnn();
+
+    show_cnn_output(output);
+
+    int class_type = output.output_class;
+    printf("class type: %s\n", class_strings[class_type]);
 }
 
 
@@ -88,11 +96,11 @@ void echo_handler(void* cb_data)
             object_statuses[sensor_idx] = 1; // state update
             set_flag(sensor_idx); // will trigger arm to close in main
             
-            printf("S2: %d\n",object_statuses[2]);
-            printf("S1: %d\n",object_statuses[1]);
-            printf("S0: %d\n",object_statuses[0]);
-            printf("S3: %d\n",object_statuses[3]);
-            printf("\033[0;0f");
+            // printf("S2: %d\n",object_statuses[2]);
+            // printf("S1: %d\n",object_statuses[1]);
+            // printf("S0: %d\n",object_statuses[0]);
+            // printf("S3: %d\n",object_statuses[3]);
+            // printf("\033[0;0f");
         }
         // object in front of the sensor and beyond the threshold, update the state
         else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH)
@@ -100,11 +108,11 @@ void echo_handler(void* cb_data)
             // reset the state
             object_statuses[sensor_idx] = 0;
             
-            printf("S2: %d\n",object_statuses[2]);
-            printf("S1: %d\n",object_statuses[1]);
-            printf("S0: %d\n",object_statuses[0]);
-            printf("S3: %d\n",object_statuses[3]);
-            printf("\033[0;0f");
+            // printf("S2: %d\n",object_statuses[2]);
+            // printf("S1: %d\n",object_statuses[1]);
+            // printf("S0: %d\n",object_statuses[0]);
+            // printf("S3: %d\n",object_statuses[3]);
+            // printf("\033[0;0f");
         }
 
         // after receiving a response, tell the next sensor to trigger
