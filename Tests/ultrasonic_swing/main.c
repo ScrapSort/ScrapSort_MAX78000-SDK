@@ -1,8 +1,3 @@
-#define FIRST_MOTOR_TEST_NUM 0
-#define LAST_MOTOR_TEST_NUM 0
-#define IN_TIC_NUM 10
-#define OUT_TIC_NUM -110
-
 /***** Includes *****/
 #include <stdio.h>
 #include <stdint.h>
@@ -23,7 +18,7 @@
 #include "motor_funcs.h"
 #include "tmr_funcs.h"
 #include "cnn_helper_funcs.h"
-
+#include "camera_tft_funcs.h"
 #include "ultrasonic.h"
 
 
@@ -31,15 +26,14 @@
 // *****************************************************************************
 int main()
 {
-    MXC_ICC_Enable(MXC_ICC0); // Enable cache
     // Switch to 100 MHz clock
     MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
     SystemCoreClockUpdate();
-    printf("systick init\n");
+
+    // initialize systick
     SysTick_Setup();
 
-    startup_cnn();
-    
+    LCD_Camera_Setup();
 
     // init I2C
     if (I2C_Init() != E_NO_ERROR) 
@@ -68,15 +62,22 @@ int main()
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
     
+    // initialize the ultrasonic sensor pins
     init_trigger_gpios();  
     init_echo_gpios();
+
+    // set the motor profile for this test
     set_motor_profile(0, MOTOR_PROFILE_SPEED);
     set_motor_profile(1, MOTOR_PROFILE_SPEED);
     set_motor_profile(2, MOTOR_PROFILE_SPEED);
 
+    startup_cnn();
+
+    // activate the first ultrasonic sensor
+    activate_triggercam();
+
     // ======================== Main Loop =========================
     
-    activatecam();
     while(1) 
     {
         // check interrupt callbacks (code that should be executed outside interrupts)
@@ -84,5 +85,10 @@ int main()
 
         // check if the next ultrasonic sensor should be triggered
         to_trigger();
+
+        if(global_counter % 20000 == 0)
+        {
+            get_heartbeat();
+        }
     }
 }

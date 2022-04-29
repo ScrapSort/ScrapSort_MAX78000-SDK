@@ -57,11 +57,10 @@ uint8_t flag_callback_params[NUM_FLAGS] = {0};
 volatile int exp_times[] = {0,0,0,0,0};
 
 bool is_first = true;
-
+uint16_t arm_hold_time = 1300;
 
 void camera_callback()
 {
-    printf("Cam handler\n");
     static cnn_output_t output;
 
     // call camera take picture
@@ -70,7 +69,7 @@ void camera_callback()
     show_cnn_output(output);
 
     int class_type = output.output_class;
-    printf("class type: %s\n", class_strings[class_type]);
+    // - printf("class type: %s\n", class_strings[class_type]);
 
     // add to queues w/ return val from classifier
     sorter__add_item(&sorting_queues, class_type);
@@ -79,7 +78,7 @@ void camera_callback()
 // closes correpsonding arm
 void close_arm_callback()
 {
-    printf("close_handler\n");
+    // - printf("close_handler\n");
     //set to high torque mode
     //set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
 
@@ -121,11 +120,11 @@ void echo_handler(void* cb_data)
             object_statuses[sensor_idx] = 1; // state update
             set_flag(sensor_idx); // will trigger arm to close in main
             // printf("object %d present\n",sensor_idx);
-            printf("S2: %d\n",object_statuses[2]);
-            printf("S1: %d\n",object_statuses[1]);
-            printf("S0: %d\n",object_statuses[0]);
-            printf("S3: %d\n",object_statuses[3]);
-            printf("\033[0;0f");
+            // printf("S2: %d\n",object_statuses[2]);
+            // printf("S1: %d\n",object_statuses[1]);
+            // printf("S0: %d\n",object_statuses[0]);
+            // printf("S3: %d\n",object_statuses[3]);
+            // printf("\033[0;0f");
         }
         // object in front of the sensor and beyond the threshold, update the state
         else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH)
@@ -133,11 +132,11 @@ void echo_handler(void* cb_data)
             // reset the state
             object_statuses[sensor_idx] = 0;
             // printf("object %d left\n", sensor_idx);
-            printf("S2: %d\n",object_statuses[2]);
-            printf("S1: %d\n",object_statuses[1]);
-            printf("S0: %d\n",object_statuses[0]);
-            printf("S3: %d\n",object_statuses[3]);
-            printf("\033[0;0f");
+            // printf("S2: %d\n",object_statuses[2]);
+            // printf("S1: %d\n",object_statuses[1]);
+            // printf("S0: %d\n",object_statuses[0]);
+            // printf("S3: %d\n",object_statuses[3]);
+            // printf("\033[0;0f");
         }
 
         // after receiving a response, tell the next sensor to trigger
@@ -156,7 +155,7 @@ void flipper_callback(uint8_t flipper_num)
     // check if the item that passed is this flipper's item
     if (sorter__detected_item(&sorting_queues, flipper_num)) { // same motor address as IR sensor address
         //set to high speed profile
-        printf("Open Arm:%d\n",flipper_num);
+        // - printf("Open Arm:%d\n",flipper_num);
         //set_motor_profile(flipper_num, MOTOR_PROFILE_SPEED);
 
         // open the arm
@@ -164,19 +163,19 @@ void flipper_callback(uint8_t flipper_num)
 
         // add this arm to the expiration queue with the expiration time (500ms delay)
         queue__push(&expirations, flipper_num);
-        exp_times[flipper_num] = global_counter + 1024; // about 1 second
-        printf("exp time added: %i\n", exp_times[flipper_num]);
+        exp_times[flipper_num] = global_counter/10 + arm_hold_time; // about 1 second
+        // - printf("exp time added: %i\n", exp_times[flipper_num]);
 
         // something needs to start the expiration timer, only execute if this is the first item placed
         if(is_first)
         {
-            printf("start tmr: %d\n", flipper_num);
+            // - printf("start tmr: %d\n", flipper_num);
             // clear flag
             is_first = false;
             
             // get the next deadline and set the expiration time
             int next_deadline = exp_times[flipper_num]; // do we need to reset this?
-            MXC_TMR1->cnt = 1024 - (next_deadline - global_counter);
+            MXC_TMR1->cnt = arm_hold_time - (next_deadline - global_counter/10)+100;
 
             // start the next timer
             MXC_TMR_Start(MXC_TMR1);
@@ -207,28 +206,28 @@ void to_trigger()
     {
         case CAMERA:
         {
-            activatecam();
+            activate_triggercam();
             trigger_state[CAMERA] = 0;
             break;
         }
 
         case FLIPPER_0:
         {
-            activate0();
+            activate_trigger0();
             trigger_state[FLIPPER_0] = 0;
             break;
         }
 
         case FLIPPER_1:
         {
-            activate1();
+            activate_trigger1();
             trigger_state[FLIPPER_1] = 0;
             break;
         }
 
         case FLIPPER_2:
         {
-            activate2();
+            activate_trigger2();
             trigger_state[FLIPPER_2] = 0;
             break;
         }
@@ -351,28 +350,28 @@ void check_all_callbacks()
     } 
 }
 
-void activate0()
+void activate_trigger0()
 {
     trigger0_high();
     MXC_Delay(10);
     trigger0_low();
 }
 
-void activate1()
+void activate_trigger1()
 {
     trigger1_high();
     MXC_Delay(10);
     trigger1_low();
 }
 
-void activate2()
+void activate_trigger2()
 {
     trigger2_high();
     MXC_Delay(10);
     trigger2_low();
 }
 
-void activatecam()
+void activate_triggercam()
 {
     triggercam_high();
     MXC_Delay(10);
@@ -437,8 +436,8 @@ void expiration_handler()
     
     // get next item on the queue, says which stepper needs to close
     curr_stepper_idx = queue__pop(&expirations);
-    printf("tmr exp: %i\n", curr_stepper_idx);
-    //printf("curr:%i\n",curr_stepper_idx);
+    // - printf("tmr exp: %i\n", curr_stepper_idx);
+    //// - printf("curr:%i\n",curr_stepper_idx);
 
     // set up the next timer interrupt by looking at the next item on the queue
     int next_stepper = queue__peak(&expirations);
@@ -446,17 +445,17 @@ void expiration_handler()
     // if there is no next item, we need to reset
     if(next_stepper == -1)
     {
-        printf("q empty, rst\n");
+        // - printf("q empty, rst\n");
         is_first = true;
     }
     else // there is a next item waiting
     {
         uint32_t next_deadline = exp_times[next_stepper];
-        printf("next tmr start: %i, exp in %ims\n",next_stepper, next_deadline - global_counter);
-        printf("next deadline: %i, global cntr: %i\n", next_deadline, global_counter);
+        // - printf("next tmr start: %i, exp in %ims\n",next_stepper, next_deadline - global_counter/10);
+        // - printf("next deadline: %i, global cntr: %i\n", next_deadline, global_counter/10);
 
         // set the next deadline
-        MXC_TMR1->cnt = 1024 - (next_deadline - global_counter);
+        MXC_TMR1->cnt = arm_hold_time - (next_deadline - global_counter/10);
 
         // start the next timer
         MXC_TMR_Start(MXC_TMR1);
@@ -471,13 +470,13 @@ int init_arm_timer()
     NVIC_SetVector(TMR1_IRQn, expiration_handler);
     NVIC_EnableIRQ(TMR1_IRQn);
 
-    // init timer 0 to interrupt every expiration period 500 ms (32KHz clock with prescaler 32 and count compare 1024)
+    // init timer 0 to interrupt every expiration period 500 ms (32KHz clock with prescaler 32 and count compare arm_hold_time)
     MXC_TMR_Shutdown(MXC_TMR1);
-    tmr.pres = TMR_PRES_32; // counts every 1/1024 seconds
+    tmr.pres = TMR_PRES_32; // counts every 1/arm_hold_time seconds
     tmr.mode = TMR_MODE_CONTINUOUS;
     tmr.bitMode = TMR_BIT_MODE_32;
     tmr.clock = MXC_TMR_32K_CLK;
-    tmr.cmp_cnt = 1024; //expiration_period*1024/1000; // approximation, can only get exact for multiples of 2
+    tmr.cmp_cnt = arm_hold_time; //expiration_period*arm_hold_time/1000; // approximation, can only get exact for multiples of 2
     tmr.pol = 0;
     
     // init the timer
@@ -492,4 +491,9 @@ int init_arm_timer()
 
     printf("State timer initialized.\n\n");
     return 0;
+}
+
+void get_heartbeat()
+{
+    printf("HB -- act: %d trg [%d%d%d%d]\n", active_sensor, trigger_state[0],trigger_state[1],trigger_state[2],trigger_state[3]);
 }
