@@ -18,4 +18,7 @@ void switch_class();
 int get_capture_state();
 
 int get_switch_state();
+
+void trigger_cam();
+void trigger();
 #endif

@@ -17,6 +17,8 @@
 #include "tmr_funcs.h"
 #include "cnn_helper_funcs.h"
 #include "camera_tft_funcs.h"
+#include "capture_button.h"
+#include "sd_card_funcs.h"
 
 
 #define COLLECT_DATA
@@ -45,7 +47,7 @@ int main()
     LCD_Camera_Setup();
 
     // activate the first ultrasonic sensor
-    activate_triggercam();
+    trigger_cam();
 
     // ======================== Main Loop =========================
     
