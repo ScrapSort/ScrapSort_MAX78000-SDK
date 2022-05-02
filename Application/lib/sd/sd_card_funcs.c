@@ -209,7 +209,7 @@ int init_card()
 
     printf("Initializing SD Card \n");
 
-    sprintf(directory,"sorting_imgs");
+    sprintf(directory,"recycling_imgs");
     status = make_directory(directory);
     
     if(status < 0)
@@ -220,28 +220,28 @@ int init_card()
     else
     {
         // make directories for object categories
-        sprintf(directory,"sorting_imgs/Cup");
-        sprintf(filename,"sorting_imgs/Cup/num_imgs");
+        sprintf(directory,"recycling_imgs/Paper");
+        sprintf(filename,"recycling_imgs/Paper/num_imgs");
         make_directory(directory);
         create_file(filename);
 
-        sprintf(directory,"sorting_imgs/Hex");
-        sprintf(filename,"sorting_imgs/Hex/num_imgs");
+        sprintf(directory,"recycling_imgs/Metal");
+        sprintf(filename,"recycling_imgs/Metal/num_imgs");
         make_directory(directory);
         create_file(filename);
 
-        sprintf(directory,"sorting_imgs/Trap");
-        sprintf(filename,"sorting_imgs/Trap/num_imgs");
+        sprintf(directory,"recycling_imgs/Plastic");
+        sprintf(filename,"recycling_imgs/Plastic/num_imgs");
         make_directory(directory);
         create_file(filename);
 
-        sprintf(directory,"sorting_imgs/Can");
-        sprintf(filename,"sorting_imgs/Can/num_imgs");
+        sprintf(directory,"recycling_imgs/Other");
+        sprintf(filename,"recycling_imgs/Other/num_imgs");
         make_directory(directory);
         create_file(filename);
 
-        sprintf(directory,"sorting_imgs/Bottle");
-        sprintf(filename,"sorting_imgs/Bottle/num_imgs");
+        sprintf(directory,"recycling_imgs/None");
+        sprintf(filename,"recycling_imgs/None/num_imgs");
         make_directory(directory);
         create_file(filename);
     }

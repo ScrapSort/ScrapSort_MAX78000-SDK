@@ -15,7 +15,7 @@ void init_class_button();
 void capture();
 void switch_class();
 
-int clicked();
+int get_capture_state();
 
-int switched();
+int get_switch_state();
 #endif
