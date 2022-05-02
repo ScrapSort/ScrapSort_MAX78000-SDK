@@ -57,7 +57,7 @@ endif
 
 # This is the path to the CMSIS root directory
 ifeq "$(MAXIM_PATH)" ""
-LIBS_DIR=../Libraries
+LIBS_DIR=$(shell cd ../Libraries; pwd)
 $(info LIBS_DIR path is $(LIBS_DIR))
 else
 LIBS_DIR=/$(subst \,/,$(subst :,,$(MAXIM_PATH))/Libraries)
@@ -145,20 +145,16 @@ PERIPH_DRIVER_DIR=$(LIBS_DIR)/PeriphDrivers
 include $(PERIPH_DRIVER_DIR)/periphdriver.mk
 export PERIPH_DRIVER_DIR
 
-
-
+SDHC_DRIVER_DIR=$(LIBS_DIR)/SDHC
+FAT32_DRIVER_DIR=$(SDHC_DRIVER_DIR)/ff13
+include $(FAT32_DRIVER_DIR)/fat32.mk
+include $(SDHC_DRIVER_DIR)/sdhc.mk
 
 ################################################################################
 # Include the rules for building for this target. All other makefiles should be
 # included before this one.
 
 include $(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source/$(COMPILER)/$(TARGET_LC).mk
-
-SDHC_DRIVER_DIR=$(LIBS_DIR)/SDHC
-FAT32_DRIVER_DIR=$(SDHC_DRIVER_DIR)/ff13
-include $(FAT32_DRIVER_DIR)/fat32.mk
-include $(SDHC_DRIVER_DIR)/sdhc.mk
-
 
 all:
 # 	arm-none-eabi-objcopy $(BUILD_DIR)/$(PROJECT).elf -R .sig -O binary $(BUILD_DIR)/$(PROJECT).bin
