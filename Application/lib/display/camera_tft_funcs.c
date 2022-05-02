@@ -200,9 +200,11 @@ void LCD_Camera_Setup()
   	int ret = camera_setup(get_image_x(), get_image_y(), PIXFORMAT_RGB565, FIFO_FOUR_BYTE, USE_DMA, dma_channel);
     if (ret != STATUS_OK) 
     {
-      //printf("Error returned from setting up camera. Error %d\n", ret);
+      printf("Error returned from setting up camera. Error %d\n", ret);
 	  }
   
     MXC_TFT_SetBackGroundColor(4);
     MXC_TFT_SetForeGroundColor(YELLOW);
+
+    printf("LCD and Camera Initialized\n");
 }

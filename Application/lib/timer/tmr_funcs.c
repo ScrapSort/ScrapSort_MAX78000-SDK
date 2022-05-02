@@ -158,6 +158,10 @@ void SysTick_Setup() {
     {
         printf("Systick Failed\n");
     }
+    else
+    {
+        printf("Systick initialized\n");
+    }
 }
 
 void SysTick_Handler() {

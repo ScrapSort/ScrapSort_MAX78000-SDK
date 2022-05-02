@@ -28,7 +28,16 @@ void activate_triggercam();
 // checks if a sensor needs to be triggered
 void to_trigger();
 
+<<<<<<< HEAD
+=======
+// these functions are used to set up a timer for closing the arms
+void expiration_handler();
+int init_arm_timer();
+
+>>>>>>> ultrasonic-integration
 // checks all interrupt flags
 void check_all_callbacks();
+
+void get_heartbeat();
 
 #endif
