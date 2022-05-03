@@ -120,10 +120,12 @@ LINKERFILE=$(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source/GCC/$(LINKER)
 BOARD_DIR=$(LIBS_DIR)/Boards/$(TARGET_UC)/$(BOARD)
 include $(BOARD_DIR)/board.mk
 
+
 # Include the peripheral driver
 PERIPH_DRIVER_DIR=$(LIBS_DIR)/PeriphDrivers
 include $(PERIPH_DRIVER_DIR)/periphdriver.mk
 export PERIPH_DRIVER_DIR
+
 
 SDHC_DRIVER_DIR=$(LIBS_DIR)/SDHC
 FAT32_DRIVER_DIR=$(SDHC_DRIVER_DIR)/ff13

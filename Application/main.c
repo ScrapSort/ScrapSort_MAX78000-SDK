@@ -42,6 +42,7 @@ int main()
     init_card();
     init_class_button();
     init_capture_button();
+    init_triggers();
     #endif
 
     LCD_Camera_Setup();

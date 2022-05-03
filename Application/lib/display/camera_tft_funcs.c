@@ -164,6 +164,8 @@ void init_LCD()
 void reset()
 {
   MXC_TFT_Init(MXC_SPI0, 1, &tft_reset_pin, NULL);
+  MXC_TFT_ClearScreen();
+  MXC_TFT_SetRotation(ROTATE_180);
 }
 
 

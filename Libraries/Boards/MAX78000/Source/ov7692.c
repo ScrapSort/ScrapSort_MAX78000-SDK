@@ -83,7 +83,7 @@ static const uint8_t default_regs[][2] = {
     {0xcf, 0x40}, // Low 8 bits of vertical output size=64 lines high (default: 0x80)
     {0x13, 0xef}, // Fast AGC/AEC, unlimited step size, banding filter ON,
     // Tp level exposure ON, Auto AEC/AGC/AWB (default: 0xe5)
-    {0x14, 0x24}, // Automatic gain ceiling = 16x, Auto 50/60 selection (default: 0x30)
+    {0x14, 0xA}, // Automatic gain ceiling = 16x, Auto 50/60 selection (default: 0x30)
     {0x70, 0x10}, // Low light limit enable (default: 0x0)
     {0x71, 0x00}, // (default: 0x0)
     {0x72, 0x0a}, // Low light threshold, (default: 0x0)

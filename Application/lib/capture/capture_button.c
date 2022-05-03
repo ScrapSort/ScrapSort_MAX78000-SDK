@@ -23,8 +23,8 @@ mxc_gpio_cfg_t capture_gpio;
 mxc_gpio_cfg_t cd_gpio;
 
 // isr callback data
-const uint8_t cam_sensor_id = 0;
-const uint8_t flipper_sensor_id = 1;
+const char cam_sensor_id = 0;
+const char flipper_sensor_id = 1;
 uint8_t volatile active = cam_sensor_id;
 
 // state variables for ultrasonic sensors
@@ -53,11 +53,11 @@ area_t cover_text = {0, 280, 240, 30};
 char file_prefix[8] = "img0000";
 
 // file paths
-char class1[] = "sorting_imgs/Paper/num_imgs";
-char class2[] = "sorting_imgs/Metal/num_imgs";
-char class3[] = "sorting_imgs/Plastic/num_imgs";
-char class4[] = "sorting_imgs/Other/num_imgs";
-char class5[] = "sorting_imgs/None/num_imgs";
+char class1[] = "recycling_imgs/Paper/num_imgs";
+char class2[] = "recycling_imgs/Metal/num_imgs";
+char class3[] = "recycling_imgs/Plastic/num_imgs";
+char class4[] = "recycling_imgs/Other/num_imgs";
+char class5[] = "recycling_imgs/None/num_imgs";
 
 // ========================================================================================= //
 // ================================ FUNCTION DEFINITIONS =================================== //
@@ -92,9 +92,9 @@ void trigger_cam()
 
 void trigger_flipper()
 {
-    MXC_GPIO_OutSet(MXC_GPIO1, MXC_GPIO_PIN_0);
+    MXC_GPIO_OutSet(MXC_GPIO3, MXC_GPIO_PIN_1);
     MXC_Delay(10);
-    MXC_GPIO_OutClr(MXC_GPIO1, MXC_GPIO_PIN_0);
+    MXC_GPIO_OutClr(MXC_GPIO3, MXC_GPIO_PIN_1);
 }
 
 void switch_class()
@@ -191,24 +191,24 @@ void capture()
     // go to the corresponding directory, save the image
     // mount the SD card
     mount();
-    cd("sorting_imgs");
+    cd("recycling_imgs");
     cd(classes[class_idx]);
     write_image(file_prefix);
     reset();
     TFT_Print(buffer,class_idx*48,280,font,sprintf(buffer,classes[class_idx]));
 }
 
-void echo_isr(uint8_t sensor_id)
+void echo_isr(void* sensor_id)
 {
     // get the sensor idx from the callback data
-    uint8_t sensor_idx = *(uint8_t*)(sensor_id);
+    uint8_t sensor_idx = *(char*)(sensor_id);
 
     // don't allow nonactive sensors to triger interrupts
     // for example if there is interference between sensors
-    if(sensor_idx != active)
-    {
-        return;
-    }
+    // if(sensor_idx != active)
+    // {
+    //     return;
+    // }
 
     // first interrupt (rising edge)
     if(current_pulse[sensor_idx] == 0)
@@ -224,8 +224,9 @@ void echo_isr(uint8_t sensor_id)
         current_pulse[sensor_idx] = 0;
 
         // no object in front of the sensor yet and it is within the threshold, trigger the arm to close
-        if(intervals[sensor_idx] < CLOSE_THRESH)
+        if(statuses[sensor_idx] && intervals[sensor_idx] < CLOSE_THRESH)
         {
+            statuses[sensor_idx] = 1; 
             if(sensor_idx == cam_sensor_id)
             {
                 capture_state = 1;
@@ -236,62 +237,64 @@ void echo_isr(uint8_t sensor_id)
             }
         }
         // object in front of the sensor and beyond the threshold, update the state
-        else if(intervals[sensor_idx] >= FAR_THRESH)
+        else if(statuses[sensor_idx] && intervals[sensor_idx] >= FAR_THRESH)
         {
             // reset the state
             statuses[sensor_idx] = 0;
         }
 
         // after receiving a response, tell the next sensor to trigger
-        active += 1;
-        if(active == 2)
-        {
-            active = 0;
-        }
-        trigger_states[active] = 1;
+        // active += 1;
+        // if(active == 2)
+        // {
+        //     active = 0;
+        // }
+        // trigger_states[active] = 1;
     }
 }
 
 void trigger()
 {
-    // check if any sensor needs to be triggered
-    int sensor_idx = -1;
-    for(int i = 0; i < 2; i++)
-    {
-        if(trigger_states[i] == 1)
-        {
-            sensor_idx = i;
-            break;
-        }
-    }
-    // if none need to be triggered, return
-    if(sensor_idx == -1)
-    {
-        return;
-    }
+    trigger_cam();
+    trigger_flipper();
+    // // check if any sensor needs to be triggered
+    // int sensor_idx = -1;
+    // for(int i = 0; i < 2; i++)
+    // {
+    //     if(trigger_states[i] == 1)
+    //     {
+    //         sensor_idx = i;
+    //         break;
+    //     }
+    // }
+    // // if none need to be triggered, return
+    // if(sensor_idx == -1)
+    // {
+    //     return;
+    // }
     
-    // trigger the corresponding sensor
-    switch (sensor_idx)
-    {
-        case cam_sensor_id:
-        {
-            trigger_cam();
-            trigger_states[cam_sensor_id] = 0;
-            break;
-        }
+    // // trigger the corresponding sensor
+    // switch (sensor_idx)
+    // {
+    //     case cam_sensor_id:
+    //     {
+    //         trigger_cam();
+    //         trigger_states[cam_sensor_id] = 0;
+    //         break;
+    //     }
 
-        case flipper_sensor_id:
-        {
-            trigger_flipper();
-            trigger_states[flipper_sensor_id] = 0;
-            break;
-        }
+    //     case flipper_sensor_id:
+    //     {
+    //         trigger_flipper();
+    //         trigger_states[flipper_sensor_id] = 0;
+    //         break;
+    //     }
 
-        default:
-        {
-            break;
-        }
-    }
+    //     default:
+    //     {
+    //         break;
+    //     }
+    // }
 }
 
 
@@ -304,7 +307,7 @@ void init_capture_button()
     capture_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
 
     MXC_GPIO_Config(&capture_gpio);
-    MXC_GPIO_RegisterCallback(&capture_gpio, echo_isr, (void*)cam_sensor_id);
+    MXC_GPIO_RegisterCallback(&capture_gpio, echo_isr, (void*)(&cam_sensor_id));
     MXC_GPIO_IntConfig(&capture_gpio, MXC_GPIO_INT_BOTH);
     MXC_GPIO_EnableInt(MXC_GPIO1, MXC_GPIO_PIN_6);
     NVIC_EnableIRQ(GPIO1_IRQn);
@@ -313,18 +316,18 @@ void init_capture_button()
 // Second Ultrasonic
 void init_class_button()
 {
-    cd_gpio.port = MXC_GPIO2;
-    cd_gpio.mask = MXC_GPIO_PIN_3;
+    cd_gpio.port = MXC_GPIO1;
+    cd_gpio.mask = MXC_GPIO_PIN_1;
     cd_gpio.func = MXC_GPIO_FUNC_IN;
     cd_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
 
     MXC_GPIO_Config(&cd_gpio);
-    MXC_GPIO_RegisterCallback(&cd_gpio, echo_isr, (void*)flipper_sensor_id);
+    MXC_GPIO_RegisterCallback(&cd_gpio, echo_isr, (void*)(&flipper_sensor_id));
     MXC_GPIO_IntConfig(&cd_gpio, MXC_GPIO_INT_BOTH);
-    MXC_GPIO_EnableInt(MXC_GPIO2, MXC_GPIO_PIN_3);
-    NVIC_EnableIRQ(GPIO2_IRQn);
+    MXC_GPIO_EnableInt(MXC_GPIO1, MXC_GPIO_PIN_1);
+    NVIC_EnableIRQ(GPIO1_IRQn);
 
-    cd("sorting_imgs");
+    cd("recycling_imgs");
     ls();
     cd(classes[class_idx]);
     ls();
@@ -337,4 +340,24 @@ void init_class_button()
 
     reset();
     TFT_Print(buffer,class_idx*48,280,font,sprintf(buffer,classes[class_idx]));
+}
+
+void init_triggers()
+{
+    mxc_gpio_cfg_t triggercam_gpio;
+    mxc_gpio_cfg_t trigger0_gpio;
+
+    // cam
+    triggercam_gpio.port = MXC_GPIO2;
+    triggercam_gpio.mask = MXC_GPIO_PIN_4;
+    triggercam_gpio.func = MXC_GPIO_FUNC_OUT;
+    triggercam_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
+    MXC_GPIO_Config(&triggercam_gpio);
+
+    // flipper 2
+    trigger0_gpio.port = MXC_GPIO3;
+    trigger0_gpio.mask = MXC_GPIO_PIN_1;
+    trigger0_gpio.func = MXC_GPIO_FUNC_OUT;
+    trigger0_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
+    MXC_GPIO_Config(&trigger0_gpio);
 }

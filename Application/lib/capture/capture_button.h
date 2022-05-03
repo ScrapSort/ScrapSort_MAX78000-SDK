@@ -21,4 +21,6 @@ int get_switch_state();
 
 void trigger_cam();
 void trigger();
+
+void init_triggers();
 #endif
