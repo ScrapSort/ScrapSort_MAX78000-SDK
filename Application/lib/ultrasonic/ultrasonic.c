@@ -106,6 +106,11 @@ void echo_handler(void* cb_data)
             // printf("S3: %d, %d cm\n",object_statuses[3],time_intervals[sensor_idx]);
             // printf("\033[0;0f");
         }
+        // update the timestamp if object still there
+        else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] < CLOSE_THRESH)
+        {
+            object_timestamps[sensor_idx] = global_counter;
+        }
         // object in front of the sensor and beyond the threshold, update the state
         else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH && ((global_counter-object_timestamps[sensor_idx]) > DEBOUNCE))
         {
