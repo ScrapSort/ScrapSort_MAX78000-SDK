@@ -80,6 +80,10 @@ int main()
     set_motor_profile(1, MOTOR_PROFILE_SPEED);
     set_motor_profile(2, MOTOR_PROFILE_SPEED);
 
+    go_home_forward(0);
+    go_home_forward(1);
+    go_home_forward(2);
+
     // activate the first ultrasonic sensor
     activate_triggercam();
 
@@ -92,5 +96,10 @@ int main()
 
         // check if the next ultrasonic sensor should be triggered
         to_trigger();
+
+        // if(global_counter % 20000 == 0)
+        // {
+        //     printf("HB\n");
+        // }
     }
 }
