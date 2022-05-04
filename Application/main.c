@@ -92,7 +92,7 @@ int main()
     }
 
     // init MOTORS
-    if (Motor_Init_Settings() != E_NO_ERROR) 
+    if (Motor_Init_Settings(motors, 3) != E_NO_ERROR) 
     {
         printf("MOTOR SETTINGS INITIALIZATION FAILURE\n");
     } 
@@ -103,10 +103,10 @@ int main()
     #endif
     #endif
 
-    cnn_output_t output;
-    set_motor_profile(0, MOTOR_PROFILE_SPEED);
-    set_motor_profile(1, MOTOR_PROFILE_SPEED);
-    set_motor_profile(2, MOTOR_PROFILE_SPEED);
+    cnn_output_t output;    
+    set_motor_profile(motors[0], MOTOR_PROFILE_SPEED);
+    set_motor_profile(motors[1], MOTOR_PROFILE_SPEED);
+    set_motor_profile(motors[2], MOTOR_PROFILE_SPEED);
     
     init_trigger();
     init_echo();

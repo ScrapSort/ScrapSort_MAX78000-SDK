@@ -34,20 +34,20 @@ typedef struct Motor_t{
 
 } Motor;
 
-
-
-
-
 // 200 steps/rev
 typedef enum MotorParams
 {
-  MotorParams__STEPS_PER_REV = 200
+  MotorParams__STEPS_PER_REV = 200,
+  MotorParams__NUM_OF_MOTORS = 3
 }MotorParams;
+
+extern Motor *motors[MotorParams__NUM_OF_MOTORS];
 
 void Debug_Motors(void);
 void rotate_revs(Motor *motor, float rotations);
 void target_tics(Motor *motor, int enc_tics);
 void wait_for_target(Motor *motor);
+void wait_for_home(Motor *motor);
 
 void deenergize(Motor *motor);
 void energize(Motor *motor);
@@ -73,12 +73,12 @@ uint8_t get_step_mode(Motor *motor);
 uint8_t get_current_limit(Motor *motor);
 float get_angle(Motor *motor);
 uint8_t get_microstep_factor(Motor *motor);
-uint32_t get_position(Motor *motor);
+uint32_t get_current_position(Motor *motor);
 
 void go_home_forward(Motor *motor);
 void go_home_reverse(Motor *motor);
 
-int Motor_Init_Settings();
+int Motor_Init_Settings(Motor *motors[], size_t num_of_motors);
 
 
 #endif

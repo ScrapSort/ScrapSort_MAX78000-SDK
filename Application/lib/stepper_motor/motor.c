@@ -15,6 +15,7 @@
 #include "I2C_funcs.h"
 #include "tic.h"
 
+Motor *motors[MotorParams__NUM_OF_MOTORS];
 
 uint32_t get_variable_32(Motor *motor, TicVarOffset offset){
     txdata[0] = TicCommand__GetVariable;
@@ -97,15 +98,25 @@ float get_max_microstep(Motor *motor){
 
     set_motor_profile(motor, MOTOR_PROFILE_CALIBRATE);
     go_home_reverse(motor);
-    wait_for_target(motor);
+    wait_for_home(motor);
     go_home_forward(motor);
-    wait_for_target(motor);
+    wait_for_home(motor);
     return 0;
 }
 
-// TODO 
 void wait_for_target(Motor *motor){
     //Blocks until the stepper is finished
+    while(get_current_position(motor) != motor->currTarget){
+        MXC_DELAY_MSEC(100);
+    }
+    return; 
+}
+
+void wait_for_home(Motor *motor){
+    //Blocks until the stepper is finished
+    while(get_current_position(motor) != 0){
+        MXC_DELAY_MSEC(100);
+    }
     return; 
 }
 
@@ -145,6 +156,7 @@ void set_motor_profile(Motor *motor, MOTOR_PROFILE profile){
     set_speed_max(motor, profile_speed_max);
     set_speed_start(motor, profile_speed_start);
     set_step_mode(motor, profile_step_mode);
+    get_microstep_factor(motor);
 }
 
 
@@ -275,11 +287,11 @@ uint8_t get_microstep_factor(Motor *motor){
 
 float get_angle(Motor *motor){
     get_microstep_factor(motor);
-    get_position(motor);
+    get_current_position(motor);
     return 360.0 * (motor->currPosition)/(MotorParams__STEPS_PER_REV * motor->microstepFactor);
 }
 
-uint32_t get_position(Motor *motor){
+uint32_t get_current_position(Motor *motor){
     //in microsteps
     motor->currPosition = get_variable_32(motor, TicVarOffset__CurrentPosition);
     return motor->currPosition;
