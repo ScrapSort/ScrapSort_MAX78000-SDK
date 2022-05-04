@@ -11,7 +11,7 @@
 #include "led.h"
 
 #include "I2C_funcs.h"
-#include "motor_funcs.h"
+#include "motor.h"
 
 /***** Globals *****/
 uint8_t txdata[I2C_BYTES]; //was static 

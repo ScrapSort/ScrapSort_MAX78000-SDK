@@ -17,7 +17,7 @@
 
 #include "tmr_funcs.h"
 #include "ir_gpio_funcs.h"
-#include "motor_funcs.h"
+#include "motor.h"
 
 
 #include "cnn_helper_funcs.h"

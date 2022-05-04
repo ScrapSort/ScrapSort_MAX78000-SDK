@@ -1,3 +1,6 @@
+#ifndef TIC_H
+#define TIC_H
+
 #include <stdint.h>
 
 typedef enum TicCommand
@@ -89,3 +92,6 @@ typedef enum TicVarOffset
     TicVarOffset__AgcFrequencyLimit     = 0x59, // uint8_t
     TicVarOffset__LastHpDriverErrors    = 0xFF, // uint8_t
 }TicVarOffset;
+
+
+#endif

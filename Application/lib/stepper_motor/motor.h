@@ -4,6 +4,13 @@
 #include <stdint.h>
 #include "tic.h"
 
+typedef enum
+{
+    MOTOR_PROFILE_TORQUE = 0,
+    MOTOR_PROFILE_SPEED,
+    MOTOR_PROFILE_CALIBRATE
+} MOTOR_PROFILE;
+
 typedef struct Motor_t{
     //DATA
     uint8_t i2c_slave_addr;
@@ -29,12 +36,7 @@ typedef struct Motor_t{
 
 
 
-typedef enum
-{
-    MOTOR_PROFILE_TORQUE = 0,
-    MOTOR_PROFILE_SPEED,
-    MOTOR_PROFILE_CALIBRATE
-} MOTOR_PROFILE;
+
 
 // 200 steps/rev
 typedef enum MotorParams
@@ -53,6 +55,7 @@ void energize(Motor *motor);
 float get_max_microstep(Motor *motor);
 
 void set_target_velocity(Motor *motor, uint32_t target_velocity);
+void set_target_position(Motor *motor, uint32_t new_position);
 void set_accel_max(Motor *motor, uint32_t accel_max);
 void set_decel_max(Motor *motor, uint32_t decel_max);
 void set_speed_max(Motor *motor, uint32_t speed_max);
@@ -61,6 +64,16 @@ void set_step_mode(Motor *motor, uint8_t step_mode);
 void set_current_limit(Motor *motor, uint8_t current_limit);
 void set_decay_mode(Motor *motor, uint8_t decay_mode);
 void set_motor_profile(Motor *motor, MOTOR_PROFILE motor_profile);
+
+uint32_t get_speed_max(Motor *motor);
+uint32_t get_speed_start(Motor *motor);
+uint32_t get_accel_max(Motor *motor);
+uint32_t get_decel_max(Motor *motor);
+uint8_t get_step_mode(Motor *motor);
+uint8_t get_current_limit(Motor *motor);
+float get_angle(Motor *motor);
+uint8_t get_microstep_factor(Motor *motor);
+uint32_t get_position(Motor *motor);
 
 void go_home_forward(Motor *motor);
 void go_home_reverse(Motor *motor);

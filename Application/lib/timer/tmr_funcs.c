@@ -9,7 +9,7 @@
 #include "led.h"
 
 #include "tmr_funcs.h"
-#include "motor_funcs.h"
+#include "motor.h"
 
 #include "sorter.h"
 #include "ir_gpio_funcs.h"

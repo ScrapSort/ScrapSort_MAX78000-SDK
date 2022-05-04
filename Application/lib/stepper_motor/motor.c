@@ -104,8 +104,9 @@ float get_max_microstep(Motor *motor){
 }
 
 // TODO 
-void wait_for_target(){
-    //Blocks until the stepper is finished 
+void wait_for_target(Motor *motor){
+    //Blocks until the stepper is finished
+    return; 
 }
 
 void set_motor_profile(Motor *motor, MOTOR_PROFILE profile){
@@ -238,7 +239,6 @@ void set_decay_mode(Motor *motor, uint8_t decay_mode){
 }
 
 void set_angle(Motor *motor, float deg){
-    uint8_t microstepFactor = 1;
     float deltaDeg = deg - get_angle(motor);
     uint32_t new_position = 0;
     get_microstep_factor(motor);
@@ -257,11 +257,9 @@ uint8_t get_microstep_factor(Motor *motor){
     uint8_t microstepFactor = 1;
     switch(get_step_mode(motor)){
         case TicStepMode__Full:
-        case TicStepMode__Microstep1: 
             microstepFactor = 1;
             break;
         case TicStepMode__Half:
-        case TicStepMode__Microstep2:
             microstepFactor = 2;
             break;
         case TicStepMode__Microstep4:
