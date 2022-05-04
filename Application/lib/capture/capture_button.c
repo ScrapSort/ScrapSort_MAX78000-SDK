@@ -12,8 +12,11 @@
 #define QUIT_IDX 5
 
 #define CLOSE_THRESH 18 /// cm
-#define FAR_THRESH 20 // cm
+#define FAR_THRESH 22 // cm
+#define DEBOUNCE 10000 // 1 gc = 100us --> 1000 gc = 1sec
 
+#define PAUSED 1
+#define ON 0
 // ========================================================================================= //
 // =================================== GLOBAL VARIABLES ==================================== //
 // ========================================================================================= //
@@ -23,17 +26,19 @@ mxc_gpio_cfg_t capture_gpio;
 mxc_gpio_cfg_t cd_gpio;
 
 // isr callback data
-const char cam_sensor_id = 0;
-const char flipper_sensor_id = 1;
+const uint8_t cam_sensor_id = 0;
+const uint8_t flipper_sensor_id = 1;
 uint8_t volatile active = cam_sensor_id;
 
 // state variables for ultrasonic sensors
 uint32_t volatile current_pulse[] = {0,0}; // rising edge time
 uint32_t volatile intervals[] = {100,100}; // pulse width in ticks, init to 100 to prevent false alarm on init
 uint16_t volatile statuses[] = {0,0}; // state variable to track if object in front of sensor
+uint32_t volatile timestamps[] = {0,0}; // debouncing
 uint8_t volatile trigger_states[] = {0,0}; // state variable to track if a sensor needs to fire
 uint8_t volatile capture_state = 0;
 uint8_t volatile switch_state = 0;
+uint8_t sensor_state = ON;
 
 // class category names (directory names)
 char* classes[] = {"Paper", "Metal", "Plastic", "Other","None"};
@@ -62,6 +67,29 @@ char class5[] = "recycling_imgs/None/num_imgs";
 // ========================================================================================= //
 // ================================ FUNCTION DEFINITIONS =================================== //
 // ========================================================================================= //
+
+void pause_sensor()
+{
+    // wait until in a stable state (echo received) by checking that something needs to be triggered
+    int sensor_idx = -1;
+    while(sensor_idx == -1)
+    {
+        for(int i = 0; i < 2; i++)
+        {
+            if(trigger_states[i] == 1)
+            {
+                sensor_idx = i;
+                break;
+            }
+        }
+    }
+    sensor_state = PAUSED;
+}
+
+void resume_sensor()
+{
+    sensor_state = ON;
+}
 
 int get_capture_state()
 {
@@ -110,7 +138,9 @@ void switch_class()
     class_idx++;
 
     // clear the last class text
-    MXC_TFT_FillRect(&cover_text,BLACK);
+    pause_sensor();
+    MXC_TFT_FillRect(&cover_text,BLACK); // this is the bug, interrupts disabled
+    resume_sensor();
 
     // go to quit button if get to idx 7
     if(class_idx == QUIT_IDX)
@@ -201,32 +231,36 @@ void capture()
 void echo_isr(void* sensor_id)
 {
     // get the sensor idx from the callback data
-    uint8_t sensor_idx = *(char*)(sensor_id);
+    uint8_t sensor_idx = *(uint8_t*)(sensor_id);
 
     // don't allow nonactive sensors to triger interrupts
     // for example if there is interference between sensors
-    // if(sensor_idx != active)
-    // {
-    //     return;
-    // }
+    if(sensor_idx != active)
+    {
+        return;
+    }
 
     // first interrupt (rising edge)
     if(current_pulse[sensor_idx] == 0)
     {
         // store the start time
         current_pulse[sensor_idx] = global_counter;
+        //printf("sensor %d ^\n",sensor_idx);
     }
     // second interrupt (falling edge)
     else
     {
+        //printf("sensor %d _\n",sensor_idx);
         // store the end time, convert to cm, reset the start time
         intervals[sensor_idx] = (global_counter - current_pulse[sensor_idx])*100/58;
         current_pulse[sensor_idx] = 0;
 
         // no object in front of the sensor yet and it is within the threshold, trigger the arm to close
-        if(statuses[sensor_idx] && intervals[sensor_idx] < CLOSE_THRESH)
+        if(!statuses[sensor_idx] && intervals[sensor_idx] < CLOSE_THRESH)
         {
+            //printf("sensor %d present\n",sensor_idx);
             statuses[sensor_idx] = 1; 
+            timestamps[sensor_idx] = global_counter;
             if(sensor_idx == cam_sensor_id)
             {
                 capture_state = 1;
@@ -236,65 +270,75 @@ void echo_isr(void* sensor_id)
                 switch_state = 1;
             }
         }
-        // object in front of the sensor and beyond the threshold, update the state
-        else if(statuses[sensor_idx] && intervals[sensor_idx] >= FAR_THRESH)
+        else if(statuses[sensor_idx] && intervals[sensor_idx] < CLOSE_THRESH)
         {
+            timestamps[sensor_idx] = global_counter;
+        }
+        // object in front of the sensor and beyond the threshold, update the state
+        else if(statuses[sensor_idx] && intervals[sensor_idx] >= FAR_THRESH && ((global_counter-timestamps[sensor_idx]) > DEBOUNCE))
+        {
+            //printf("sensor %d left\n",sensor_idx);
             // reset the state
             statuses[sensor_idx] = 0;
         }
 
         // after receiving a response, tell the next sensor to trigger
-        // active += 1;
-        // if(active == 2)
-        // {
-        //     active = 0;
-        // }
-        // trigger_states[active] = 1;
+        active += 1;
+        if(active == 2)
+        {
+            active = 0;
+        }
+        trigger_states[active] = 1;
     }
 }
 
 void trigger()
 {
-    trigger_cam();
-    trigger_flipper();
-    // // check if any sensor needs to be triggered
-    // int sensor_idx = -1;
-    // for(int i = 0; i < 2; i++)
-    // {
-    //     if(trigger_states[i] == 1)
-    //     {
-    //         sensor_idx = i;
-    //         break;
-    //     }
-    // }
-    // // if none need to be triggered, return
-    // if(sensor_idx == -1)
-    // {
-    //     return;
-    // }
+    // check if any sensor needs to be triggered
+    int sensor_idx = -1;
+    for(int i = 0; i < 2; i++)
+    {
+        //printf("trig %d: %d\n", i, trigger_states[i]);
+        if(trigger_states[i] == 1)
+        {
+            sensor_idx = i;
+            break;
+        }
+    }
+    // if none need to be triggered, return
+    if(sensor_idx == -1)
+    {
+        return;
+    }
     
-    // // trigger the corresponding sensor
-    // switch (sensor_idx)
-    // {
-    //     case cam_sensor_id:
-    //     {
-    //         trigger_cam();
-    //         trigger_states[cam_sensor_id] = 0;
-    //         break;
-    //     }
+    // trigger the corresponding sensor
+    switch (sensor_idx)
+    {
+        case cam_sensor_id:
+        {
+            if(sensor_state == ON)
+            {
+                trigger_cam();
+                trigger_states[cam_sensor_id] = 0;
+            }
+            break;
+        }
 
-    //     case flipper_sensor_id:
-    //     {
-    //         trigger_flipper();
-    //         trigger_states[flipper_sensor_id] = 0;
-    //         break;
-    //     }
+        case flipper_sensor_id:
+        {
+            if(sensor_state == ON)
+            {
+                trigger_flipper();
+                trigger_states[flipper_sensor_id] = 0;
+            }
+            break;
+        }
 
-    //     default:
-    //     {
-    //         break;
-    //     }
-    // }
+        default:
+        {
+            break;
+        }
+    }
 }
 
 
@@ -311,6 +355,7 @@ void init_capture_button()
     MXC_GPIO_IntConfig(&capture_gpio, MXC_GPIO_INT_BOTH);
     MXC_GPIO_EnableInt(MXC_GPIO1, MXC_GPIO_PIN_6);
     NVIC_EnableIRQ(GPIO1_IRQn);
+    NVIC_SetPriority(GPIO1_IRQn,0);
 }
 
 // Second Ultrasonic

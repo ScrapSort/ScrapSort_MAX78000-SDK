@@ -1,5 +1,6 @@
 #include "sd_card_funcs.h"
 #include "camera.h"
+#include "camera_tft_funcs.h"
 
 /***** Definitions *****/
 
@@ -259,6 +260,7 @@ int write_image(TCHAR* file_name)
 	uint32_t  imgLen;
 	uint32_t  w, h;
     unsigned int length = 128;
+    camera_start_capture_image();
     camera_get_image(&raw, &imgLen, &w, &h);
     
     

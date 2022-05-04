@@ -38,6 +38,8 @@ int main()
     // initialize systick
     SysTick_Setup();
 
+    LCD_Camera_Setup();
+
     #ifdef COLLECT_DATA
     init_card();
     init_class_button();
@@ -45,7 +47,7 @@ int main()
     init_triggers();
     #endif
 
-    LCD_Camera_Setup();
+    
 
     // activate the first ultrasonic sensor
     trigger_cam();
@@ -55,12 +57,13 @@ int main()
     while(1) 
     {
         #ifdef COLLECT_DATA
-        capture_camera_img();
+        // capture_camera_img();
       
-        display_RGB565_img(56,96,NULL,false);
+        // display_RGB565_img(56,96,NULL,false);
         if(get_capture_state() == 1)
         {
             capture();
+            display_RGB565_img(56,96,NULL,false);
         }
         if(get_switch_state() == 1)
         {

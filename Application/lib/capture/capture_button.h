@@ -23,4 +23,7 @@ void trigger_cam();
 void trigger();
 
 void init_triggers();
+
+void pause_sensor();
+void resume_sensor();
 #endif
