@@ -19,6 +19,7 @@ typedef struct Motor_t{
     uint32_t currPosition;
 
     TicStepMode stepMode;
+    uint8_t microstepFactor;
 
     MOTOR_PROFILE currProfile;
     bool isOnTarget;
