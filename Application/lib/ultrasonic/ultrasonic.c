@@ -18,7 +18,8 @@
 // thresholds for ultrasonic distance
 // 2 cm null area to avoid oscillation when in between
 #define CLOSE_THRESH 18 /// cm
-#define FAR_THRESH 20 // cm
+#define FAR_THRESH 22 // cm
+#define DEBOUNCE 10000 // 1 gc = 100us --> 1000 gc = 1sec
 
 // interrupt function parameters (pass these to echo interrupt)
 Flag camera_idx = CAMERA;
@@ -43,6 +44,7 @@ mxc_gpio_cfg_t echo_flipper2_gpio;
 uint32_t volatile current_pulse_values[] = {0,0,0,0}; // rising edge time
 uint32_t volatile time_intervals[] = {100,100,100,100}; // pulse width in ticks, init to 100 to prevent false alarm on init
 uint16_t volatile object_statuses[] = {0,0,0,0}; // state variable to track if object in front of sensor
+uint32_t volatile object_timestamps[] = {0,0,0,0}; // debouncing
 uint8_t volatile trigger_state[] = {0,0,0,0}; // state variable to track if a sensor needs to fire
 
 // store interrupt callback functions
@@ -60,7 +62,7 @@ void camera_callback(uint8_t cb_data)
     show_cnn_output(output);
 
     int class_type = output.output_class;
-    printf("class type: %s\n", class_strings[class_type]);
+    //printf("class type: %s\n", class_strings[class_type]);
 }
 
 
@@ -94,27 +96,30 @@ void echo_handler(void* cb_data)
         {
             // there is an object in front of the sensor
             object_statuses[sensor_idx] = 1; // state update
+            object_timestamps[sensor_idx] = global_counter;
             set_flag(sensor_idx); // will trigger arm to close in main
+            //printf("present: %d\n",sensor_idx);
             
             // printf("S2: %d\n",object_statuses[2]);
             // printf("S1: %d\n",object_statuses[1]);
             // printf("S0: %d\n",object_statuses[0]);
-            // printf("S3: %d\n",object_statuses[3]);
+            // printf("S3: %d, %d cm\n",object_statuses[3],time_intervals[sensor_idx]);
             // printf("\033[0;0f");
         }
         // object in front of the sensor and beyond the threshold, update the state
-        else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH)
+        else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH && ((global_counter-object_timestamps[sensor_idx]) > DEBOUNCE))
         {
             // reset the state
             object_statuses[sensor_idx] = 0;
-            
+            //printf("left: %d\n",sensor_idx);
             // printf("S2: %d\n",object_statuses[2]);
             // printf("S1: %d\n",object_statuses[1]);
             // printf("S0: %d\n",object_statuses[0]);
-            // printf("S3: %d\n",object_statuses[3]);
+            // printf("S3: %d, %d cm\n",object_statuses[3],time_intervals[sensor_idx]);
             // printf("\033[0;0f");
         }
-
+        // if(object_statuses[3])
+        //     printf("gc: %d ot: %d tsa: %d\n",global_counter, object_timestamps[3],global_counter-object_timestamps[3]);
         // after receiving a response, tell the next sensor to trigger
         active_sensor += 1;
         if(active_sensor == 4)
@@ -129,7 +134,7 @@ void flipper_callback(uint8_t flipper_num)
 {   
     // do the arm movement test
     target_tics(flipper_num,-40);
-    MXC_Delay(SEC(1));
+    MXC_Delay(600000);
     go_home_forward(flipper_num);
 }
 
