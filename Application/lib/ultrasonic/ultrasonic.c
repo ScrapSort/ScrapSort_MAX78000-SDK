@@ -41,11 +41,11 @@ mxc_gpio_cfg_t echo_flipper1_gpio;
 mxc_gpio_cfg_t echo_flipper2_gpio;
 
 // state variables for ultrasonic sensors
-uint32_t volatile current_pulse_values[] = {0,0,0,0}; // rising edge time
-uint32_t volatile time_intervals[] = {100,100,100,100}; // pulse width in ticks, init to 100 to prevent false alarm on init
-uint16_t volatile object_statuses[] = {0,0,0,0}; // state variable to track if object in front of sensor
-uint32_t volatile object_timestamps[] = {0,0,0,0}; // debouncing
-uint8_t volatile trigger_state[] = {0,0,0,0}; // state variable to track if a sensor needs to fire
+// uint32_t volatile current_pulse_values[] = {0,0,0,0}; // rising edge time
+// uint32_t volatile time_intervals[] = {100,100,100,100}; // pulse width in ticks, init to 100 to prevent false alarm on init
+// uint16_t volatile object_statuses[] = {0,0,0,0}; // state variable to track if object in front of sensor
+// uint32_t volatile object_timestamps[] = {0,0,0,0}; // debouncing
+// uint8_t volatile trigger_state[] = {0,0,0,0}; // state variable to track if a sensor needs to fire
 
 // store interrupt callback functions
 flag_callback flag_callback_funcs[NUM_FLAGS];
@@ -199,6 +199,23 @@ void to_trigger()
     }
 }
 
+void init_ultrasonic_sensor(Ultrasonic *sensor, mxc_gpio_regs_t *trigger_port, uint32_t trigger_mask, mxc_gpio_regs_t *echo_port, uint32_t echo_mask){
+    sensor->trigger_port = trigger_port;
+    sensor->trigger_mask = trigger_mask;
+
+    sensor->echo_port = echo_port;
+    sensor->echo_mask = echo_mask;
+
+    //set other data as defaults
+    sensor->rising_edge_time = ;
+    sensor->time_interval = ;
+    sensor->object_status = ;
+    sensor->object_timestamp = ;
+    sensor->trigger_state = ;
+}
+
+
+
 void init_echo_gpios()
 {
     // cam echo gpio
@@ -298,70 +315,84 @@ void check_all_callbacks()
     } 
 }
 
-void activate_trigger0()
-{
-    trigger0_high();
+void activate_trigger(Ultrasonic *sensor){
+    trigger_high(sensor);
     MXC_Delay(10);
-    trigger0_low();
+    trigger_low(sensor);
 }
 
-void activate_trigger1()
-{
-    trigger1_high();
-    MXC_Delay(10);
-    trigger1_low();
+// void activate_trigger0()
+// {
+//     trigger0_high();
+//     MXC_Delay(10);
+//     trigger0_low();
+// }
+
+// void activate_trigger1()
+// {
+//     trigger1_high();
+//     MXC_Delay(10);
+//     trigger1_low();
+// }
+
+// void activate_trigger2()
+// {
+//     trigger2_high();
+//     MXC_Delay(10);
+//     trigger2_low();
+// }
+
+// void activate_triggercam()
+// {
+//     triggercam_high();
+//     MXC_Delay(10);
+//     triggercam_low();
+// }
+
+// void triggercam_high()
+// {
+//     MXC_GPIO_OutSet(MXC_GPIO2, MXC_GPIO_PIN_4);
+// }
+
+// void triggercam_low()
+// {
+//     MXC_GPIO_OutClr(MXC_GPIO2, MXC_GPIO_PIN_4);
+// }
+
+// void trigger2_high()
+// {
+//     MXC_GPIO_OutSet(MXC_GPIO3, MXC_GPIO_PIN_1);
+// }
+
+// void trigger2_low()
+// {
+//     MXC_GPIO_OutClr(MXC_GPIO3, MXC_GPIO_PIN_1);
+// }
+
+// void trigger1_high()
+// {
+//     MXC_GPIO_OutSet(MXC_GPIO2, MXC_GPIO_PIN_6);
+// }
+
+// void trigger1_low()
+// {
+//     MXC_GPIO_OutClr(MXC_GPIO2, MXC_GPIO_PIN_6);
+// }
+
+// void trigger0_high()
+// {
+//     MXC_GPIO_OutSet(MXC_GPIO1, MXC_GPIO_PIN_0);
+// }
+
+void trigger_high(Ultrasonic *sensor){
+    MXC_GPIO_OutSet(sensor->trigger_port, sensor->trigger_mask);
 }
 
-void activate_trigger2()
-{
-    trigger2_high();
-    MXC_Delay(10);
-    trigger2_low();
+void trigger_low(Ultrasonic *sensor){
+    MXC_GPIO_OutClr(sensor->trigger_port, sensor->trigger_mask);
 }
 
-void activate_triggercam()
-{
-    triggercam_high();
-    MXC_Delay(10);
-    triggercam_low();
-}
-
-void triggercam_high()
-{
-    MXC_GPIO_OutSet(MXC_GPIO2, MXC_GPIO_PIN_4);
-}
-
-void triggercam_low()
-{
-    MXC_GPIO_OutClr(MXC_GPIO2, MXC_GPIO_PIN_4);
-}
-
-void trigger2_high()
-{
-    MXC_GPIO_OutSet(MXC_GPIO3, MXC_GPIO_PIN_1);
-}
-
-void trigger2_low()
-{
-    MXC_GPIO_OutClr(MXC_GPIO3, MXC_GPIO_PIN_1);
-}
-
-void trigger1_high()
-{
-    MXC_GPIO_OutSet(MXC_GPIO2, MXC_GPIO_PIN_6);
-}
-
-void trigger1_low()
-{
-    MXC_GPIO_OutClr(MXC_GPIO2, MXC_GPIO_PIN_6);
-}
-
-void trigger0_high()
-{
-    MXC_GPIO_OutSet(MXC_GPIO1, MXC_GPIO_PIN_0);
-}
-
-void trigger0_low()
-{
-    MXC_GPIO_OutClr(MXC_GPIO1, MXC_GPIO_PIN_0);
-}
+// void trigger0_low()
+// {
+//     MXC_GPIO_OutClr(MXC_GPIO1, MXC_GPIO_PIN_0);
+// }
