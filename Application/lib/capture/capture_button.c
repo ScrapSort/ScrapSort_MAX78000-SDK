@@ -13,7 +13,7 @@
 
 #define CLOSE_THRESH 18 /// cm
 #define FAR_THRESH 22 // cm
-#define DEBOUNCE 10000 // 1 gc = 100us --> 1000 gc = 1sec
+#define DEBOUNCE 5000 // 1 gc = 100us --> 1000 gc = 1sec
 
 #define PAUSED 1
 #define ON 0
