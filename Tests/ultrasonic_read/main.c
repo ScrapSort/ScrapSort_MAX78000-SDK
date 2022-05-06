@@ -82,35 +82,13 @@ int main(){
     init_ultrasonic_sensor(&sensor_flipper2, MXC_GPIO3, MXC_GPIO_PIN_1, MXC_GPIO2, MXC_GPIO_PIN_7);
     init_ultrasonic_sensor(&sensor_flipper3, MXC_GPIO2, MXC_GPIO_PIN_6, MXC_GPIO1, MXC_GPIO_PIN_1);
     
-    
-    init_trigger_gpios();  
-    init_echo_gpios();
-
-    // set the motor profile for this test
-    set_motor_profile(0, MOTOR_PROFILE_SPEED);
-    set_motor_profile(1, MOTOR_PROFILE_SPEED);
-    set_motor_profile(2, MOTOR_PROFILE_SPEED);
-
-    go_home_forward(0);
-    go_home_forward(1);
-    go_home_forward(2);
-
-    // activate the first ultrasonic sensor
-    activate_triggercam();
 
     // ======================== Main Loop =========================
 
     while(1) 
     {
-        // check interrupt callbacks (code that should be executed outside interrupts)
-        check_all_callbacks();
-
-        // check if the next ultrasonic sensor should be triggered
-        to_trigger();
-
-        // if(global_counter % 20000 == 0)
-        // {
-        //     printf("HB\n");
-        // }
+        activate_trigger(&sensor_flipper1);
+        printf("Flipper 1 Distance (cm): %d", sensor_flipper1.curr_distance_cm);
+        MXC_DELAY_MSEC(60);
     }
 }
