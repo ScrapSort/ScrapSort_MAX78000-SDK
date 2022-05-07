@@ -30,11 +30,11 @@
 
 // *****************************************************************************
 int main(){
-    Ultrasonic sensors[4];
-    Ultrasonic sensor_cam = sensors[0];
+    // Ultrasonic sensors[4];
+    // Ultrasonic sensor_cam = sensors[0];
     // Ultrasonic sensor_flipper0 = sensors[1];
-    Ultrasonic sensor_flipper1 = sensors[2];
-    Ultrasonic sensor_flipper2 = sensors[3];
+    // Ultrasonic sensor_flipper1 = sensors[2];
+    // Ultrasonic sensor_flipper2 = sensors[3];
 
     MXC_ICC_Enable(MXC_ICC0); // Enable cache
 
@@ -45,9 +45,9 @@ int main(){
     // initialize systick
     SysTick_Setup();
 
-    LCD_Camera_Setup();
+    // LCD_Camera_Setup();
 
-    startup_cnn();
+    // startup_cnn();
     
     // initialize the ultrasonic sensor pins
     // init_ultrasonic_sensor(&sensor_cam, MXC_GPIO2, MXC_GPIO_PIN_4, MXC_GPIO1, MXC_GPIO_PIN_6);
@@ -56,13 +56,14 @@ int main(){
     // init_ultrasonic_sensor(&sensor_flipper1, MXC_GPIO3, MXC_GPIO_PIN_1, MXC_GPIO2, MXC_GPIO_PIN_7);
     // init_ultrasonic_sensor(&sensor_flipper2, MXC_GPIO2, MXC_GPIO_PIN_6, MXC_GPIO1, MXC_GPIO_PIN_1);
     
+  
 
     // ======================== Main Loop =========================
-
     while(1) 
-    {
+    {   
+        
         activate_trigger(&sensor_flipper0);
+        MXC_Delay(MXC_DELAY_SEC(1));
         printf("Flipper 0 Distance (cm): %d\n", sensor_flipper0.curr_raw_distance_cm);
-        MXC_DELAY_SEC(1);
     }
 }

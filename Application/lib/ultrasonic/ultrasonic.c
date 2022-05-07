@@ -21,7 +21,7 @@
 #define CLOSE_THRESH 18 /// cm
 #define FAR_THRESH 22 // cm
 #define DEBOUNCE 10000 // 1 gc = 100us --> 1000 gc = 1sec
-#define LPF_COEFF 0.1
+#define LPF_COEFF 1
 
 // the ultrasonic sensor that is currently firing
 Flag volatile active_sensor = FLIPPER_0;
@@ -34,31 +34,35 @@ uint8_t flag_callback_params[NUM_FLAGS] = {0};
 
 void echo_handler(void* sensor)
 {
-    Ultrasonic volatile ultrasonic_sensor = *(Ultrasonic*)(sensor);
+    // sensor = *(Ultrasonic*)(sensor);
     //TODO Remove
-    printf("Triggered\n");
+   
     // don't allow nonactive sensors to triger interrupts
     // for example if there is interference between sensors
     // if(ultrasonic_sensor.sensor_type != active_sensor)
     // {
     //     return;
     // }
-
+    Ultrasonic* ultrasonic_sensor = sensor;
+    printf("In echo\n");
     // first interrupt (rising edge)
-    if(ultrasonic_sensor.curr_rising_edge_global_count == 0)
+    if(ultrasonic_sensor->curr_rising_edge_global_count == 0)
     {
+         
         // store the start time
-        ultrasonic_sensor.curr_rising_edge_global_count = global_counter;
+        ultrasonic_sensor->curr_rising_edge_global_count = global_counter;
+        printf("Global Counter: %d\n", global_counter);
     }
     // second interrupt (falling edge)
     else
-    {
+    {   
+        printf("Falling\n");
         // store the end time, convert to cm, reset the start time
-        ultrasonic_sensor.curr_raw_distance_cm = (global_counter - ultrasonic_sensor.curr_rising_edge_global_count)*100/58.0;
+        ultrasonic_sensor->curr_raw_distance_cm = (global_counter - ultrasonic_sensor->curr_rising_edge_global_count)*100/58.0;
         //Apply simple low-pass filter
-        ultrasonic_sensor.curr_distance_cm = LPF_COEFF * ultrasonic_sensor.curr_raw_distance_cm + (1-LPF_COEFF)*ultrasonic_sensor.last_raw_distance_cm;
-        ultrasonic_sensor.last_raw_distance_cm = ultrasonic_sensor.curr_raw_distance_cm;  
-        ultrasonic_sensor.curr_rising_edge_global_count = 0;
+        ultrasonic_sensor->curr_distance_cm = LPF_COEFF * ultrasonic_sensor->curr_raw_distance_cm + (1-LPF_COEFF)*ultrasonic_sensor->last_raw_distance_cm;
+        ultrasonic_sensor->last_raw_distance_cm = ultrasonic_sensor->curr_raw_distance_cm;  
+        ultrasonic_sensor->curr_rising_edge_global_count = 0;
 
 
         // active_sensor += 1;
@@ -100,23 +104,33 @@ void init_ultrasonic_sensor(Ultrasonic *sensor, mxc_gpio_regs_t *trigger_port, u
     sensor->trigger_config.func = MXC_GPIO_FUNC_OUT;
     sensor->trigger_config.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&(sensor->trigger_config));
-
+    MXC_GPIO_SetVSSEL(sensor->trigger_config.port, sensor->trigger_config.vssel, sensor->trigger_config.mask);
+    trigger_low(sensor);
+    
+    
     //Configure echo pin (input)
     sensor->echo_config.port = echo_port;
     sensor->echo_config.mask = echo_mask;
     sensor->echo_config.func = MXC_GPIO_FUNC_IN;
     sensor->echo_config.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&(sensor->echo_config));
+    MXC_GPIO_SetVSSEL(sensor->echo_config.port, sensor->echo_config.vssel, sensor->echo_config.mask);
 
+    // MXC_Delay(MXC_DELAY_MSEC(60));
+    // printf("Test 6\n");
     MXC_GPIO_RegisterCallback(&(sensor->echo_config), echo_handler, (void*)sensor);
+    // printf("Test 7\n");
     MXC_GPIO_IntConfig(&(sensor->echo_config), MXC_GPIO_INT_BOTH);
+    // printf("Test 8\n");
     MXC_GPIO_EnableInt(sensor->echo_config.port, sensor->echo_config.mask);
+    // printf("Test 9\n");
     NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(sensor->echo_config.port)));
+    printf("Test 10\n");
     
     //set other data as defaults
     sensor->curr_rising_edge_global_count = 0;
     sensor->curr_raw_distance_cm = 100;
-    sensor->last_raw_distance_cm = 100;
+    sensor->last_raw_distance_cm = 0;
     sensor->curr_distance_cm = 100;
     sensor->object_status = 0;
     sensor->object_timestamp = 0;
