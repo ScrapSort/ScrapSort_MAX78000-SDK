@@ -4,6 +4,7 @@
 // #include "tmr_funcs.h"
 
 #include "flags.h"
+#include "gpio.h"
 
 typedef struct Ultrasonic_t{
     // mxc_gpio_regs_t *trigger_port; 
@@ -34,14 +35,9 @@ typedef struct Ultrasonic_t{
     //track if sensor needs to fire
     uint8_t volatile trigger_state;
 
-    Flag sensor_type;    
 } Ultrasonic;
 
-// initialize the echo pins and callback functions
-void init_echo_gpios();
-
-// initialize the trigger pins
-void init_trigger_gpios();
+void init_ultrasonic_sensor(Ultrasonic *sensor, mxc_gpio_regs_t *trigger_port, uint32_t trigger_mask, mxc_gpio_regs_t *echo_port, uint32_t echo_mask);
 
 // these functions set the corresponding trigger pin high/low
 void trigger_high(Ultrasonic *sensor);

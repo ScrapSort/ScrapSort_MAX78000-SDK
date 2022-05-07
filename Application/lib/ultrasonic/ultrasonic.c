@@ -24,7 +24,7 @@
 #define LPF_COEFF 0.1
 
 // the ultrasonic sensor that is currently firing
-Flag volatile active_sensor = CAMERA;
+Flag volatile active_sensor = FLIPPER_0;
 
 // store interrupt callback functions
 flag_callback flag_callback_funcs[NUM_FLAGS];
@@ -35,13 +35,14 @@ uint8_t flag_callback_params[NUM_FLAGS] = {0};
 void echo_handler(void* sensor)
 {
     Ultrasonic volatile ultrasonic_sensor = *(Ultrasonic*)(sensor);
-
+    //TODO Remove
+    printf("Triggered\n");
     // don't allow nonactive sensors to triger interrupts
     // for example if there is interference between sensors
-    if(ultrasonic_sensor.sensor_type != active_sensor)
-    {
-        return;
-    }
+    // if(ultrasonic_sensor.sensor_type != active_sensor)
+    // {
+    //     return;
+    // }
 
     // first interrupt (rising edge)
     if(ultrasonic_sensor.curr_rising_edge_global_count == 0)
@@ -53,7 +54,7 @@ void echo_handler(void* sensor)
     else
     {
         // store the end time, convert to cm, reset the start time
-        ultrasonic_sensor.curr_raw_distance_cm = round((global_counter - ultrasonic_sensor.curr_rising_edge_global_count)*100/58.0);
+        ultrasonic_sensor.curr_raw_distance_cm = (global_counter - ultrasonic_sensor.curr_rising_edge_global_count)*100/58.0;
         //Apply simple low-pass filter
         ultrasonic_sensor.curr_distance_cm = LPF_COEFF * ultrasonic_sensor.curr_raw_distance_cm + (1-LPF_COEFF)*ultrasonic_sensor.last_raw_distance_cm;
         ultrasonic_sensor.last_raw_distance_cm = ultrasonic_sensor.curr_raw_distance_cm;  
@@ -116,7 +117,7 @@ void init_ultrasonic_sensor(Ultrasonic *sensor, mxc_gpio_regs_t *trigger_port, u
     sensor->curr_rising_edge_global_count = 0;
     sensor->curr_raw_distance_cm = 100;
     sensor->last_raw_distance_cm = 100;
-     sensor->curr_distance_cm = 100;
+    sensor->curr_distance_cm = 100;
     sensor->object_status = 0;
     sensor->object_timestamp = 0;
     sensor->trigger_state = 0;
