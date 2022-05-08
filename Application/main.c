@@ -63,7 +63,8 @@ int main()
         if(get_capture_state() == 1)
         {
             capture();
-            display_RGB565_img(56,96,NULL,false);
+            // capture_camera_img();
+            display_RGB565_img(56,80,NULL,false);
         }
         if(get_switch_state() == 1)
         {

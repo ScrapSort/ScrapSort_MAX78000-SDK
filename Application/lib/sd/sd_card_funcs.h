@@ -91,7 +91,7 @@ int init_card();
     Parameters: None
     Return: error code
 */
-int write_image(TCHAR* file_name);
+int write_image(TCHAR* file_name, uint8_t* raw, uint32_t imgLen);
 
 
 /*

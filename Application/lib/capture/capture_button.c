@@ -174,6 +174,13 @@ void switch_class()
 
 void capture()
 {
+    // capture the image ASAP
+    uint8_t   *raw;
+	uint32_t  imgLen;
+	uint32_t  w, h;
+    camera_start_capture_image();
+    camera_get_image(&raw, &imgLen, &w, &h);
+
     // quit
     if(class_idx == QUIT_IDX)
     {
@@ -196,7 +203,7 @@ void capture()
         get_num_from_file(class5,&img_amnts[4]);
 
         // quit
-        umount();
+        //umount();
         reset();
         return;
     }
@@ -223,7 +230,7 @@ void capture()
     mount();
     cd("recycling_imgs");
     cd(classes[class_idx]);
-    write_image(file_prefix);
+    write_image(file_prefix, raw, imgLen);
     reset();
     TFT_Print(buffer,class_idx*48,280,font,sprintf(buffer,classes[class_idx]));
 }

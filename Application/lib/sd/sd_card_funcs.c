@@ -250,18 +250,11 @@ int init_card()
     return status;
 }
 
-int write_image(TCHAR* file_name)
+int write_image(TCHAR* file_name, uint8_t* raw, uint32_t imgLen)
 {
     if (!mounted) {
         mount();
     }
-
-    uint8_t   *raw;
-	uint32_t  imgLen;
-	uint32_t  w, h;
-    unsigned int length = 128;
-    camera_start_capture_image();
-    camera_get_image(&raw, &imgLen, &w, &h);
     
     
     if ((err = f_open(&file, (const TCHAR*) file_name, FA_CREATE_ALWAYS | FA_WRITE)) != FR_OK) {
@@ -271,8 +264,8 @@ int write_image(TCHAR* file_name)
     }
     
     printf("File opened!\n");
-    printf("file size: %d\n",f_size(&file));
-    printf("img len:%i\n",imgLen);
+    //printf("file size: %d\n",f_size(&file));
+    //printf("img len:%i\n",imgLen);
 
     // write 4096 bytes at a time until hit imgLen
     for(int i = 0; i < imgLen; i+=4096,raw+=4096)
