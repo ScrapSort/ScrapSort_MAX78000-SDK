@@ -45,47 +45,48 @@ int main()
     startup_cnn();
 
     // init I2C
-    if (I2C_Init() != E_NO_ERROR) 
-    {
-        printf("I2C INITIALIZATION FAILURE\n");
-    } 
-    else 
-    {
-        printf("I2C INITIALIZED :)\n");
-    } 
+    // if (I2C_Init() != E_NO_ERROR) 
+    // {
+    //     printf("I2C INITIALIZATION FAILURE\n");
+    // } 
+    // else 
+    // {
+    //     printf("I2C INITIALIZED :)\n");
+    // } 
     
-    // Initialize test data
-    for (int i = 0; i < I2C_BYTES; i++) 
-    {
-        txdata[i] = 0;
-        rxdata[i] = 0;
-    }
+    // // Initialize test data
+    // for (int i = 0; i < I2C_BYTES; i++) 
+    // {
+    //     txdata[i] = 0;
+    //     rxdata[i] = 0;
+    // }
 
-    // init MOTORS
-    if (Motor_Init_Settings() != E_NO_ERROR) 
-    {
-        printf("MOTOR SETTINGS INITIALIZATION FAILURE\n");
-    } 
-    else 
-    {
-        printf("MOTOR SETTINGS INITIALIZED :)\n");
-    }
+    // // init MOTORS
+    // if (Motor_Init_Settings() != E_NO_ERROR) 
+    // {
+    //     printf("MOTOR SETTINGS INITIALIZATION FAILURE\n");
+    // } 
+    // else 
+    // {
+    //     printf("MOTOR SETTINGS INITIALIZED :)\n");
+    // }
     
     // initialize the ultrasonic sensor pins
     init_trigger_gpios();  
     init_echo_gpios();
 
     // set the motor profile for this test
-    set_motor_profile(0, MOTOR_PROFILE_SPEED);
-    set_motor_profile(1, MOTOR_PROFILE_SPEED);
-    set_motor_profile(2, MOTOR_PROFILE_SPEED);
+    // set_motor_profile(0, MOTOR_PROFILE_SPEED);
+    // set_motor_profile(1, MOTOR_PROFILE_SPEED);
+    // set_motor_profile(2, MOTOR_PROFILE_SPEED);
 
-    go_home_forward(0);
-    go_home_forward(1);
-    go_home_forward(2);
+    // go_home_forward(0);
+    // go_home_forward(1);
+    // go_home_forward(2);
 
     // activate the first ultrasonic sensor
     activate_triggercam();
+    printf("initialized\n");
 
     // ======================== Main Loop =========================
 

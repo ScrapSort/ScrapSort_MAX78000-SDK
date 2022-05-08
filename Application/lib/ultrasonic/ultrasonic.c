@@ -62,7 +62,7 @@ void camera_callback(uint8_t cb_data)
     show_cnn_output(output);
 
     int class_type = output.output_class;
-    //printf("class type: %s\n", class_strings[class_type]);
+    printf("class type: %s\n", class_strings[class_type]);
 }
 
 
@@ -138,9 +138,10 @@ void echo_handler(void* cb_data)
 void flipper_callback(uint8_t flipper_num)
 {   
     // do the arm movement test
-    target_tics(flipper_num,-40);
-    MXC_Delay(600000);
-    go_home_forward(flipper_num);
+    // target_tics(flipper_num,-40);
+    // MXC_Delay(600000);
+    // go_home_forward(flipper_num);
+    printf("flipper callback\n");
 }
 
 void to_trigger()
