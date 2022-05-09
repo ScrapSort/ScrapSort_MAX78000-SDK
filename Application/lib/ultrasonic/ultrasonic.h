@@ -1,9 +1,21 @@
 #ifndef ULTRASONIC_H
 #define ULTRASONIC_H
 
+/***** Includes *****/
 #include "tmr_funcs.h"
 
-// initialize the echo pins and callback functions
+/*
+    Description: This function initializes the GPIOs for the ultrasonic
+                 echo pins. This includes registering an interrupt service
+                 routine triggered by rising and falling edges for each echo pin. In
+                 addition, each echo pin has a corresponding callback function
+                 which gets scheduled when the interrupt happens (i.e. we don't 
+                 complete the task in the interrupt but in the main thread). 
+
+    Parameters: none
+
+    Return: none
+*/
 void init_echo_gpios();
 
 // initialize the trigger pins

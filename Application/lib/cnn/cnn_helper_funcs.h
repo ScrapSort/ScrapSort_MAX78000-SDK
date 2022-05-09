@@ -16,7 +16,7 @@ typedef enum
     PAPER,
     NONE,
     METAL,
-    OTHER
+    OTHER // not currently using other, need more data
 } output_classes_t;
 
 // this struct stores the output information from the CNN
