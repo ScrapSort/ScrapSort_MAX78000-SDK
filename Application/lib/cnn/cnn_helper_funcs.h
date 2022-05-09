@@ -15,8 +15,8 @@ typedef enum
     PLASTIC = 0,
     PAPER,
     NONE,
-    OTHER,
-    METAL
+    METAL,
+    OTHER
 } output_classes_t;
 
 // this struct stores the output information from the CNN

@@ -26,8 +26,8 @@
 #define SCREEN_X 56 // image output top left corner
 #define SCREEN_Y 140 // image output top left corner
 #define TFT_BUFF_SIZE   50 // TFT text buffer size
-#define NUM_CLASSES 5 // number of output classes
-#define NUM_OUTPUTS 5 // number of output neurons
+#define NUM_CLASSES 4 // number of output classes
+#define NUM_OUTPUTS 4 // number of output neurons
 #define CNN_INPUT_SIZE 16384 // data is 128 x 128 px = 16,384 px each word is 0RGB, byte for each
 
 #define TFT_BUFF_SIZE   50    // TFT buffer size
@@ -45,13 +45,13 @@ cnn_output_t output; // the output data of the CNN
 static int32_t ml_data[NUM_OUTPUTS]; // output data
 static q15_t ml_softmax[NUM_CLASSES]; // softmax output data
 
-output_classes_t class_names[] = {PLASTIC, PAPER, NONE, OTHER, METAL};
+output_classes_t class_names[] = {PLASTIC, PAPER, NONE, METAL};
 
 
 char buff[TFT_BUFF_SIZE];
 int font_1 = (int)&Arial12x12[0];
 volatile uint32_t cnn_time; // Stopwatch
-char* class_strings[] = {"PLASTIC","PAPER","NONE","OTHER","METAL"};
+char* class_strings[] = {"PLASTIC","PAPER","NONE","METAL"};
 
 // ========================================================================================= //
 // ================================ FUNCTION DEFINITIONS =================================== //

@@ -48,8 +48,8 @@ static int g_slv_addr;
 static pixformat_t g_pixelformat = PIXFORMAT_RGB565;
 
 static const uint8_t default_regs[][2] = {
-    {0x0F, 0x00}, // Exposure Time High Byte
-    {0x10, 0x0F}, // Exposure Time Low Byte
+    {0x00, 0x00}, // Exposure Time High Byte
+    {0x10, 0x00}, // Exposure Time Low Byte
     {0x12, 0x80}, // System reset
     {0x69, 0x52}, // BLC window selection, BLC enable (default: 0x12)
     {0x1e, 0xb3}, // AddLT1F (default: 0xb1)
