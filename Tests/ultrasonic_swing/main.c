@@ -92,6 +92,8 @@ int main()
 
     while(1) 
     {
+        // activate_trigger2();
+        // MXC_Delay(50000);
         // check interrupt callbacks (code that should be executed outside interrupts)
         check_all_callbacks();
 
