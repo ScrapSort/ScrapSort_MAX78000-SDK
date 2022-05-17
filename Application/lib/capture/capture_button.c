@@ -178,6 +178,7 @@ void capture()
     uint8_t   *raw;
 	uint32_t  imgLen;
 	uint32_t  w, h;
+
     camera_start_capture_image();
     camera_get_image(&raw, &imgLen, &w, &h);
 
@@ -186,6 +187,7 @@ void capture()
     {
         printf("quit");
         // mount the SD card
+        umount();
         mount();
 
         // save image idxs
@@ -211,7 +213,7 @@ void capture()
     // increment the class img amount
     img_amnts[class_idx] += 1;
     int n = img_amnts[class_idx];
-    printf("capture: %i\n",n);
+    //printf("capture: %i\n",n);
     int digit = 0;
     int end = 6;
 
@@ -227,9 +229,11 @@ void capture()
 
     // go to the corresponding directory, save the image
     // mount the SD card
+    umount();
     mount();
     cd("recycling_imgs");
     cd(classes[class_idx]);
+    printf("write image\n");
     write_image(file_prefix, raw, imgLen);
     reset();
     TFT_Print(buffer,class_idx*48,280,font,sprintf(buffer,classes[class_idx]));
@@ -352,31 +356,31 @@ void trigger()
 // First Ultrasonic
 void init_capture_button()
 {
-    capture_gpio.port = MXC_GPIO1;
-    capture_gpio.mask = MXC_GPIO_PIN_6;
+    capture_gpio.port = MXC_GPIO2;
+    capture_gpio.mask = MXC_GPIO_PIN_3;
     capture_gpio.func = MXC_GPIO_FUNC_IN;
     capture_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
 
     MXC_GPIO_Config(&capture_gpio);
     MXC_GPIO_RegisterCallback(&capture_gpio, echo_isr, (void*)(&cam_sensor_id));
     MXC_GPIO_IntConfig(&capture_gpio, MXC_GPIO_INT_BOTH);
-    MXC_GPIO_EnableInt(MXC_GPIO1, MXC_GPIO_PIN_6);
-    NVIC_EnableIRQ(GPIO1_IRQn);
-    NVIC_SetPriority(GPIO1_IRQn,0);
+    MXC_GPIO_EnableInt(MXC_GPIO2, MXC_GPIO_PIN_3);
+    NVIC_EnableIRQ(GPIO2_IRQn);
+    NVIC_SetPriority(GPIO2_IRQn,0);
 }
 
 // Second Ultrasonic
 void init_class_button()
 {
     cd_gpio.port = MXC_GPIO1;
-    cd_gpio.mask = MXC_GPIO_PIN_1;
+    cd_gpio.mask = MXC_GPIO_PIN_6;
     cd_gpio.func = MXC_GPIO_FUNC_IN;
     cd_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
 
     MXC_GPIO_Config(&cd_gpio);
     MXC_GPIO_RegisterCallback(&cd_gpio, echo_isr, (void*)(&flipper_sensor_id));
     MXC_GPIO_IntConfig(&cd_gpio, MXC_GPIO_INT_BOTH);
-    MXC_GPIO_EnableInt(MXC_GPIO1, MXC_GPIO_PIN_1);
+    MXC_GPIO_EnableInt(MXC_GPIO1, MXC_GPIO_PIN_6);
     NVIC_EnableIRQ(GPIO1_IRQn);
 
     cd("recycling_imgs");

@@ -49,7 +49,7 @@ static pixformat_t g_pixelformat = PIXFORMAT_RGB565;
 
 static const uint8_t default_regs[][2] = {
     {0x0F, 0x00}, // Exposure Time High Byte
-    {0x10, 0xF0}, // Exposure Time Low Byte
+    {0x10, 0x00}, // Exposure Time Low Byte
     {0x12, 0x80}, // System reset
     {0x69, 0x52}, // BLC window selection, BLC enable (default: 0x12)
     {0x1e, 0xb3}, // AddLT1F (default: 0xb1)
@@ -85,7 +85,7 @@ static const uint8_t default_regs[][2] = {
     {0xcf, 0x40}, // Low 8 bits of vertical output size=64 lines high (default: 0x80)
     {0x13, 0xee}, // Fast AGC/AEC, unlimited step size, banding filter ON,
     // Tp level exposure ON, Auto AEC/AGC/AWB (default: 0xe5)
-    {0x14, 0xA}, // Automatic gain ceiling = 16x, Auto 50/60 selection (default: 0x30)
+    {0x14, 0x5}, // Automatic gain ceiling = 16x, Auto 50/60 selection (default: 0x30)
     {0x70, 0x10}, // Low light limit enable (default: 0x0)
     {0x71, 0x00}, // (default: 0x0)
     {0x72, 0x0a}, // Low light threshold, (default: 0x0)

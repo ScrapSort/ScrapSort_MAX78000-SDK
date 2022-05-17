@@ -43,7 +43,7 @@ void generateMessage(unsigned length)
 int mount()
 {
     fs = &fs_obj;
-    
+    printf("mounting\n");
     if ((err = f_mount(fs, "", 1)) != FR_OK) {          //Mount the default drive to fs now
         printf("Error opening SD card: %s\n", FF_ERRORS[err]);
         f_mount(NULL, "", 0);

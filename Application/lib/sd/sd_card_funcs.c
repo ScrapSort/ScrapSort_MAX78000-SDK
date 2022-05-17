@@ -44,17 +44,18 @@ void generateMessage(unsigned length)
 int mount()
 {
     fs = &fs_obj;
-    
+    printf("mounting\n");
     if ((err = f_mount(fs, "", 1)) != FR_OK) {          //Mount the default drive to fs now
         printf("Error opening SD card: %s\n", FF_ERRORS[err]);
         f_mount(NULL, "", 0);
     }
     else {
-        printf("SD card mounted.\n");
         mounted = 1;
     }
     
+    printf("getcwd\n");
     f_getcwd(cwd, sizeof(cwd));                         //Set the Current working directory
+    printf("SD card mounted.\n");
     
     return err;
 }
@@ -287,7 +288,7 @@ int write_image(TCHAR* file_name, uint8_t* raw, uint32_t imgLen)
     }
     
     //printf("file size: %d\n",f_size(&file));
-    printf("File Closed!\n");
+    printf("File Closed!\n--------------\n");
 
     return err;
 
@@ -498,7 +499,7 @@ int cd(TCHAR* directory)
         mount();
     }
     
-    printf("Directory to change into: %s\n", directory);
+    //printf("Directory to change into: %s\n", directory);
     //scanf("%255s", directory);
     
     if ((err = f_stat((const TCHAR*) directory, &fno)) == FR_NO_FILE) {
@@ -512,8 +513,8 @@ int cd(TCHAR* directory)
         return err;
     }
     
-    printf("Changed to %s\n", directory);
     f_getcwd(cwd, sizeof(cwd));
+    printf("Changed to %s\n", directory);
     
     return err;
 }
