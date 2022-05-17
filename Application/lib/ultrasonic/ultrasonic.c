@@ -62,7 +62,7 @@ void camera_callback(uint8_t cb_data)
     show_cnn_output(output);
 
     int class_type = output.output_class;
-    printf("class type: %s\n", class_strings[class_type]);
+    //printf("class type: %s\n", class_strings[class_type]);
 }
 
 

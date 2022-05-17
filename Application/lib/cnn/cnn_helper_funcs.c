@@ -98,6 +98,7 @@ uint32_t* get_cnn_buffer()
 // this function does a forward pass through the CNN 
 cnn_output_t* run_cnn()
 {
+    int class_sums[] = {0,0,0,0};
     int digs, tens; // format probability
     int max = 0; // the current highest class probability
     int max_i = 0; // the class with the highest probability
@@ -105,58 +106,69 @@ cnn_output_t* run_cnn()
     // cnn output
     static cnn_output_t output;
 
-    // first get an image from the camera and load it into the CNN buffer
-    capture_camera_img();
-    display_RGB565_img(SCREEN_X,SCREEN_Y, cnn_buffer,true);
-
-    // Enable CNN clock
-    MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_CNN);
-
-    cnn_init(); // Bring state machine into consistent state
-    cnn_configure(); // Configure state machine
-
-    cnn_start();
-    load_input();
-        
-    while (cnn_time == 0)
-    __WFI(); // Wait for CNN
-
-    // classify the output
-    softmax_layer();
-
-    //printf("Classification results:\n");
-
-    for (int i = 0; i < NUM_CLASSES; i++) 
+    for(int i = 0; i < 1; i++)
     {
-      // softmax output is in fixed point so need to convert to percentage
-      digs = (1000 * ml_softmax[i] + 0x4000) >> 15;
-      tens = digs % 10; // get the fractional part
-      digs = digs / 10; // get the integer part
-      printf("[%7d] -> Class %d: %d.%d%%\n", ml_data[i], i, digs, tens);
-      // keep track of the max class
-      if(digs > max)
-      {
-          max = digs;
-          max_i = i;
-      }
-    }
-    //printf("BB coords:\n");
-    // output.x = ml_data[6]/29000;
-    // output.y = ml_data[7]/29000;
-    // output.w = ml_data[8]/33000;
-    // output.h = ml_data[9]/33000;
-    //printf("x: %i\ny: %i\nw: %i\nh: %i\n",output.x,output.y,output.w,output.h);
-    //printf("\033[0;0f");
-    // Disable CNN clock to save power
-    cnn_stop();
-    MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_CNN);
+        // first get an image from the camera and load it into the CNN buffer
+        capture_camera_img();
+        display_RGB565_img(SCREEN_X,SCREEN_Y, cnn_buffer,true);
 
-#ifdef CNN_INFERENCE_TIMER
-    printf("Approximate inference time: %u us\n\n", cnn_time);
-#endif
-    
-    // cnn output class
+        // Enable CNN clock
+        MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_CNN);
+
+        cnn_init(); // Bring state machine into consistent state
+        cnn_configure(); // Configure state machine
+
+        cnn_start();
+        load_input();
+            
+        while (cnn_time == 0)
+        __WFI(); // Wait for CNN
+
+        // classify the output
+        softmax_layer();
+
+        //printf("Classification results:\n");
+
+        for (int i = 0; i < NUM_CLASSES; i++) 
+        {
+          // softmax output is in fixed point so need to convert to percentage
+          digs = (1000 * ml_softmax[i] + 0x4000) >> 15;
+          tens = digs % 10; // get the fractional part
+          digs = digs / 10; // get the integer part
+          printf("[%7d] -> Class %d: %d.%d%%\n", ml_data[i], i, digs, tens);
+          // keep track of the max class
+          // if(digs > max)
+          // {
+          //     max = digs;
+          //     max_i = i;
+          // }
+          class_sums[i] += digs;
+          if(class_sums[i] > max)
+          {
+            max = class_sums[i];
+            max_i = i;
+          }
+        }
+        //printf("BB coords:\n");
+        // output.x = ml_data[6]/29000;
+        // output.y = ml_data[7]/29000;
+        // output.w = ml_data[8]/33000;
+        // output.h = ml_data[9]/33000;
+        //printf("x: %i\ny: %i\nw: %i\nh: %i\n",output.x,output.y,output.w,output.h);
+        //printf("\033[0;0f");
+        // Disable CNN clock to save power
+        cnn_stop();
+        MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_CNN);
+
+    #ifdef CNN_INFERENCE_TIMER
+        printf("Approximate inference time: %u us\n\n", cnn_time);
+    #endif
+        
+        // cnn output class
+        //output.output_class = class_names[max_i];
+    }
     output.output_class = class_names[max_i];
+    printf("CLASS: %s\n",class_strings[max_i]);
     return &output;
 }
 
