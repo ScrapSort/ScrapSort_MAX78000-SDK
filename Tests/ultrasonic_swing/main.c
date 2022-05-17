@@ -19,6 +19,8 @@
 #include "tmr_funcs.h"
 #include "cnn_helper_funcs.h"
 #include "camera_tft_funcs.h"
+#include "ultrasonic.h"
+#include "camera_tft_funcs.h"
 
 
 

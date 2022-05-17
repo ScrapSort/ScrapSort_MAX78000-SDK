@@ -11,9 +11,6 @@ typedef enum Flag
   FLIPPER_0=0,
   FLIPPER_1,
   FLIPPER_2,
-  FLIPPER_3,
-  FLIPPER_4,
-  FLIPPER_5,
   CAMERA,
   CLOSE,
   NUM_FLAGS
