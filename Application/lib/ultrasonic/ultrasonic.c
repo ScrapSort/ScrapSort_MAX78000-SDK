@@ -142,7 +142,7 @@ void flipper_callback(uint8_t flipper_num)
     // target_tics(flipper_num,-40);
     // MXC_Delay(600000);
     // go_home_forward(flipper_num);
-    printf("flipper callback\n");
+    printf("flipper: %i callback\n",flipper_num);
 }
 
 void to_trigger()
@@ -162,7 +162,7 @@ void to_trigger()
     {
         return;
     }
-    MXC_Delay(20000);
+    MXC_Delay(10000);
     
     // trigger the corresponding sensor
     switch (sensor_idx)
