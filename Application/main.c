@@ -40,6 +40,8 @@ int main()
 
     LCD_Camera_Setup();
 
+    startup_cnn();
+
     #ifdef COLLECT_DATA
     init_card();
     init_class_button();
@@ -65,13 +67,17 @@ int main()
             pause_sensor();
             //__disable_irq();
             capture();
-            display_RGB565_img(56,80,NULL,false);
+            //display_RGB565_img(56,80,NULL,false);
             //__enable_irq();
             resume_sensor();
         }
         if(get_switch_state() == 1)
         {
             switch_class();
+        }
+        if(get_save_state() == 1)
+        {
+            save_image();
         }
         #endif
 

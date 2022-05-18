@@ -12,12 +12,11 @@ extern char* class_strings[];
 // this is the class output types
 typedef enum
 {
-    CUP = 0,
-    TRAPEZOID,
-    HEXAGON,
-    CAN,
-    BOTTLE,
-    NONE
+    PLASTIC = 0,
+    PAPER,
+    NONE,
+    METAL,
+    OTHER // not currently using other, need more data
 } output_classes_t;
 
 // this struct stores the output information from the CNN
@@ -29,6 +28,7 @@ typedef struct
     int y;
     int w;
     int h;
+    uint8_t* raw;
 }cnn_output_t;
 
 

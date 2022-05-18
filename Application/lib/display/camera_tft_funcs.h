@@ -127,8 +127,7 @@ void init_LCD();
 
     Return: none
 */
-void display_RGB565_img(int x_coord, int y_coord, uint32_t* cnn_buffer, int load_cnn);
-
+uint8_t* display_RGB565_img(int x_coord, int y_coord, uint32_t* cnn_buffer, int load_cnn);
 
 /*
     Description: This function writes text to the LCD

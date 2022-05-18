@@ -14,10 +14,13 @@ void init_class_button();
 
 void capture();
 void switch_class();
+void save_image();
 
 int get_capture_state();
 
 int get_switch_state();
+
+int get_save_state();
 
 void trigger_cam();
 void trigger();
