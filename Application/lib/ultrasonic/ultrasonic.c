@@ -59,7 +59,7 @@ uint8_t flag_callback_params[NUM_FLAGS] = {0};
 volatile int exp_times[] = {0,0,0,0,0};
 
 bool is_first = true;
-uint16_t arm_hold_time = 1300;
+uint16_t arm_hold_time = 900;
 
 void camera_callback(uint8_t cb_data)
 {
@@ -70,11 +70,33 @@ void camera_callback(uint8_t cb_data)
 
     show_cnn_output(output);
 
-    int class_type = output.output_class;
+    output_classes_t class_type = output.output_class;
     // - printf("class type: %s\n", class_strings[class_type]);
 
     // add to queues w/ return val from classifier
-    sorter__add_item(&sorting_queues, class_type);
+    switch(class_type)
+    {
+        case PLASTIC:
+        {
+            sorter__add_item(&sorting_queues, 0);
+            break;
+        }
+        case PAPER:
+        {
+            sorter__add_item(&sorting_queues, 1);
+            break;
+        }
+        case METAL:
+        {
+            sorter__add_item(&sorting_queues, 2);
+            break;
+        }
+        case NONE:
+        {
+            break;
+        }
+    }
+    
 }
 
 // closes correpsonding arm
@@ -169,7 +191,7 @@ void flipper_callback(uint8_t flipper_num)
         //set_motor_profile(flipper_num, MOTOR_PROFILE_SPEED);
 
         // open the arm
-        target_tics(flipper_num, -40);
+        target_tics(flipper_num, -35);
 
         // add this arm to the expiration queue with the expiration time (500ms delay)
         queue__push(&expirations, flipper_num);

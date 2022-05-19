@@ -81,14 +81,12 @@
 // *****************************************************************************
 int main()
 {
-    MXC_ICC_Enable(MXC_ICC0); // Enable cache
-
     // Switch to 100 MHz clock
     MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
     SystemCoreClockUpdate();
     
     // set up the camera and LCD
-    //LCD_Camera_Setup();
+    LCD_Camera_Setup();
 
     #ifdef COLLECT_DATA
     init_card();
