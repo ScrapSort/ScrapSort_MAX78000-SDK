@@ -64,21 +64,16 @@ int main()
         // display_RGB565_img(56,96,NULL,false);
         if(get_capture_state() == 1)
         {
-            pause_sensor();
-            //__disable_irq();
             capture();
-            //display_RGB565_img(56,80,NULL,false);
-            //__enable_irq();
-            resume_sensor();
         }
         if(get_switch_state() == 1)
         {
             switch_class();
         }
-        if(get_save_state() == 1)
-        {
-            save_image();
-        }
+        // if(get_save_state() == 1)
+        // {
+        //     save_image();
+        // }
         #endif
 
         #ifdef STREAM_MODE

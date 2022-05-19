@@ -50,7 +50,7 @@ uint32_t w = 128;
 uint32_t h = 128; 
 
 // class category names (directory names)
-char* classes[] = {"Paper", "Metal", "Plastic", "Other","None"};
+char* classes[] = {"Plastic","Paper","None","Metal","Other"};
 
 // number of images in each directory
 uint16_t img_amnts[] = {0,0,0,0,0};
@@ -67,11 +67,14 @@ area_t cover_text = {0, 280, 240, 30};
 char file_prefix[8] = "img0000";
 
 // file paths
-char class1[] = "recycling_imgs/Paper/num_imgs";
-char class2[] = "recycling_imgs/Metal/num_imgs";
-char class3[] = "recycling_imgs/Plastic/num_imgs";
-char class4[] = "recycling_imgs/Other/num_imgs";
-char class5[] = "recycling_imgs/None/num_imgs";
+// char class1[] = "recycling_imgs/Plastic/num_imgs";
+// char class2[] = "recycling_imgs/Paper/num_imgs";
+// char class3[] = "recycling_imgs/None/num_imgs";
+// char class4[] = "recycling_imgs/Metal/num_imgs";
+// char class5[] = "recycling_imgs/Other/num_imgs";
+char* num_saved_imgs[] = {"recycling_imgs/Plastic/num_imgs", "recycling_imgs/Paper/num_imgs",
+                           "recycling_imgs/None/num_imgs", "recycling_imgs/Metal/num_imgs",
+                           "recycling_imgs/Other/num_imgs"};
 
 // ========================================================================================= //
 // ================================ FUNCTION DEFINITIONS =================================== //
@@ -176,7 +179,7 @@ void switch_class()
     }
     else // otherwise go to the next class button
     {
-        // if reseting
+        // if resetting
         if(class_idx == (QUIT_IDX+1))
         {
             // clear the quit button
@@ -209,11 +212,12 @@ void capture()
 
     // get the image outputs
     raw = output.raw;
+    output_classes_t pred = output.output_class;
 
     // camera_start_capture_image();
     // camera_get_image(&raw, &imgLen, &w, &h);
 
-    // quit
+    // quit --> unmount the sd card and confirm image amounts
     if(class_idx == QUIT_IDX)
     {
         printf("quit");
@@ -222,23 +226,32 @@ void capture()
         mount();
 
         // save image idxs
-        num_to_file(class1,&img_amnts[0]);
-        num_to_file(class2,&img_amnts[1]);
-        num_to_file(class3,&img_amnts[2]);
-        num_to_file(class4,&img_amnts[3]);
-        num_to_file(class5,&img_amnts[4]);
+        // num_to_file(class1,&img_amnts[0]);
+        // num_to_file(class2,&img_amnts[1]);
+        // num_to_file(class3,&img_amnts[2]);
+        // num_to_file(class4,&img_amnts[3]);
+        // num_to_file(class5,&img_amnts[4]);
 
         // confirm they are saved
-        get_num_from_file(class1,&img_amnts[0]);
-        get_num_from_file(class2,&img_amnts[1]);
-        get_num_from_file(class3,&img_amnts[2]);
-        get_num_from_file(class4,&img_amnts[3]);
-        get_num_from_file(class5,&img_amnts[4]);
+        for(int i = 0; i < 5; i++)
+        {
+            get_num_from_file(num_saved_imgs[class_idx],&img_amnts[class_idx]);
+        }
+        // get_num_from_file(class1,&img_amnts[0]);
+        // get_num_from_file(class2,&img_amnts[1]);
+        // get_num_from_file(class3,&img_amnts[2]);
+        // get_num_from_file(class4,&img_amnts[3]);
+        // get_num_from_file(class5,&img_amnts[4]);
 
         // quit
-        //umount();
-        reset();
+        umount();
+        //reset();
         return;
+    }
+    if(pred != class_idx)
+    {
+        printf("MISCLASSIFIED\n");
+        save_image();
     }
     
     // // increment the class img amount
@@ -296,8 +309,13 @@ void save_image()
     cd("recycling_imgs");
     cd(classes[class_idx]);
     printf("write image\n");
+
+    // write image and idx to sd card
     write_image(file_prefix, raw, imgLen);
+    printf("update idx\n");
+    num_to_file("num_imgs",&img_amnts[class_idx]);
     reset();
+    display_RGB565_img(56,140,NULL,false);
     TFT_Print(buffer,class_idx*48,280,font,sprintf(buffer,classes[class_idx]));
 }
 
@@ -475,11 +493,11 @@ void init_class_button()
     cd(classes[class_idx]);
     ls();
 
-    get_num_from_file("../Paper/num_imgs",&img_amnts[0]);
-    get_num_from_file("../Metal/num_imgs",&img_amnts[1]);
-    get_num_from_file("../Plastic/num_imgs",&img_amnts[2]);
-    get_num_from_file("../Other/num_imgs",&img_amnts[3]);
-    get_num_from_file("../None/num_imgs",&img_amnts[4]);
+    get_num_from_file("../Plastic/num_imgs",&img_amnts[0]);
+    get_num_from_file("../Paper/num_imgs",&img_amnts[1]);
+    get_num_from_file("../None/num_imgs",&img_amnts[2]);
+    get_num_from_file("../Metal/num_imgs",&img_amnts[3]);
+    get_num_from_file("../Other/num_imgs",&img_amnts[4]);
 
     reset();
     TFT_Print(buffer,class_idx*48,280,font,sprintf(buffer,classes[class_idx]));
