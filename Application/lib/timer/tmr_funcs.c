@@ -12,12 +12,12 @@
 #include "motor_funcs.h"
 
 #include "sorter.h"
-#include "ir_gpio_funcs.h"
 
 /***** Globals *****/
 int pause_camera_interrupts = 0;
 int ost_counter = 0;
 volatile uint32_t global_counter = 0;
+uint32_t SYSTICK_PRESCALER = 10000;
 
 /***** Functions *****/
 void PWMTimer()
@@ -144,14 +144,16 @@ void PB1Handler()
 }
 
 void SysTick_Setup() {
+    // setup the systick interrupt
     NVIC_SetVector(SysTick_IRQn, SysTick_Handler);
     NVIC_EnableIRQ(SysTick_IRQn);
+
+    // make it high priority to avoid missing tick increments
     NVIC_SetPriority(SysTick_IRQn,0);
 
     // num ticks b/t interrupts = 100MHz/10k = 10k
     // 10k ticks of 100MHz clk = 10k/100MHz = 100us
-    int err = SysTick_Config(SystemCoreClock/10000);
-    //int err = SysTick_Config(0xFFFFFF);
+    int err = SysTick_Config(SystemCoreClock/SYSTICK_PRESCALER);
     if(err != 0)
     {
         printf("Systick Failed\n");

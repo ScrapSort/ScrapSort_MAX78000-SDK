@@ -18,7 +18,8 @@
 // thresholds for ultrasonic distance
 // 2 cm null area to avoid oscillation when in between
 #define CLOSE_THRESH 18 /// cm
-#define FAR_THRESH 20 // cm
+#define FAR_THRESH 22 // cm
+#define DEBOUNCE 5000 // 1 gc = 100us --> 1000 gc = 1sec
 
 // interrupt function parameters (pass these to echo interrupt)
 Flag camera_idx = CAMERA;
@@ -43,6 +44,7 @@ mxc_gpio_cfg_t echo_flipper2_gpio;
 uint32_t volatile current_pulse_values[] = {0,0,0,0}; // rising edge time
 uint32_t volatile time_intervals[] = {100,100,100,100}; // pulse width in ticks, init to 100 to prevent false alarm on init
 uint16_t volatile object_statuses[] = {0,0,0,0}; // state variable to track if object in front of sensor
+uint32_t volatile object_timestamps[] = {0,0,0,0}; // debouncing
 uint8_t volatile trigger_state[] = {0,0,0,0}; // state variable to track if a sensor needs to fire
 
 sorter sorting_queues;
@@ -59,7 +61,7 @@ volatile int exp_times[] = {0,0,0,0,0};
 bool is_first = true;
 uint16_t arm_hold_time = 1300;
 
-void camera_callback()
+void camera_callback(uint8_t cb_data)
 {
     static cnn_output_t output;
 
@@ -118,29 +120,37 @@ void echo_handler(void* cb_data)
         {
             // there is an object in front of the sensor
             object_statuses[sensor_idx] = 1; // state update
+            object_timestamps[sensor_idx] = global_counter;
             set_flag(sensor_idx); // will trigger arm to close in main
-            // printf("object %d present\n",sensor_idx);
-            // printf("S2: %d\n",object_statuses[2]);
-            // printf("S1: %d\n",object_statuses[1]);
-            // printf("S0: %d\n",object_statuses[0]);
-            // printf("S3: %d\n",object_statuses[3]);
+    
+            //printf("present: %d\n",sensor_idx);
+            
+            // printf("S2: %d, %d cm\n",object_statuses[2],time_intervals[2]);
+            // printf("S1: %d, %d cm\n",object_statuses[1],time_intervals[1]);
+            // printf("S0: %d, %d cm\n",object_statuses[0],time_intervals[0]);
+            // printf("S3: %d, %d cm\n",object_statuses[3],time_intervals[3]);
             // printf("\033[0;0f");
         }
+        // update the timestamp if object still there
+        else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] < CLOSE_THRESH)
+        {
+            object_timestamps[sensor_idx] = global_counter;
+        }
         // object in front of the sensor and beyond the threshold, update the state
-        else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH)
+        else if(object_statuses[sensor_idx] && time_intervals[sensor_idx] >= FAR_THRESH && ((global_counter-object_timestamps[sensor_idx]) > DEBOUNCE))
         {
             // reset the state
             object_statuses[sensor_idx] = 0;
-            // printf("object %d left\n", sensor_idx);
-            // printf("S2: %d\n",object_statuses[2]);
-            // printf("S1: %d\n",object_statuses[1]);
-            // printf("S0: %d\n",object_statuses[0]);
-            // printf("S3: %d\n",object_statuses[3]);
+            //printf("left: %d\n",sensor_idx);
+            // printf("S2: %d, %d cm\n",object_statuses[2],time_intervals[2]);
+            // printf("S1: %d, %d cm\n",object_statuses[1],time_intervals[1]);
+            // printf("S0: %d, %d cm\n",object_statuses[0],time_intervals[0]);
+            // printf("S3: %d, %d cm\n",object_statuses[3],time_intervals[3]);
             // printf("\033[0;0f");
         }
-
+        // if(object_statuses[3])
+        //     printf("gc: %d ot: %d tsa: %d\n",global_counter, object_timestamps[3],global_counter-object_timestamps[3]);
         // after receiving a response, tell the next sensor to trigger
-        
         active_sensor += 1;
         if(active_sensor == 4)
         {
@@ -200,6 +210,7 @@ void to_trigger()
     {
         return;
     }
+    MXC_Delay(10000);
     
     // trigger the corresponding sensor
     switch (sensor_idx)
@@ -254,28 +265,28 @@ void init_echo_gpios()
     flag_callback_funcs[CLOSE] = close_arm_callback;
 
     // cam echo gpio
-    echo_cam_gpio.port = MXC_GPIO1;
-    echo_cam_gpio.mask = MXC_GPIO_PIN_6;
+    echo_cam_gpio.port = MXC_GPIO2;
+    echo_cam_gpio.mask = MXC_GPIO_PIN_3;
     echo_cam_gpio.func = MXC_GPIO_FUNC_IN;
     echo_cam_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&echo_cam_gpio);
     MXC_GPIO_RegisterCallback(&echo_cam_gpio, echo_handler, (void*)&camera_idx);
     MXC_GPIO_IntConfig(&echo_cam_gpio, MXC_GPIO_INT_BOTH);
     MXC_GPIO_EnableInt(echo_cam_gpio.port, echo_cam_gpio.mask);
-    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO1)));
+    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO2)));
     flag_callback_funcs[CAMERA] = camera_callback;
     flag_callback_params[CAMERA] = 3; 
 
     // flipper 0 echo gpio
-    echo_flipper0_gpio.port = MXC_GPIO2;
-    echo_flipper0_gpio.mask = MXC_GPIO_PIN_3;
+    echo_flipper0_gpio.port = MXC_GPIO1;
+    echo_flipper0_gpio.mask = MXC_GPIO_PIN_1;
     echo_flipper0_gpio.func = MXC_GPIO_FUNC_IN;
     echo_flipper0_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&echo_flipper0_gpio);
     MXC_GPIO_RegisterCallback(&echo_flipper0_gpio, echo_handler, (void*)&flipper0_idx);
     MXC_GPIO_IntConfig(&echo_flipper0_gpio, MXC_GPIO_INT_BOTH);
     MXC_GPIO_EnableInt(echo_flipper0_gpio.port, echo_flipper0_gpio.mask);
-    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO2)));
+    NVIC_EnableIRQ(MXC_GPIO_GET_IRQ(MXC_GPIO_GET_IDX(MXC_GPIO1)));
     flag_callback_funcs[FLIPPER_0] = flipper_callback;
     flag_callback_params[FLIPPER_0] = 0; 
 
@@ -294,7 +305,7 @@ void init_echo_gpios()
 
     // // flipper 2 echo gpio
     echo_flipper2_gpio.port = MXC_GPIO1;
-    echo_flipper2_gpio.mask = MXC_GPIO_PIN_1;
+    echo_flipper2_gpio.mask = MXC_GPIO_PIN_6;
     echo_flipper2_gpio.func = MXC_GPIO_FUNC_IN;
     echo_flipper2_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&echo_flipper2_gpio);
@@ -322,19 +333,19 @@ void init_trigger_gpios()
     trigger0_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&trigger0_gpio);
 
-    // flipper 2
-    trigger2_gpio.port = MXC_GPIO3;
-    trigger2_gpio.mask = MXC_GPIO_PIN_1;
-    trigger2_gpio.func = MXC_GPIO_FUNC_OUT;
-    trigger2_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
-    MXC_GPIO_Config(&trigger2_gpio);
-
     // flipper 1
     trigger1_gpio.port = MXC_GPIO2;
     trigger1_gpio.mask = MXC_GPIO_PIN_6;
     trigger1_gpio.func = MXC_GPIO_FUNC_OUT;
     trigger1_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
     MXC_GPIO_Config(&trigger1_gpio);
+
+    // flipper 2
+    trigger2_gpio.port = MXC_GPIO3;
+    trigger2_gpio.mask = MXC_GPIO_PIN_1;
+    trigger2_gpio.func = MXC_GPIO_FUNC_OUT;
+    trigger2_gpio.vssel = MXC_GPIO_VSSEL_VDDIOH;
+    MXC_GPIO_Config(&trigger2_gpio);
 }
 
 void check_all_callbacks()
