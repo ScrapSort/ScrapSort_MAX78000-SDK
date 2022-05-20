@@ -29,8 +29,7 @@
 
 
 // *****************************************************************************
-int main()
-{
+int main(){
     MXC_ICC_Enable(MXC_ICC0); // Enable cache
 
     // Switch to 100 MHz clock
@@ -72,8 +71,7 @@ int main()
     // }
     
     // initialize the ultrasonic sensor pins
-    init_trigger_gpios();  
-    init_echo_gpios();
+    
 
     // set the motor profile for this test
     // set_motor_profile(0, MOTOR_PROFILE_SPEED);
@@ -84,8 +82,8 @@ int main()
     // go_home_forward(1);
     // go_home_forward(2);
 
-    // activate the first ultrasonic sensor
-    activate_triggercam();
+    init_ultrasonic_timer();
+    init_ultrasonic_sensors();
     printf("initialized\n");
 
     // ======================== Main Loop =========================
@@ -98,7 +96,7 @@ int main()
         check_all_callbacks();
 
         // check if the next ultrasonic sensor should be triggered
-        to_trigger();
+        // to_trigger();
 
         // if(global_counter % 20000 == 0)
         // {
