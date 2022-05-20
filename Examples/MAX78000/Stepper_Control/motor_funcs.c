@@ -74,7 +74,7 @@ void set_motor_profile(uint8_t slave_addr, MOTOR_PROFILE profile){
         profile_speed_max = 400*10000;
         // profile_speed_max = 900*10000;
         profile_speed_start = 0;
-        profile_step_mode = TicStepMode__Full;
+        profile_step_mode = TicStepMode__Microstep4;
     }
     else if(profile == MOTOR_PROFILE_SPEED){
         profile_accel_max = 5000*100;

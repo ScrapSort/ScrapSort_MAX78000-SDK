@@ -1,5 +1,5 @@
-#define FIRST_MOTOR_TEST_NUM 0
-#define LAST_MOTOR_TEST_NUM 0
+#define FIRST_MOTOR_TEST_NUM 1
+#define LAST_MOTOR_TEST_NUM 1
 #define IN_TIC_NUM 10
 #define OUT_TIC_NUM -110
 
@@ -22,7 +22,7 @@
 #include "I2C_funcs.h"
 #include "motor_funcs.h"
 #include "tmr_funcs.h"
-#include "ir_gpio_funcs.h"
+
 
 
 
@@ -62,23 +62,29 @@ int main()
     {
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
-    
+    set_motor_profile(0, MOTOR_PROFILE_TORQUE);
+    set_motor_profile(1, MOTOR_PROFILE_TORQUE);
+    set_motor_profile(2, MOTOR_PROFILE_TORQUE);
     
     // ======================== Main Loop =========================
     while(1) 
     {
+        
         for(int currMotor = FIRST_MOTOR_TEST_NUM; currMotor < LAST_MOTOR_TEST_NUM+1; currMotor++){
+            printf("Before Out\n");
             // target_tics(currMotor, OUT_TIC_NUM);
             go_home_forward(currMotor);
+            MXC_Delay(MSEC(1));
         }
         printf("OUT\n");
-        MXC_Delay(SEC(2));
+        MXC_Delay(SEC(4));
          for(int currMotor = FIRST_MOTOR_TEST_NUM; currMotor < LAST_MOTOR_TEST_NUM+1; currMotor++){
             // target_tics(currMotor, IN_TIC_NUM);
             go_home_reverse(currMotor);
+            MXC_Delay(MSEC(1));
         }
         printf("IN\n");
-        MXC_Delay(SEC(2));
+        MXC_Delay(SEC(4));
     
     }
 }
