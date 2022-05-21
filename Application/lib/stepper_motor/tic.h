@@ -91,6 +91,8 @@ typedef enum TicVarOffset
     TicVarOffset__AgcCurrentBoostSteps  = 0x58, // uint8_t
     TicVarOffset__AgcFrequencyLimit     = 0x59, // uint8_t
     TicVarOffset__LastHpDriverErrors    = 0xFF, // uint8_t
+    TicVarOffset__HomingSpeedTowards    = 0x61, //uint32_t
+    TicVarOffset__HomingSpeedAway       = 0x65, //uint32_t
 }TicVarOffset;
 
 
