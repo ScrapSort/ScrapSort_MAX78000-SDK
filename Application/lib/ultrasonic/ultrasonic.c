@@ -81,30 +81,30 @@ void flipper_callback(void* cb_data)
 
     printf("flipper %i callback\n",sensor->sensor_id);
     // check if the item that passed is this flipper's item
-    if (sorter__detected_item(&sorting_queues, sensor->sensor_id)) { // same motor address as IR sensor address
+    if (sorter__detected_item(&sorting_queues, sensor->sensor_id-1)) { // same motor address as IR sensor address
         //set to high speed profile
         // - printf("Open Arm:%d\n",flipper_num);
         //set_motor_profile(flipper_num, MOTOR_PROFILE_SPEED);
 
         // open the arm
-        target_tics(sensor->sensor_id, -35);
+        //target_tics(sensor->sensor_id, -35);
+        printf("open arm: %i, %i\n",sensor->sensor_id, global_counter/10);
 
         // add this arm to the expiration queue with the expiration time (500ms delay)
-        queue__push(&expirations, sensor->sensor_id);
-        exp_times[sensor->sensor_id] = global_counter/10 + arm_hold_time; // about 1 second
-        // - printf("exp time added: %i\n", exp_times[flipper_num]);
+        queue__push(&expirations, sensor->sensor_id-1);
+        //printf("peak: %i\n",queue__peak(&expirations));
+        exp_times[sensor->sensor_id-1] = global_counter/10 + arm_hold_time; // about 1 second
+        //printf("exp time added: %i\n", exp_times[sensor->sensor_id-1]);
 
         // something needs to start the expiration timer, only execute if this is the first item placed
         if(is_first)
         {
-            // - printf("start tmr: %d\n", flipper_num);
             // clear flag
             is_first = false;
             
             // get the next deadline and set the expiration time
-            int next_deadline = exp_times[sensor->sensor_id]; // do we need to reset this?
-            MXC_TMR1->cnt = arm_hold_time - (next_deadline - global_counter/10)+100;
-
+            int next_deadline = exp_times[sensor->sensor_id-1]; // do we need to reset this?
+            MXC_TMR1->cnt = arm_hold_time - (next_deadline - global_counter/10);
             // start the next timer
             MXC_TMR_Start(MXC_TMR1);
         }
@@ -124,19 +124,40 @@ void camera_callback(void* cb_data)
     //printf("class type: %s\n", class_strings[class_type]);
     printf("camera callback\n");
 
-    sorter__add_item(&sorting_queues, class_type);
+    switch(class_type)
+    {
+        case PLASTIC:
+        {
+            sorter__add_item(&sorting_queues, 0);
+            break;
+        }
+        case PAPER:
+        {
+            sorter__add_item(&sorting_queues, 1);
+            break;
+        }
+        case METAL:
+        {
+            sorter__add_item(&sorting_queues, 2);
+            break;
+        }
+        case NONE:
+        {
+            break;
+        }
+    }
 }
 
 // closes correpsonding arm
 void close_arm_callback(void* cb_data)
 {
-    uint8_t *curr_stepper_idx = *(uint8_t*)(cb_data);
-    printf("close_handler\n");
+    //uint8_t curr_stepper_idx = *(uint8_t*)(cb_data);
+    printf("close_handler stepper: %i\n", curr_stepper_idx);
     //set to high torque mode
     //set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
 
     //set to home
-    go_home_forward(curr_stepper_idx);
+    //go_home_forward(curr_stepper_idx);
 }
 
 void init_ultrasonic_sensor(Ultrasonic *sensor, mxc_gpio_regs_t *trigger_port, uint32_t trigger_mask, mxc_gpio_regs_t *echo_port, uint32_t echo_mask, uint8_t sensor_id, flag_callback cb_func){ 
@@ -340,8 +361,13 @@ void init_ultrasonic_sensors()
     flag_callback_funcs[CLOSE] = close_arm_callback;
     flag_callback_params[CLOSE] = &curr_stepper_idx;
 
+    sorting_queues = Sorter(7,7);
+
     // set the first active sensor
     active_ultrasonic_sensor = sensors[0];
+
+    init_arm_timer();
+    expirations = Queue(10);
 
     printf("initialized ultrasonic sensors, start timer\n");
     MXC_TMR_Start(MXC_TMR2);
@@ -365,7 +391,7 @@ void expiration_handler()
     
     // get next item on the queue, says which stepper needs to close
     curr_stepper_idx = queue__pop(&expirations);
-    // - printf("tmr exp: %i\n", curr_stepper_idx);
+    //printf("tmr exp: %i\n", curr_stepper_idx);
     //// - printf("curr:%i\n",curr_stepper_idx);
 
     // set up the next timer interrupt by looking at the next item on the queue
