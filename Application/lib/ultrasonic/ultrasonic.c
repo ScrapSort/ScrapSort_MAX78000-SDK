@@ -65,15 +65,15 @@ void echo_handler(void* sensor)
 
 void camera_callback(void* cb_data)
 {
-    // static cnn_output_t output;
+    static cnn_output_t output;
 
-    // // call camera take picture
-    // output = *run_cnn();
+    // call camera take picture
+    output = *run_cnn();
 
-    // show_cnn_output(output);
+    show_cnn_output(output);
 
-    // int class_type = output.output_class;
-    // //printf("class type: %s\n", class_strings[class_type]);
+    int class_type = output.output_class;
+    //printf("class type: %s\n", class_strings[class_type]);
     printf("camera callback\n");
 }
 
