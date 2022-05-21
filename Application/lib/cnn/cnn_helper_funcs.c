@@ -109,9 +109,11 @@ cnn_output_t* run_cnn()
     for(int i = 0; i < 1; i++)
     {
         // first get an image from the camera and load it into the CNN buffer
+        MXC_TMR_Stop(MXC_TMR2);
         capture_camera_img();
         display_RGB565_img(SCREEN_X,SCREEN_Y, cnn_buffer,true);
-
+        MXC_TMR_Start(MXC_TMR2);
+        
         // Enable CNN clock
         MXC_SYS_ClockEnable(MXC_SYS_PERIPH_CLOCK_CNN);
 

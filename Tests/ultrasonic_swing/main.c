@@ -65,8 +65,7 @@ int main()
     }
     
     // initialize the ultrasonic sensor pins
-    init_trigger_gpios();  
-    init_echo_gpios();
+    
 
     // set the motor profile for this test
     set_motor_profile(0, MOTOR_PROFILE_SPEED);
@@ -80,29 +79,13 @@ int main()
     go_home_forward(2);
     MXC_Delay(10000);
 
-    // activate the first ultrasonic sensor
-    activate_triggercam();
+    init_ultrasonic_timer();
+    init_ultrasonic_sensors();
     printf("initialized\n");
-
-    startup_cnn();
-
-    // activate the first ultrasonic sensor
-    //activate_triggercam();
 
     // ======================== Main Loop =========================
     while(1) 
     {
-        // activate_trigger2();
-        // MXC_Delay(50000);
-        // check interrupt callbacks (code that should be executed outside interrupts)
         check_all_callbacks();
-
-        // check if the next ultrasonic sensor should be triggered
-        to_trigger();
-
-        // if(global_counter % 20000 == 0)
-        // {
-        //     printf("HB\n");
-        // }
     }
 }
