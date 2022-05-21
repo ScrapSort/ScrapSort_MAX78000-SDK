@@ -162,9 +162,8 @@ void activate_trigger_callback(void *cb_data){
         // there is an object in front of the sensor
         last_sensor->object_status = 1; // state update
         last_sensor->object_timestamp = global_counter;
-        //set_flag(last_id); // will trigger arm to close in main
-
-        printf("present: %d\n",last_id);
+        set_flag(last_id); // will trigger arm to close in main
+        //printf("present: %d\n",last_id);
         
         // printf("S2: %d, %d cm\n",object_statuses[2],time_intervals[2]);
         // printf("S1: %d, %d cm\n",object_statuses[1],time_intervals[1]);
