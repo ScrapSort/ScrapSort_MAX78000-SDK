@@ -122,10 +122,10 @@ cnn_output_t* run_cnn()
 
         cnn_start();
         load_input();
-            
+        printf("Before CNN Wait\n");    
         while (cnn_time == 0)
         __WFI(); // Wait for CNN
-
+        printf("After CNN Wait\n");
         // classify the output
         softmax_layer();
 

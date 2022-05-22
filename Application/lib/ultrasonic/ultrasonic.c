@@ -1,8 +1,7 @@
 #include "ultrasonic.h"
-#include "motor_funcs.h"
+#include "motor.h"
 #include "sorter.h"
 #include "flags.h"
-#include "motor_funcs.h"
 #include "cnn_helper_funcs.h"
 
 #include "mxc_device.h"
@@ -35,7 +34,7 @@ void* flag_callback_params[NUM_FLAGS];
 volatile int exp_times[] = {0,0,0,0,0};
 
 bool is_first = true;
-uint16_t arm_hold_time = 900;
+uint16_t arm_hold_time = 650;
 uint16_t ultrasonic_active_time = 10;
 
 Ultrasonic sensor_cam;
@@ -89,6 +88,7 @@ void flipper_callback(void* cb_data)
         // open the arm
         //target_tics(sensor->sensor_id, -35);
         printf("open arm: %i, %i\n",sensor->sensor_id, global_counter/10);
+        block_object(motors[sensor->sensor_id-1]);
 
         // add this arm to the expiration queue with the expiration time (500ms delay)
         queue__push(&expirations, sensor->sensor_id-1);
@@ -153,6 +153,7 @@ void close_arm_callback(void* cb_data)
 {
     //uint8_t curr_stepper_idx = *(uint8_t*)(cb_data);
     printf("close_handler stepper: %i\n", curr_stepper_idx);
+    pull_object(motors[curr_stepper_idx]);
     //set to high torque mode
     //set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
 

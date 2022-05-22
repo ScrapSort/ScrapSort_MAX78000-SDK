@@ -166,14 +166,14 @@ void wait_for_target(Motor *motor){
 
 void block_object(Motor *motor){
     set_motor_profile(motor, MOTOR_PROFILE_SPEED);
-    MXC_Delay(MSEC(1));
+    // MXC_Delay(MSEC(1));
     get_microstep_factor(motor);
     set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor*.4));
 }
 
 void pull_object(Motor *motor){
     set_motor_profile(motor, MOTOR_PROFILE_TORQUE);
-    MXC_Delay(MSEC(1));
+    // MXC_Delay(MSEC(1));
     get_microstep_factor(motor);
     set_target_position(motor, (int32_t)(motor->maxStep*motor->microstepFactor*.4));
 }
@@ -186,7 +186,7 @@ void motor_handler(Motor *motors[], size_t num_of_motors){
 
 void push_object(Motor *motor){
     set_motor_profile(motor, MOTOR_PROFILE_TORQUE);
-    MXC_Delay(MSEC(1));
+    // MXC_Delay(MSEC(1));
     get_microstep_factor(motor);
     set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor));
 }
@@ -218,9 +218,9 @@ void set_motor_profile(Motor *motor, MOTOR_PROFILE profile){
     uint8_t profile_step_mode; 
 
     if(profile==MOTOR_PROFILE_TORQUE){
-        profile_accel_max = 200*100;
+        profile_accel_max = 2*8*200*100;
         profile_decel_max = profile_accel_max;
-        profile_speed_max = 400*10000;
+        profile_speed_max = 2*8*400*10000;
         // profile_speed_homing_towards = 50000;
         // profile_speed_homing_away = 50000;
         // profile_speed_max = 900*10000;
@@ -228,13 +228,13 @@ void set_motor_profile(Motor *motor, MOTOR_PROFILE profile){
         profile_step_mode = TicStepMode__Microstep2;
     }
     else if(profile == MOTOR_PROFILE_SPEED){
-        profile_accel_max = 8*200*100;
+        profile_accel_max = 2*8*200*100;
         profile_decel_max = profile_accel_max;
-        profile_speed_max = 8*400*10000;
+        profile_speed_max = 2*8*400*10000;
         // profile_speed_homing_towards = 50000;
         // profile_speed_homing_away = 50000;
         profile_speed_start = 0;
-        profile_step_mode = TicStepMode__Microstep8;
+        profile_step_mode = TicStepMode__Microstep1;
     }
     // else if(profile == MOTOR_PROFILE_DEFAULT){
     //     profile_accel_max = 2000000;
@@ -519,7 +519,7 @@ int Motor_Init_Settings(Motor **motors, size_t motors_size) {
             printf("ERROR CODE: %d\n", rxdata[0]);
             return -1;
         }
-        deenergize(motors[motor_num]);
+        // deenergize(motors[motor_num]);
     }
 
     return E_NO_ERROR;

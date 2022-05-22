@@ -70,7 +70,7 @@ int main()
     }
     
     set_current_limit(motors[0], 13);
-    set_current_limit(motors[1], 20);
+    set_current_limit(motors[1], 13);
     set_current_limit(motors[2], 13);
 
     set_motor_profile(motors[0], MOTOR_PROFILE_DEFAULT);
