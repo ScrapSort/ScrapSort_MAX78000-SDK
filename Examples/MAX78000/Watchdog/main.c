@@ -56,15 +56,15 @@
 
 /***** Definitions *****/
 
-#if defined (BOARD_EVKIT_V1)
-#define LATE_SW_NAME     "SW2"
-#define EARLY_SW_NAME    "SW3"
-#elif defined (BOARD_FTHR_REVA)
+// #if defined (BOARD_EVKIT_V1)
+// #define LATE_SW_NAME     "SW2"
+// #define EARLY_SW_NAME    "SW3"
+// #elif defined (BOARD_FTHR_REVA)
 #define LATE_SW_NAME     "SW1"
 #define EARLY_SW_NAME    "SW2"
-#else
-#error "This example has been written to work with the MAX78000 EV Kit and FTHR boards."
-#endif
+// #else
+// #error "This example has been written to work with the MAX78000 EV Kit and FTHR boards."
+// #endif
 
 /***** Globals *****/
 static mxc_wdt_cfg_t cfg;
@@ -78,10 +78,21 @@ volatile int interrupt_count = 0;
 #define LED         LED1
 /***** Functions *****/
 
+void print_wdt0_info() {
+    printf("\n********************\n");
+    printf("--WDT0 INFO--\n");
+    printf("clksel: %u\n", MXC_WDT0->clksel);
+    printf("rst: %u\n", MXC_WDT0->rst);
+    printf("cnt: %u\n", MXC_WDT0->cnt);
+    printf("********************\n");
+}
+
 // *****************************************************************************
 void watchdogHandler()
 {
     MXC_WDT_ClearIntFlag(MXC_WDT0);
+
+    print_wdt0_info();
     
     if (interrupt_count == 0) {
         printf("\nWatchdog has tripped!\n");
@@ -94,6 +105,7 @@ void watchdogHandler()
         printf("This is the not the first time.  What happens if we\n");
         printf("do not reset it?\n");
     }
+
 }
 
 // *****************************************************************************
@@ -104,16 +116,14 @@ void WDT0_IRQHandler(void)
 // *****************************************************************************
 void MXC_WDT_Setup()
 {
-    MXC_WDT_Disable(MXC_WDT0);
-    MXC_WDT_ResetTimer(MXC_WDT0);
-    cfg.lowerResetPeriod = MXC_WDT_PERIOD_2_24;
-    cfg.upperResetPeriod = MXC_WDT_PERIOD_2_28;
-    MXC_WDT_SetResetPeriod(MXC_WDT0, &cfg);
-    MXC_WDT_Enable(MXC_WDT0);
-}
+    printf("\nInitial Setup...\n");
+    // MXC_WDT_Disable(MXC_WDT0);
+    // MXC_WDT_ResetTimer(MXC_WDT0);
+    // cfg.lowerResetPeriod = MXC_WDT_PERIOD_2_24;
+    // cfg.upperResetPeriod = MXC_WDT_PERIOD_2_28;
+    // MXC_WDT_SetResetPeriod(MXC_WDT0, &cfg);
+    // MXC_WDT_Enable(MXC_WDT0);
 
-void SW1_Callback()
-{
     printf("\nEnabling Timeout Interrupt...\n");
     MXC_WDT_Disable(MXC_WDT0);
     cfg.upperResetPeriod = MXC_WDT_PERIOD_2_28;
@@ -128,21 +138,49 @@ void SW1_Callback()
     NVIC_SetVector(WDT0_IRQn, WDT0_IRQHandler);
     NVIC_EnableIRQ(WDT0_IRQn);
     MXC_WDT_Enable(MXC_WDT0);
+}
+
+void SW1_Callback()
+{
+    // printf("\nEnabling Timeout Interrupt...\n");
+    // MXC_WDT_Disable(MXC_WDT0);
+    // cfg.upperResetPeriod = MXC_WDT_PERIOD_2_28;
+    // cfg.upperIntPeriod   = MXC_WDT_PERIOD_2_27;
+    // cfg.lowerResetPeriod = MXC_WDT_PERIOD_2_24;
+    // cfg.lowerIntPeriod   = MXC_WDT_PERIOD_2_23;
+    // MXC_WDT_SetResetPeriod(MXC_WDT0, &cfg);
+    // MXC_WDT_SetIntPeriod(MXC_WDT0, &cfg);
+    // MXC_WDT_ResetTimer(MXC_WDT0);
+    // MXC_WDT_EnableReset(MXC_WDT0);
+    // MXC_WDT_EnableInt(MXC_WDT0);
+    // NVIC_SetVector(WDT0_IRQn, WDT0_IRQHandler);
+    // NVIC_EnableIRQ(WDT0_IRQn);
+    // MXC_WDT_Enable(MXC_WDT0);
+    printf("SW1 Pressed\n");
     sw1_pressed = 1;
     PB_RegisterCallback(0, NULL);
 }
 
 void SW2_Callback()
 {
-    printf("What happens if the watchdog is reset too early?\n");
+    printf("SW2 Pressed\n");
+    // printf("SW2 clicked - starting infinite loop\n\n");
+    // while(1){}
+
+
+    // printf("What happens if the watchdog is reset too early?\n");
     sw2_pressed = 1;
     PB_RegisterCallback(1, NULL);
 }
 
+
+
 // *****************************************************************************
 int main(void)
 {
-    cfg.mode = MXC_WDT_WINDOWED;
+    print_wdt0_info();
+
+    cfg.mode = 0; // MXC_WDT_WINDOWED; 
     MXC_WDT_Init(MXC_WDT0, &cfg);
     
     if (MXC_WDT_GetResetFlag(MXC_WDT0)) {
@@ -195,12 +233,16 @@ int main(void)
     
     while (1) {
         if (sw1_pressed) {
+            printf("sw1_pressed == true\n");
             if (interrupt_count == 0) {
+                printf("interrupt_count == 0\n");
                 while (interrupt_count == 0) {};
                 
-                MXC_Delay(MXC_DELAY_MSEC(1500));
+                // printf("Wait 1500ms\n");
+                // MXC_Delay(MXC_DELAY_MSEC(1500));
             }
             else {
+                printf("while(1)");
                 while (1);
             }
             
@@ -219,6 +261,7 @@ int main(void)
         MXC_Delay(MXC_DELAY_MSEC(500));
         LED_Off(0);
         //Reset watchdog
+        printf("WDT - Natural Reset\n");
         MXC_WDT_ResetTimer(MXC_WDT0);
     }
 }
