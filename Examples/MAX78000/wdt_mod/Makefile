@@ -73,7 +73,7 @@ CMSIS_ROOT=$(LIBS_DIR)/CMSIS
 export CMSIS_ROOT
 
 # Source files for this test (add path to VPATH below)
-SRCS  = main.c
+SRCS  = main.c watchdog.c
 #SRCS += sla_header.c
 
 # Where to find source files for this test

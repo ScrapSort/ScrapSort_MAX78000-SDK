@@ -9,8 +9,12 @@
 #include "mxc_delay.h"
 
 
-void MXC_WDT_Setup();
-void WDT0_IRQHandler(void);
-void watchdogHandler();
+#define WATCHDOG_RESET_PERIOD MXC_WDT_PERIOD_2_30
+#define WATCHDOG_INTERRUPT_PERIOD MXC_WDT_PERIOD_2_29
 
+void MXC_WDT_Setup(void);
+void WDT0_IRQHandler(void);
+void watchdogHandler(void);
+void pat_the_dog(void);
+void assess_prev_reset(void);
 
