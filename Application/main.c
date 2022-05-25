@@ -71,6 +71,18 @@ int main()
         rxdata[i] = 0;
     }
 
+    
+
+
+    // cnn_output_t output;
+    // set_motor_profile(0, MOTOR_PROFILE_SPEED);
+    // set_motor_profile(1, MOTOR_PROFILE_SPEED);
+    // set_motor_profile(2, MOTOR_PROFILE_SPEED);
+
+    init_ultrasonic_timer();
+    init_ultrasonic_sensors();
+    printf("initialized ultrasonics\n");
+
     // init MOTORS
     Motor_Init(motors[0], 0);
     Motor_Init(motors[1], 1);
@@ -83,22 +95,22 @@ int main()
     {
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
-    set_current_limit(motors[0], 13);
-    set_current_limit(motors[1], 13);
-    set_current_limit(motors[2], 13);
+    set_current_limit(motors[0], 10);
+    set_current_limit(motors[1], 10);
+    set_current_limit(motors[2], 10);
     calibrate_motors(motors, 3);
     MXC_Delay(SEC(3));
+    // calibrate_motors(&(motors[1]), 1);
+    // MXC_Delay(SEC(3));
+    // calibrate_motors(&(motors[2]), 1);
+    // MXC_Delay(SEC(3));
+    // get_max_step(motors[0]);
+    // MXC_Delay(SEC(3));
+    // get_max_step(motors[1]);
+    // MXC_Delay(SEC(3));
+    // get_max_step(motors[2]);
+    // MXC_Delay(SEC(3));
     printf("Calibrated motors\n");
-
-
-    // cnn_output_t output;
-    // set_motor_profile(0, MOTOR_PROFILE_SPEED);
-    // set_motor_profile(1, MOTOR_PROFILE_SPEED);
-    // set_motor_profile(2, MOTOR_PROFILE_SPEED);
-
-    init_ultrasonic_timer();
-    init_ultrasonic_sensors();
-    printf("initialized ultrasonics\n");
 
     // ======================== Main Loop =========================
     while(1) 

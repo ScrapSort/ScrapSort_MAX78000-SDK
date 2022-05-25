@@ -152,7 +152,7 @@ float get_max_step(Motor *motor){
     MXC_Delay(MSEC(250));
     
     motor->maxMicrostep = wait_for_home(motor);
-    motor->maxStep = motor->maxMicrostep/8.0;
+    motor->maxStep = motor->maxMicrostep/2.0;
     return motor->maxStep;
 }
 
@@ -168,14 +168,14 @@ void block_object(Motor *motor){
     set_motor_profile(motor, MOTOR_PROFILE_SPEED);
     // MXC_Delay(MSEC(1));
     get_microstep_factor(motor);
-    set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor*.4));
+    set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor*.45));
 }
 
 void pull_object(Motor *motor){
     set_motor_profile(motor, MOTOR_PROFILE_TORQUE);
     // MXC_Delay(MSEC(1));
     get_microstep_factor(motor);
-    set_target_position(motor, (int32_t)(motor->maxStep*motor->microstepFactor*.4));
+    set_target_position(motor, (int32_t)(motor->maxStep*motor->microstepFactor*.45));
 }
 
 void motor_handler(Motor *motors[], size_t num_of_motors){
@@ -219,7 +219,7 @@ void set_motor_profile(Motor *motor, MOTOR_PROFILE profile){
 
     if(profile==MOTOR_PROFILE_TORQUE){
         profile_accel_max = 2*8*200*100;
-        profile_decel_max = profile_accel_max;
+        profile_decel_max = 4*200*100;
         profile_speed_max = 2*8*400*10000;
         // profile_speed_homing_towards = 50000;
         // profile_speed_homing_away = 50000;
