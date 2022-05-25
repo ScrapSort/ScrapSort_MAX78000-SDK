@@ -24,19 +24,11 @@
 #include "motor.h"
 #include "tmr_funcs.h"
 
-
 #include "sorter.h"
 #include "cnn_helper_funcs.h"
 #include "camera_tft_funcs.h"
 #include "ultrasonic.h"
-
-//#define COLLECT_DATA
-//#define STREAM_MODE
-
-#ifdef COLLECT_DATA
-#include "capture_button.h"
-#endif
-
+#include "heartbeat.h"
 
 // *****************************************************************************
 int main()
@@ -71,17 +63,9 @@ int main()
         rxdata[i] = 0;
     }
 
-    
-
-
-    // cnn_output_t output;
-    // set_motor_profile(0, MOTOR_PROFILE_SPEED);
-    // set_motor_profile(1, MOTOR_PROFILE_SPEED);
-    // set_motor_profile(2, MOTOR_PROFILE_SPEED);
-
     init_ultrasonic_timer();
     init_ultrasonic_sensors();
-    printf("initialized ultrasonics\n");
+    printf("Ultrasonics Initialized\n");
 
     // init MOTORS
     Motor_Init(motors[0], 0);
@@ -95,27 +79,12 @@ int main()
     {
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
-    set_current_limit(motors[0], 10);
-    set_current_limit(motors[1], 10);
-    set_current_limit(motors[2], 10);
-    calibrate_motors(motors, 3);
-    MXC_Delay(SEC(3));
-    // calibrate_motors(&(motors[1]), 1);
-    // MXC_Delay(SEC(3));
-    // calibrate_motors(&(motors[2]), 1);
-    // MXC_Delay(SEC(3));
-    // get_max_step(motors[0]);
-    // MXC_Delay(SEC(3));
-    // get_max_step(motors[1]);
-    // MXC_Delay(SEC(3));
-    // get_max_step(motors[2]);
-    // MXC_Delay(SEC(3));
-    printf("Calibrated motors\n");
-
+    
     // ======================== Main Loop =========================
     while(1) 
     {
-       
         check_all_callbacks();
+        motor_handler(motors, 3);
+        heartbeat();
     }
 }

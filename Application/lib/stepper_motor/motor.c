@@ -17,6 +17,8 @@
 
 #include <stdlib.h>
 
+#define BLOCK_COEFFICIENT 0.45
+
 Motor motor1;
 Motor motor2;
 Motor motor3;
@@ -152,6 +154,7 @@ float get_max_step(Motor *motor){
     MXC_Delay(MSEC(250));
     
     motor->maxMicrostep = wait_for_home(motor);
+    //Divide by microstep factor
     motor->maxStep = motor->maxMicrostep/2.0;
     return motor->maxStep;
 }
@@ -166,21 +169,21 @@ void wait_for_target(Motor *motor){
 
 void block_object(Motor *motor){
     set_motor_profile(motor, MOTOR_PROFILE_SPEED);
-    // MXC_Delay(MSEC(1));
     get_microstep_factor(motor);
-    set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor*.45));
+    set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
 }
 
 void pull_object(Motor *motor){
     set_motor_profile(motor, MOTOR_PROFILE_TORQUE);
-    // MXC_Delay(MSEC(1));
     get_microstep_factor(motor);
-    set_target_position(motor, (int32_t)(motor->maxStep*motor->microstepFactor*.45));
+    set_target_position(motor, (int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
 }
 
 void motor_handler(Motor *motors[], size_t num_of_motors){
     for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
-        go_home_forward(motors[motor_num]);
+        if(motors[motor_num]->currTarget == 0 && get_current_position(motors[motor_num])==0){
+            go_home_forward(motors[motor_num]);
+        }
     }
 }
 
@@ -301,13 +304,6 @@ uint32_t get_speed_max(Motor *motor){
     return motor->maxSpeed;
 }
 
-// void set_speed_homing_towards(Motor *motor, uint32_t speed_toward){
-//     txdata[0] = TicCommand__SetSpeedMax;
-//     fill_tx_32b(speed_toward);
-//     I2C_Send_Message(motor->i2c_slave_addr, 5, 0, 0);
-//     get_speed_homing_towards(motor);
-// }
-
 uint32_t get_speed_homing_towards(Motor *motor){
     motor->speedHomingTowards = get_variable_32(motor, TicVarOffset__HomingSpeedTowards);
     return motor->speedHomingTowards;
@@ -399,6 +395,7 @@ void set_target_position(Motor *motor, int32_t position){
     fill_tx_32b(position);
     I2C_Send_Message(motor->i2c_slave_addr, 5, 0, 0);
     printf("set Postion: %d\n", position);
+    motor->currTarget = position;
 }
 
 
@@ -482,7 +479,6 @@ int Motor_Init_Settings(Motor **motors, size_t motors_size) {
     //TODO Check if this does anything...
     // RESET COMMAND TIMEOUT
     txdata[0] = TicCommand__ResetCommandTimeout;
-
     I2C_Broadcast_Message(1, 0, 0);
 
     //TODO Check if this does anything...
@@ -519,8 +515,14 @@ int Motor_Init_Settings(Motor **motors, size_t motors_size) {
             printf("ERROR CODE: %d\n", rxdata[0]);
             return -1;
         }
-        // deenergize(motors[motor_num]);
+
+        set_current_limit(motors[motor_num], 10);
+        
     }
+
+    calibrate_motors(motors, motors_size);
+    MXC_Delay(SEC(3));
+    printf("Motors Calibrated\n");
 
     return E_NO_ERROR;
 
