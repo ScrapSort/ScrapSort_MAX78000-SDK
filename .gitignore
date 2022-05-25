@@ -7,3 +7,4 @@ Libraries/PeriphDrivers/bin
 Examples/MAX78000/PowerTest
 Application/build
 Tests/*/build
+.DS_Store
