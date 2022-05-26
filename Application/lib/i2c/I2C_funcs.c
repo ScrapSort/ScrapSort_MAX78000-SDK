@@ -85,11 +85,7 @@ void printData(void)
 int I2C_Init() {
     error = 0;
 
-    //Setup the I2CM
-    for (int slave_addr = START_SLAVE_ADDR; slave_addr < START_SLAVE_ADDR + NUM_SLAVES; slave_addr++) {
-        error += MXC_I2C_Init(I2C_MASTER, 1, slave_addr);
-    }
-
+    error += MXC_I2C_Init(I2C_MASTER, 1, 0);
     // configure scl pin to be pullup
     // mxc_gpio_cfg_t scl;
     // scl.port = MXC_GPIO0;
@@ -166,7 +162,11 @@ int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
     
     if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
         printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
-        MXC_GCR->rst0 |= 1 << 31;
+        // MXC_GCR->rst0 |= 1 << 31;slave_addr
+        MXC_Delay(MSEC(100));
+        //Reset I2C and send again.
+        I2C_Init();
+        I2C_Send_Message(slave_addr, tx_len, rx_len, restart);
         return E_COMM_ERR;
     }
 

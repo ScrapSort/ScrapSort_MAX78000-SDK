@@ -83,18 +83,20 @@ void wait_for_homes(Motor *motors[], size_t num_of_motors, bool store_max_step){
             if(curr_positions[motor_num] > max_positions[motor_num]){
                 max_positions[motor_num] = curr_positions[motor_num]; 
             }
-            printf("Position: %d\n", curr_positions[motor_num]);
+            // printf("Position: %d\n", curr_positions[motor_num]);
             all_homed = all_homed && (curr_positions[motor_num] == 0);
             MXC_Delay(MXC_DELAY_MSEC(10));
         }
     }
-    printf("About to store\n");
+    printf("About to store: \n");
     if(store_max_step){
         for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
             motors[motor_num]->maxStep = (uint32_t)(max_positions[motor_num]/2.0);
             motors[motor_num]->maxMicrostep = (uint32_t)(max_positions[motor_num]);
+            printf("%d ", motors[motor_num]->maxStep);
         }
     }
+    printf("\n");
 }
 // TODO Replace
 // void Debug_Motors(void) {

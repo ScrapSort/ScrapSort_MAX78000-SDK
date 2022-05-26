@@ -39,12 +39,14 @@ int main()
     
     // set up the camera and LCD
     LCD_Camera_Setup();
+    // init the CNN accelerator
+    startup_cnn();
+    
   
     // SYSTICK
     SysTick_Setup();
+   
     
-    // init the CNN accelerator
-    startup_cnn();
 
     // init I2C
     if (I2C_Init() != E_NO_ERROR) 
@@ -80,6 +82,10 @@ int main()
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
     
+    MXC_Delay(SEC(1));
+
+    
+
     // ======================== Main Loop =========================
     while(1) 
     {

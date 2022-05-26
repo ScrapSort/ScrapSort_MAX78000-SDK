@@ -35,7 +35,7 @@ volatile int exp_times[] = {0,0,0,0,0};
 
 bool is_first = true;
 uint16_t arm_hold_time = 650;
-uint16_t ultrasonic_active_time = 10;
+uint16_t ultrasonic_active_time = 8;
 
 Ultrasonic sensor_cam;
 Ultrasonic sensor_flipper1;
@@ -236,6 +236,10 @@ void activate_trigger_callback(void *cb_data){
         last_sensor->object_status = 1; // state update
         last_sensor->object_timestamp = global_counter;
         set_flag(last_id); // will trigger arm to close in main
+        // set_flag(0);
+        // set_flag(1);
+        // set_flag(2);
+        // set_flag(3);
         //printf("present: %d\n",last_id);
         
         // printf("S2: %d, %d cm\n",object_statuses[2],time_intervals[2]);
