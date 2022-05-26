@@ -91,7 +91,8 @@ void wait_for_homes(Motor *motors[], size_t num_of_motors, bool store_max_step){
     printf("About to store: \n");
     if(store_max_step){
         for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
-            motors[motor_num]->maxStep = (uint32_t)(max_positions[motor_num]/2.0);
+            // motors[motor_num]->maxStep = (uint32_t)(max_positions[motor_num]/2.0);
+            motors[motor_num]->maxStep = 112;
             motors[motor_num]->maxMicrostep = (uint32_t)(max_positions[motor_num]);
             printf("%d ", motors[motor_num]->maxStep);
         }

@@ -29,6 +29,7 @@
 #include "camera_tft_funcs.h"
 #include "ultrasonic.h"
 #include "heartbeat.h"
+#include "watchdog.h"
 
 // *****************************************************************************
 int main()
@@ -36,6 +37,11 @@ int main()
     // Switch to 100 MHz clock
     MXC_SYS_Clock_Select(MXC_SYS_CLOCK_IPO);
     SystemCoreClockUpdate();
+
+    // init watchdog
+    assess_prev_reset();
+    MXC_WDT_Setup();
+
     
     // set up the camera and LCD
     LCD_Camera_Setup();
@@ -47,6 +53,7 @@ int main()
     SysTick_Setup();
    
     
+    pat_the_dog();
 
     // init I2C
     if (I2C_Init() != E_NO_ERROR) 
@@ -64,6 +71,8 @@ int main()
         txdata[i] = 0;
         rxdata[i] = 0;
     }
+    
+    pat_the_dog();
 
     init_ultrasonic_timer();
     init_ultrasonic_sensors();
@@ -73,6 +82,9 @@ int main()
     Motor_Init(motors[0], 0);
     Motor_Init(motors[1], 1);
     Motor_Init(motors[2], 2);
+    
+    pat_the_dog();
+
     if (Motor_Init_Settings(motors, 3) != E_NO_ERROR) 
     {
         printf("MOTOR SETTINGS INITIALIZATION FAILURE\n");
@@ -81,6 +93,8 @@ int main()
     {
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
+
+    pat_the_dog();
     
     MXC_Delay(SEC(1));
 
@@ -93,5 +107,6 @@ int main()
         check_all_callbacks();
         motor_handler(motors, 3);
         heartbeat();
+        pat_the_dog();
     }
 }
