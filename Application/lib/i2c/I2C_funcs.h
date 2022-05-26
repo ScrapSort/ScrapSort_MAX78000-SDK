@@ -7,14 +7,15 @@
 //Original freq
 // #define I2C_FREQ        100000
 
-#define I2C_FREQ        50000 //New freq after vector board
+// #define I2C_FREQ        50000 //New freq after vector board
+#define I2C_FREQ        100000 //New freq after vector board
 #define I2C_BYTES       16
 
 #define NUM_SLAVES 3
 #define START_SLAVE_ADDR 0
 
-extern uint8_t txdata[I2C_BYTES]; //was static 
-extern uint8_t rxdata[I2C_BYTES]; //was static 
+extern volatile uint8_t txdata[I2C_BYTES]; //was static 
+extern volatile uint8_t rxdata[I2C_BYTES]; //was static 
 
 void I2C_Callback(mxc_i2c_req_t* req, int error);
 void fill_tx_32b(uint32_t num);

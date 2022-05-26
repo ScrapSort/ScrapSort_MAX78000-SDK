@@ -23,7 +23,7 @@
 #include "I2C_funcs.h"
 #include "motor.h"
 #include "tmr_funcs.h"
-#include "ir_gpio_funcs.h"
+
 
 
 
@@ -68,6 +68,7 @@ int main()
     {
         printf("MOTOR SETTINGS INITIALIZED :)\n");
     }
+<<<<<<< HEAD
     
     set_current_limit(motors[0], 13);
     set_current_limit(motors[1], 13);
@@ -95,6 +96,11 @@ int main()
     // set_angle(motors[0], 90);
     // printf("Current Postion: %d\n", get_current_position(motors[0]));
     // wait_for_target(motors[0]);
+=======
+    set_motor_profile(0, MOTOR_PROFILE_TORQUE);
+    set_motor_profile(1, MOTOR_PROFILE_TORQUE);
+    set_motor_profile(2, MOTOR_PROFILE_TORQUE);
+>>>>>>> 4f854e7f082bdc7edb3e36b54b3e55cfcc599f41
     
     // block_object(motors[MOTOR_TEST_NUM]);
     // MXC_Delay(SEC(2));
@@ -114,6 +120,7 @@ int main()
     // set_motor_profile(motors[MOTOR_TEST_NUM], MOTOR_PROFILE_TORQUE);
     // ======================== Main Loop =========================
     while(1) 
+<<<<<<< HEAD
     {   
         for(size_t motor_num = 0; motor_num < 3; motor_num++){
             block_object(motors[motor_num]);
@@ -153,5 +160,25 @@ int main()
     //     printf("IN\n");
     //     MXC_Delay(SEC(10));
         // MXC_Delay(SEC(1));
+=======
+    {
+        
+        for(int currMotor = FIRST_MOTOR_TEST_NUM; currMotor < LAST_MOTOR_TEST_NUM+1; currMotor++){
+            printf("Before Out\n");
+            // target_tics(currMotor, OUT_TIC_NUM);
+            go_home_forward(currMotor);
+            MXC_Delay(MSEC(1));
+        }
+        printf("OUT\n");
+        MXC_Delay(SEC(4));
+         for(int currMotor = FIRST_MOTOR_TEST_NUM; currMotor < LAST_MOTOR_TEST_NUM+1; currMotor++){
+            // target_tics(currMotor, IN_TIC_NUM);
+            go_home_reverse(currMotor);
+            MXC_Delay(MSEC(1));
+        }
+        printf("IN\n");
+        MXC_Delay(SEC(4));
+    
+>>>>>>> 4f854e7f082bdc7edb3e36b54b3e55cfcc599f41
     }
 }

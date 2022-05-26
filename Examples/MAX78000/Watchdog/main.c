@@ -67,6 +67,10 @@
 #endif
 
 /***** Globals *****/
+//use push buttons defined in board.h
+extern const mxc_gpio_cfg_t pb_pin[];
+extern const mxc_gpio_cfg_t led_pin[];
+
 static mxc_wdt_cfg_t cfg;
 
 volatile int sw1_pressed = 0;
@@ -169,6 +173,7 @@ int main(void)
     printf("%s: Push %s to reset the watchdog timer in the \"too-early\" period.\n", EARLY_SW_NAME, EARLY_SW_NAME);
     
     //Blink LED
+    // MXC_GPIO_OutClr(led_pin[0].port,led_pin[0].mask);
     LED_Off(0);
     
     //Blink LED three times at startup
@@ -216,8 +221,10 @@ int main(void)
         //blink LED0
         MXC_Delay(MXC_DELAY_MSEC(500));
         LED_On(0);
+        // MXC_GPIO_OutSet(led_pin[0].port,led_pin[0].mask);
         MXC_Delay(MXC_DELAY_MSEC(500));
         LED_Off(0);
+        // MXC_GPIO_OutClr(led_pin[0].port,led_pin[0].mask);
         //Reset watchdog
         MXC_WDT_ResetTimer(MXC_WDT0);
     }

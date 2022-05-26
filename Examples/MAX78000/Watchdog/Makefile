@@ -51,8 +51,8 @@ COMPILER=GCC
 
 # Specify the board used
 ifeq "$(BOARD)" ""
-BOARD=EvKit_V1
-#BOARD=FTHR_RevA
+# BOARD=EvKit_V1
+BOARD=FTHR_RevA
 endif
 
 # This is the path to the CMSIS root directory

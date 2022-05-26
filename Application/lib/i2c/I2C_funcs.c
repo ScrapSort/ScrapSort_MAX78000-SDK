@@ -14,8 +14,8 @@
 #include "motor.h"
 
 /***** Globals *****/
-uint8_t txdata[I2C_BYTES]; //was static 
-uint8_t rxdata[I2C_BYTES]; //was static 
+volatile uint8_t txdata[I2C_BYTES]; //was static 
+volatile uint8_t rxdata[I2C_BYTES]; //was static 
 volatile uint8_t DMA_FLAG = 0;
 volatile int I2C_FLAG;
 volatile int txnum = 0;
@@ -29,7 +29,7 @@ int error;
 //I2C callback function
 void I2C_Callback(mxc_i2c_req_t* req, int error)
 {
-    //printf("in callback\n");
+    printf("in callback\n");
     I2C_FLAG = error;
     return;
 }
@@ -86,6 +86,8 @@ int I2C_Init() {
     error = 0;
 
     error += MXC_I2C_Init(I2C_MASTER, 1, 0);
+    // error = MXC_I2C_Init(I2C_MASTER, 1, 0);
+    // MXC_I2C_SetTimeout(I2C_MASTER, SEC(1));
     // configure scl pin to be pullup
     // mxc_gpio_cfg_t scl;
     // scl.port = MXC_GPIO0;
@@ -110,6 +112,7 @@ int I2C_Init() {
     }
     
     int err = MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ);
+    
     if(err < 0)
     {
         printf("I2C clk err: %d\n",err);
@@ -117,6 +120,7 @@ int I2C_Init() {
 
 
     return E_NO_ERROR;
+    
 }
 
 int I2C_Broadcast_Message(int tx_len, int rx_len, int restart) {

@@ -57,8 +57,7 @@ endif
 
 # This is the path to the CMSIS root directory
 ifeq "$(MAXIM_PATH)" ""
-LIBS_DIR=$(shell cd ../Libraries; pwd)
-$(info LIBS_DIR path is $(LIBS_DIR))
+LIBS_DIR=../../../Libraries
 else
 LIBS_DIR=/$(subst \,/,$(subst :,,$(MAXIM_PATH))/Libraries)
 endif
@@ -74,35 +73,15 @@ CMSIS_ROOT=$(LIBS_DIR)/CMSIS
 export CMSIS_ROOT
 
 # Source files for this test (add path to VPATH below)
-# SRCS = main.c I2C_funcs.c motor_funcs.c tmr_funcs.c ir_gpio_funcs.c motor_funcs.c queue_node.c queue.c sorter.c stats.c
-SRCS = main.c
-SRC_DIRS = $(shell find lib -type d)
-SRCS += $(shell find $(SRC_DIRS) -type f -name "*.c")
-$(info SRCS is $(SRCS))
-# SRCS += cnn.c cnn_helper_funcs.c
-# SRCS += softmax.c
-# SRCS += camera_tft_funcs.c
-# SRCS += tft_fthr/Arial12x12.c
-# SRCS += tft_fthr/SansSerif16x16.c
-# SRCS += tft_fthr/SansSerif19x19.c
-# SRCS += flags.c
-# SRCS += capture_button.c
-# SRCS += sd_card_funcs.c
+SRCS  = main.c watchdog.c
 #SRCS += sla_header.c
 
 # Where to find source files for this test
 VPATH=.
 VPATH += $(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source
-VPATH += $(shell find lib -type d)
-
 
 # Where to find header files for this test
 IPATH = .
-IPATH += $(shell find lib -type d)
-$(info IPATH is $(IPATH))
-
-C_INC_FLAGS := $(addsuffix $(wildcard /*.h),$(INC_DIRS))
-$(info C_INC_FLAGS is $(C_INC_FLAGS))
 
 # Enable assertion checking for development
 PROJ_CFLAGS+=-DMXC_ASSERT_ENABLE 
@@ -126,7 +105,7 @@ PROJ_CFLAGS+=-Wall
 #STARTUPFILE=start.S
 
 # Set MXC_OPTIMIZE to override the default optimization level 
-MXC_OPTIMIZE_CFLAGS=-O1
+#MXC_OPTIMIZE_CFLAGS=-O1
 
 # Point this variable to a linker file to override the default file
 LINKER=$(TARGET_LC).ld
@@ -139,21 +118,14 @@ LINKERFILE=$(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source/GCC/$(LINKER)
 BOARD_DIR=$(LIBS_DIR)/Boards/$(TARGET_UC)/$(BOARD)
 include $(BOARD_DIR)/board.mk
 
-
 # Include the peripheral driver
 PERIPH_DRIVER_DIR=$(LIBS_DIR)/PeriphDrivers
 include $(PERIPH_DRIVER_DIR)/periphdriver.mk
 export PERIPH_DRIVER_DIR
 
-SDHC_DRIVER_DIR=$(LIBS_DIR)/SDHC
-FAT32_DRIVER_DIR=$(SDHC_DRIVER_DIR)/ff13
-include $(FAT32_DRIVER_DIR)/fat32.mk
-include $(SDHC_DRIVER_DIR)/sdhc.mk
-
 ################################################################################
 # Include the rules for building for this target. All other makefiles should be
 # included before this one.
-
 include $(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source/$(COMPILER)/$(TARGET_LC).mk
 
 all:
