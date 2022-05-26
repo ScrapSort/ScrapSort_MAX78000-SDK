@@ -8,11 +8,12 @@
 // interrupt flag identifiers (type)
 typedef enum Flag 
 {
-  FLIPPER_0=0,
+  CAMERA = 0,
   FLIPPER_1,
   FLIPPER_2,
-  CAMERA,
+  FLIPPER_3,
   CLOSE,
+  ULTRASONIC_FIRE,
   NUM_FLAGS
 } Flag;
 
@@ -26,6 +27,6 @@ void unset_flag(Flag f);
 bool is_flag_set(Flag f);
 
 // the callback function signature for the interrupts (call function of this type in main)
-typedef void (*flag_callback)(uint8_t);
+typedef void (*flag_callback)(void*);
 
 #endif // SCRAPSORT_INTEGRATION_FLAGS_H

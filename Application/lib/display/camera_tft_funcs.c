@@ -155,7 +155,7 @@ void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer, int load_
 /***** LCD Functions *****/
 void init_LCD()
 {
-  //printf("Init LCD.\n");
+  printf("Init LCD.\n");
   MXC_TFT_Init(MXC_SPI0, 1, &tft_reset_pin, NULL);
   MXC_TFT_ClearScreen();
   MXC_TFT_SetRotation(ROTATE_180);

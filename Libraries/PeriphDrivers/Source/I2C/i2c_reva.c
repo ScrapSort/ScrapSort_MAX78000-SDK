@@ -804,8 +804,37 @@ int MXC_I2C_RevA_MasterTransaction (mxc_i2c_reva_req_t* req)
         i2c->mstctrl |= MXC_F_I2C_REVA_MSTCTRL_STOP;
     }
     
-    while (!(i2c->intfl0 & MXC_F_I2C_REVA_INTFL0_STOP)); // Wait for Transaction to finish
-    while (!(i2c->intfl0 & MXC_F_I2C_REVA_INTFL0_DONE)); // Wait for Transaction to finish
+    uint32_t start = SysTick->VAL;
+    uint32_t curr = 0;
+    static const int TIMEOUT = 10000000 ;// 100ms
+    while (!(i2c->intfl0 & MXC_F_I2C_REVA_INTFL0_STOP)) // Wait for Transaction to finish
+    {
+        // curr = SysTick->VAL;
+        // // if we had an overflow
+        // if(curr < start)
+        // {
+        //     start = 0;
+        // }
+        // if((curr - start) > TIMEOUT)
+        // {
+        //     printf("timeout\n");
+        //     MXC_GCR->rst0 |= 1 << 31; // reset
+        // }
+    }
+    start = SysTick->VAL;
+    while (!(i2c->intfl0 & MXC_F_I2C_REVA_INTFL0_DONE)) // Wait for Transaction to finish
+    {
+        // curr = SysTick->VAL;
+        // if(curr < start)
+        // {
+        //     start = 0;
+        // }
+        // if((curr - start) > TIMEOUT)
+        // {
+        //     printf("timeout\n");
+        //     MXC_GCR->rst0 |= 1 << 31; // reset
+        // }
+    }
     
     i2c->intfl0 = MXC_F_I2C_REVA_INTFL0_DONE | MXC_F_I2C_REVA_INTFL0_STOP;
     
