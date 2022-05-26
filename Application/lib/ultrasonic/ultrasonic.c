@@ -152,8 +152,9 @@ void camera_callback(void* cb_data)
 void close_arm_callback(void* cb_data)
 {
     //uint8_t curr_stepper_idx = *(uint8_t*)(cb_data);
-    printf("close_handler stepper: %i\n", curr_stepper_idx);
     pull_object(motors[curr_stepper_idx]);
+    printf("close_handler stepper: %i\n", curr_stepper_idx);
+    
     //set to high torque mode
     //set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
 

@@ -140,7 +140,7 @@ int I2C_Broadcast_Message(int tx_len, int rx_len, int restart) {
         
         if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
             printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
-            MXC_GCR->rst0 |= 1 << 31;
+            // MXC_GCR->rst0 |= 1 << 31;
             error += E_COMM_ERR;
         }
         MXC_Delay(4000);

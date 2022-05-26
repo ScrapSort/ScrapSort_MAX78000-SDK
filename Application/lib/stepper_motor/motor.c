@@ -14,6 +14,7 @@
 #include "motor.h"
 #include "I2C_funcs.h"
 #include "tic.h"
+#include "tmr_funcs.h"
 
 #include <stdlib.h>
 
@@ -62,6 +63,10 @@ void calibrate_motors(Motor *motors[], size_t num_of_motors){
         go_home_forward(motors[motor_num]);
     }
     wait_for_homes(motors, num_of_motors, true);
+    for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
+        motors[motor_num]->currTarget = 0;
+        motors[motor_num]->lastHome = global_counter;
+    }
 }
 
 void wait_for_homes(Motor *motors[], size_t num_of_motors, bool store_max_step){
@@ -168,21 +173,32 @@ void wait_for_target(Motor *motor){
 }
 
 void block_object(Motor *motor){
+    motor->homed = true;
     set_motor_profile(motor, MOTOR_PROFILE_SPEED);
     get_microstep_factor(motor);
     set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
+    motor->lastBlock = global_counter;
+    printf("Block Motor Current Position: %d\n", get_current_position(motor));
 }
 
 void pull_object(Motor *motor){
     set_motor_profile(motor, MOTOR_PROFILE_TORQUE);
     get_microstep_factor(motor);
     set_target_position(motor, (int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
+    motor->currTarget = 0;
+    motor->lastHome = global_counter;
+    motor->homed = false;
+    printf("Pull Motor Current Position: %d\n", get_current_position(motor));
 }
 
 void motor_handler(Motor *motors[], size_t num_of_motors){
-    for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
-        if(motors[motor_num]->currTarget == 0 && get_current_position(motors[motor_num])==0){
-            go_home_forward(motors[motor_num]);
+    if(global_counter % ((uint32_t)(1*10000)) == 0){
+        for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
+            if(!motors[motor_num]->homed && ((global_counter - motors[motor_num]->lastHome) > (.5*10000))){
+                printf("################################Go home %d\n", motor_num);
+                go_home_forward(motors[motor_num]);
+                motors[motor_num]->homed = true;
+            }
         }
     }
 }
@@ -232,7 +248,7 @@ void set_motor_profile(Motor *motor, MOTOR_PROFILE profile){
     }
     else if(profile == MOTOR_PROFILE_SPEED){
         profile_accel_max = 2*8*200*100;
-        profile_decel_max = profile_accel_max;
+        profile_decel_max = 4*200*100;
         profile_speed_max = 2*8*400*10000;
         // profile_speed_homing_towards = 50000;
         // profile_speed_homing_away = 50000;
@@ -302,6 +318,11 @@ void set_speed_max(Motor *motor, uint32_t speed_max){
 uint32_t get_speed_max(Motor *motor){
     motor->maxSpeed = get_variable_32(motor, TicVarOffset__SpeedMax);
     return motor->maxSpeed;
+}
+
+uint8_t get_input_state(Motor *motor){
+    motor->inputState = get_variable_8(motor, TicVarOffset__InputState);
+    return motor->inputState;
 }
 
 uint32_t get_speed_homing_towards(Motor *motor){
@@ -395,7 +416,7 @@ void set_target_position(Motor *motor, int32_t position){
     fill_tx_32b(position);
     I2C_Send_Message(motor->i2c_slave_addr, 5, 0, 0);
     printf("set Postion: %d\n", position);
-    motor->currTarget = position;
+    motor->currTarget += position;
 }
 
 
@@ -429,6 +450,11 @@ int32_t get_current_position(Motor *motor){
     //in microsteps
     motor->currPosition = get_variable_32(motor, TicVarOffset__CurrentPosition);
     return motor->currPosition;
+}
+
+uint8_t get_planning_mode(Motor *motor){
+    motor->planningMode = get_variable_8(motor, TicVarOffset__PlanningMode);
+    return motor->planningMode;
 }
 
 //TODO Replace
@@ -516,7 +542,8 @@ int Motor_Init_Settings(Motor **motors, size_t motors_size) {
             return -1;
         }
 
-        set_current_limit(motors[motor_num], 10);
+        set_current_limit(motors[motor_num], 13);
+        motors[motor_num]->lastBlock = 0;
         
     }
 

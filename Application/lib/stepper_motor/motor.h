@@ -37,6 +37,11 @@ typedef struct Motor_t{
 
     uint32_t maxStep;
     uint32_t maxMicrostep;
+    bool homed;
+    uint8_t planningMode;
+    uint8_t inputState;
+    uint32_t lastHome;
+    uint32_t lastBlock;
 } Motor;
 
 // 200 steps/rev
@@ -96,6 +101,8 @@ uint8_t get_current_limit(Motor *motor);
 float get_angle(Motor *motor);
 uint8_t get_microstep_factor(Motor *motor);
 int32_t get_current_position(Motor *motor);
+uint8_t get_planning_mode(Motor *motor);
+uint8_t get_input_state(Motor *motor);
 
 void go_home_forward(Motor *motor);
 void go_home_reverse(Motor *motor);
