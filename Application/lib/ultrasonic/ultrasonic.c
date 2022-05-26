@@ -19,7 +19,7 @@
 // 2 cm null area to avoid oscillation when in between
 #define CLOSE_THRESH 18 /// cm
 #define FAR_THRESH 22 // cm
-#define DEBOUNCE 3000 // 1 gc = 100us --> 1000 gc = 100ms
+#define DEBOUNCE 2500 // 1 gc = 100us --> 1000 gc = 100ms
 #define LPF_COEFF 1
 
 sorter sorting_queues;
@@ -44,11 +44,20 @@ Ultrasonic sensor_flipper3;
 Ultrasonic* sensors[4] = {&sensor_cam, &sensor_flipper1,&sensor_flipper2,&sensor_flipper3};
 volatile Ultrasonic* active_ultrasonic_sensor;
 
+
 //volatile queue task_queue;
 
 void echo_handler(void* sensor)
 {
     Ultrasonic* ultrasonic_sensor = sensor;
+
+    // first update the state of the last sensor
+    int active_id = (active_ultrasonic_sensor->sensor_id-1 >= 0) ? active_ultrasonic_sensor->sensor_id-1 : 3;
+    Ultrasonic* last_sensor = sensors[active_id];
+    // if(ultrasonic_sensor->sensor_id != active_id)
+    // {
+    //     return;
+    // }
     //printf("In echo\n");
     // first interrupt (rising edge)
     if(ultrasonic_sensor->curr_rising_edge_global_count == 0)
@@ -78,7 +87,7 @@ void flipper_callback(void* cb_data)
     // MXC_Delay(600000);
     // go_home_forward(flipper_num);
 
-    printf("flipper %i callback\n",sensor->sensor_id);
+    //printf("flipper %i callback\n",sensor->sensor_id);
     // check if the item that passed is this flipper's item
     if (sorter__detected_item(&sorting_queues, sensor->sensor_id-1)) { // same motor address as IR sensor address
         //set to high speed profile
@@ -87,7 +96,7 @@ void flipper_callback(void* cb_data)
 
         // open the arm
         //target_tics(sensor->sensor_id, -35);
-        printf("open arm: %i, %i\n",sensor->sensor_id, global_counter/10);
+        //printf("open arm: %i, %i\n",sensor->sensor_id, global_counter/10);
         block_object(motors[sensor->sensor_id-1]);
 
         // add this arm to the expiration queue with the expiration time (500ms delay)
@@ -109,6 +118,7 @@ void flipper_callback(void* cb_data)
             MXC_TMR_Start(MXC_TMR1);
         }
     }
+    //printf("flipper %i callback NOP\n",sensor->sensor_id);
 }
 
 void camera_callback(void* cb_data)
@@ -122,7 +132,7 @@ void camera_callback(void* cb_data)
 
     output_classes_t class_type = output.output_class;
     //printf("class type: %s\n", class_strings[class_type]);
-    printf("camera callback\n");
+    //printf("camera callback\n");
 
     switch(class_type)
     {
@@ -153,7 +163,7 @@ void close_arm_callback(void* cb_data)
 {
     //uint8_t curr_stepper_idx = *(uint8_t*)(cb_data);
     pull_object(motors[curr_stepper_idx]);
-    printf("close_handler stepper: %i\n", curr_stepper_idx);
+    //printf("close_handler stepper: %i\n", curr_stepper_idx);
     
     //set to high torque mode
     //set_motor_profile(curr_stepper_idx, MOTOR_PROFILE_TORQUE);
@@ -217,6 +227,7 @@ void check_all_callbacks()
         // if a flag is set, call its handler code, then reset the flag
         if (is_flag_set(f))
         {
+            //printf("POPPING FROM QUEUE: %d\n",f);
             (*flag_callback_funcs[f])(flag_callback_params[f]);
             unset_flag(f);
         }
@@ -236,6 +247,7 @@ void activate_trigger_callback(void *cb_data){
         last_sensor->object_status = 1; // state update
         last_sensor->object_timestamp = global_counter;
         set_flag(last_id); // will trigger arm to close in main
+        //printf("ADD TO QUEUE: ultrasonic callback %d\n",last_id);
         // set_flag(0);
         // set_flag(1);
         // set_flag(2);
@@ -267,6 +279,7 @@ void activate_trigger_callback(void *cb_data){
     }
 
     // now trigger the next sensor
+    //printf("FIRING US: %d\n",sensor->sensor_id);
     trigger_high(sensor);
     MXC_Delay(10);
     trigger_low(sensor);
@@ -302,6 +315,7 @@ void ultrasonic_timer_expiration_handler()
 
     // add interrupt trigger to event queue
     set_flag(ULTRASONIC_FIRE);
+    //printf("ADDING TO QUEUE: trigger US %d\n",active_ultrasonic_sensor->sensor_id);
 }
 
 
@@ -423,6 +437,7 @@ void expiration_handler()
     }
     // close the current arm
     set_flag(CLOSE); 
+    //printf("ADDING TO QUEUE: close arm %d\n",curr_stepper_idx);
 }
 
 int init_arm_timer()

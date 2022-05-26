@@ -2,7 +2,7 @@
 #define HEARTBEAT_H
 
 #include <stdbool.h>
-bool heartbeatToggle;
+extern bool heartbeatToggle;
 
 void heartbeat();
 
