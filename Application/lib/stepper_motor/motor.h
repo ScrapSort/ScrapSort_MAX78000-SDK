@@ -107,6 +107,8 @@ uint8_t get_input_state(Motor *motor);
 void go_home_forward(Motor *motor);
 void go_home_reverse(Motor *motor);
 
+void all_motors_go_home_forward();
+
 int Motor_Init_Settings(Motor *motors[], size_t num_of_motors);
 void Motor_Init(Motor *motor, uint8_t i2c_slave_addr);
 

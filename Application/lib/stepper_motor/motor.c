@@ -18,6 +18,9 @@
 
 #include <stdlib.h>
 
+#include "color_print.h"
+#include "debug_flags.h"
+
 #define BLOCK_COEFFICIENT 0.45
 
 Motor motor1;
@@ -54,15 +57,17 @@ void calibrate_motors(Motor *motors[], size_t num_of_motors){
         set_motor_profile(motors[motor_num], MOTOR_PROFILE_CALIBRATE);
         MXC_Delay(MSEC(10));
     }
-    for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
-        go_home_reverse(motors[motor_num]);
-    }
-    wait_for_homes(motors, num_of_motors, false);
-    printf("First Home\n");
+    // for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
+    //     go_home_reverse(motors[motor_num]);
+    // }
+    // wait_for_homes(motors, num_of_motors, false);
+    // printf("First Home\n");
+
     for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
         go_home_forward(motors[motor_num]);
     }
     wait_for_homes(motors, num_of_motors, true);
+
     for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
         motors[motor_num]->currTarget = 0;
         motors[motor_num]->lastHome = global_counter;
@@ -88,16 +93,19 @@ void wait_for_homes(Motor *motors[], size_t num_of_motors, bool store_max_step){
             MXC_Delay(MXC_DELAY_MSEC(10));
         }
     }
-    printf("About to store: \n");
+    // printf("About to store: \n");
     if(store_max_step){
         for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
             // motors[motor_num]->maxStep = (uint32_t)(max_positions[motor_num]/2.0);
             motors[motor_num]->maxStep = 112;
             motors[motor_num]->maxMicrostep = (uint32_t)(max_positions[motor_num]);
-            printf("%d ", motors[motor_num]->maxStep);
+            // printf("%d ", motors[motor_num]->maxStep);
         }
     }
-    printf("\n");
+    for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
+        motors[motor_num]->homed = true;
+    }
+    // printf("\n");
 }
 // TODO Replace
 // void Debug_Motors(void) {
@@ -181,7 +189,9 @@ void block_object(Motor *motor){
     get_microstep_factor(motor);
     set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
     motor->lastBlock = global_counter;
+    #ifdef DEBUG_MOTORS 
     printf("Block Motor Current Position: %d\n", get_current_position(motor));
+    #endif
 }
 
 void pull_object(Motor *motor){
@@ -191,14 +201,18 @@ void pull_object(Motor *motor){
     motor->currTarget = 0;
     motor->lastHome = global_counter;
     motor->homed = false;
+    #ifdef DEBUG_MOTORS 
     printf("Pull Motor Current Position: %d\n", get_current_position(motor));
+    #endif
 }
 
 void motor_handler(Motor *motors[], size_t num_of_motors){
     if(global_counter % ((uint32_t)(1*10000)) == 0){
         for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
             if(!motors[motor_num]->homed && ((global_counter - motors[motor_num]->lastHome) > (.5*10000))){
-                printf("################################Go home %d\n", motor_num);
+                #ifdef DEBUG_MOTORS 
+                printf("Auto-Homing Motor #%d\n", motor_num);
+                #endif
                 go_home_forward(motors[motor_num]);
                 motors[motor_num]->homed = true;
             }
@@ -418,7 +432,9 @@ void set_target_position(Motor *motor, int32_t position){
     txdata[0] = TicCommand__SetTargetPosition;
     fill_tx_32b(position);
     I2C_Send_Message(motor->i2c_slave_addr, 5, 0, 0);
-    printf("set Postion: %d\n", position);
+    #ifdef DEBUG_MOTORS 
+    printf("set Postion: %d\n", position); 
+    #endif
     motor->currTarget += position;
 }
 
@@ -486,10 +502,17 @@ uint8_t get_planning_mode(Motor *motor){
 // }
 
 void go_home_forward(Motor *motor){
-    printf("Addr: %d\n", motor->i2c_slave_addr);
+    // printf("Forward Homing Motor #%d\n", motor->i2c_slave_addr);
     txdata[0] = TicCommand__GoHome;
     fill_tx_32b(1);
     I2C_Send_Message(motor->i2c_slave_addr, 2, 0, 0);
+}
+
+void all_motors_go_home_forward(){
+    printf("Forward Homing All Motors\n");
+    txdata[0] = TicCommand__GoHome;
+    fill_tx_32b(1);
+    I2C_Broadcast_Message(2, 0, 0);
 }
 
 void go_home_reverse(Motor *motor){
@@ -535,13 +558,13 @@ int Motor_Init_Settings(Motor **motors, size_t motors_size) {
         I2C_Send_Message(motors[motor_num]->i2c_slave_addr, 2, 1, 0);
 
         if (rxdata[0] != 10) { // normal operation state
-            printf("ERROR could not init motor %d\n", motor_num);
+            printf(ANSI_COLOR_RED "\tERROR could not init motor %d" ANSI_COLOR_RESET "\n", motor_num);
             // GET ERROR STATUS
             txdata[0] = TicCommand__GetVariableAndClearErrorsOccurred;
             txdata[1] = TicVarOffset__ErrorStatus;
 
             I2C_Send_Message(motors[motor_num]->i2c_slave_addr, 2, 1, 0);
-            printf("ERROR CODE: %d\n", rxdata[0]);
+            printf(ANSI_COLOR_RED "\tERROR CODE: %d" ANSI_COLOR_RESET "\n", rxdata[0]);
             return -1;
         }
 
@@ -551,8 +574,9 @@ int Motor_Init_Settings(Motor **motors, size_t motors_size) {
     }
 
     calibrate_motors(motors, motors_size);
-    MXC_Delay(SEC(3));
-    printf("Motors Calibrated\n");
+
+    MXC_Delay(SEC(1));
+    printf(ANSI_COLOR_GREEN "--> Motors Calibrated" ANSI_COLOR_RESET "\n");
 
     return E_NO_ERROR;
 

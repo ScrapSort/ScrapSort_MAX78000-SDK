@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "camera_tft_funcs.h"
 #include "string.h"
+#include "debug_flags.h"
 
 
 // ========================================================================================= //
@@ -122,10 +123,14 @@ cnn_output_t* run_cnn()
 
         cnn_start();
         load_input();
-        printf("Before CNN Wait\n");    
+        #ifdef DEBUG_CNN
+        printf("Before CNN Wait\n");  
+        #endif  
         while (cnn_time == 0)
         __WFI(); // Wait for CNN
+        #ifdef DEBUG_CNN
         printf("After CNN Wait\n");
+        #endif  
         // classify the output
         softmax_layer();
 
@@ -137,7 +142,9 @@ cnn_output_t* run_cnn()
           digs = (1000 * ml_softmax[i] + 0x4000) >> 15;
           tens = digs % 10; // get the fractional part
           digs = digs / 10; // get the integer part
+          #ifdef DEBUG_CNN
           printf("[%7d] -> Class %d: %d.%d%%\n", ml_data[i], i, digs, tens);
+          #endif  
           // keep track of the max class
           // if(digs > max)
           // {
@@ -162,8 +169,10 @@ cnn_output_t* run_cnn()
         cnn_stop();
         MXC_SYS_ClockDisable(MXC_SYS_PERIPH_CLOCK_CNN);
 
+    #ifdef DEBUG_CNN
     #ifdef CNN_INFERENCE_TIMER
         printf("Approximate inference time: %u us\n\n", cnn_time);
+    #endif
     #endif
         
         // cnn output class

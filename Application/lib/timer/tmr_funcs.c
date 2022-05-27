@@ -12,6 +12,8 @@
 #include "motor.h"
 
 #include "sorter.h"
+#include "color_print.h"
+
 
 /***** Globals *****/
 int pause_camera_interrupts = 0;
@@ -156,11 +158,11 @@ void SysTick_Setup() {
     int err = SysTick_Config(SystemCoreClock/SYSTICK_PRESCALER);
     if(err != 0)
     {
-        printf("Systick Failed\n");
+        printf(ANSI_COLOR_RED "--> Systick Failed" ANSI_COLOR_RESET "\n");
     }
     else
     {
-        printf("Systick initialized\n");
+        printf(ANSI_COLOR_GREEN "--> Systick initialized" ANSI_COLOR_RESET "\n");
     }
 }
 

@@ -12,6 +12,7 @@
 
 #include "I2C_funcs.h"
 #include "motor.h"
+#include "color_print.h"
 
 /***** Globals *****/
 volatile uint8_t txdata[I2C_BYTES]; //was static 
@@ -108,14 +109,14 @@ int I2C_Init() {
         return E_COMM_ERR;
     }
     else {
-        printf("\n-->I2C Master Initialization Complete\n");
+        printf(ANSI_COLOR_GREEN "--> I2C Master Initialization Complete" ANSI_COLOR_RESET "\n");
     }
     
     int err = MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ);
     
     if(err < 0)
     {
-        printf("I2C clk err: %d\n",err);
+        printf(ANSI_COLOR_RED "--> I2C clk err: %d" ANSI_COLOR_RESET "\n",err);
     }
 
 
@@ -139,7 +140,7 @@ int I2C_Broadcast_Message(int tx_len, int rx_len, int restart) {
         I2C_FLAG = 1;
         
         if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
-            printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
+            printf(ANSI_COLOR_RED "--> ERROR WRITING: %d\n\tSlave Addr: %d" ANSI_COLOR_RESET "\n", error, slave_addr);
             // MXC_GCR->rst0 |= 1 << 31;
             error += E_COMM_ERR;
         }
@@ -165,7 +166,7 @@ int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
     I2C_FLAG = 1;
     
     if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != 0) {
-        printf("ERROR WRITING: %d\n\tSlave Addr: %d\n", error, slave_addr);
+        printf(ANSI_COLOR_RED "--> ERROR WRITING: %d\n\tSlave Addr: %d" ANSI_COLOR_RESET "\n", error, slave_addr);
         // MXC_GCR->rst0 |= 1 << 31;slave_addr
         MXC_Delay(MSEC(100));
         //Reset I2C and send again.

@@ -14,6 +14,7 @@
 #include "nvic_table.h"
 #include "gcr_regs.h"
 #include "tmr_funcs.h"
+#include "color_print.h"
 
 // thresholds for ultrasonic distance
 // 2 cm null area to avoid oscillation when in between
@@ -340,7 +341,7 @@ void init_ultrasonic_timer()
     // init the timer
     if (MXC_TMR_Init(MXC_TMR2, &tmr, true) != E_NO_ERROR) 
     {
-        printf("Failed ultrasonic timer Initialization.\n");
+        printf(ANSI_COLOR_RED "--> Failed Ultrasonic Timer Initialization" ANSI_COLOR_RESET "\n");
     }
     
     // set up the callback for firing the ultrasonic
@@ -350,7 +351,7 @@ void init_ultrasonic_timer()
     // enable the interrupt
     MXC_TMR_EnableInt(MXC_TMR2);
 
-    printf("Ultrasonic timer initialized.\n\n");
+    printf(ANSI_COLOR_GREEN "--> Ultrasonic Timer Initialized" ANSI_COLOR_RESET "\n");
 }
 
 
@@ -389,7 +390,7 @@ void init_ultrasonic_sensors()
     init_arm_timer();
     expirations = Queue(10);
 
-    printf("initialized ultrasonic sensors, start timer\n");
+    printf(ANSI_COLOR_GREEN "--> Initialized ultrasonic sensors, start timer" ANSI_COLOR_RESET "\n");
     MXC_TMR_Start(MXC_TMR2);
 }
 
@@ -458,13 +459,13 @@ int init_arm_timer()
     // init the timer
     if (MXC_TMR_Init(MXC_TMR1, &tmr, true) != E_NO_ERROR) 
     {
-        printf("Failed one-shot timer Initialization.\n");
+        printf(ANSI_COLOR_RED "--> Failed one-shot timer Initialization" ANSI_COLOR_RESET "\n");
         return -1;
     }
     
     // enable the interrupt
     MXC_TMR_EnableInt(MXC_TMR1);
 
-    printf("State timer initialized.\n\n");
+    printf(ANSI_COLOR_GREEN "--> State timer initialized" ANSI_COLOR_RESET "\n");
     return 0;
 }
