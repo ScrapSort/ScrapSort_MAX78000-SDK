@@ -80,11 +80,6 @@ int main()
     // Initialize test data
     memset(txdata, 0, I2C_BYTES);
     memset(rxdata, 0, I2C_BYTES);
-    // for (int i = 0; i < I2C_BYTES; i++) 
-    // {
-    //     txdata[i] = 0;
-    //     rxdata[i] = 0;
-    // }
 
     // Init Ultrasonics
     init_ultrasonic_timer();

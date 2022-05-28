@@ -175,7 +175,7 @@ int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
         return E_COMM_ERR;
     }
 
-    //printTransaction(slave_addr, tx_len, rx_len);
+    // printTransaction(slave_addr, tx_len, rx_len);
 
     return E_NO_ERROR;
 }

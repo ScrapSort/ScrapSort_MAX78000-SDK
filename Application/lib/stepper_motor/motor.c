@@ -184,26 +184,26 @@ void wait_for_target(Motor *motor){
 }
 
 void block_object(Motor *motor){
+    #ifdef DEBUG_MOTORS 
+    printf("Block Motor Current Position: %d\n", get_current_position(motor));
+    #endif
     motor->homed = true;
     set_motor_profile(motor, MOTOR_PROFILE_SPEED);
     get_microstep_factor(motor);
     set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
     motor->lastBlock = global_counter;
-    #ifdef DEBUG_MOTORS 
-    printf("Block Motor Current Position: %d\n", get_current_position(motor));
-    #endif
 }
 
 void pull_object(Motor *motor){
+    #ifdef DEBUG_MOTORS 
+    printf("Pull Motor Current Position: %d\n", get_current_position(motor));
+    #endif
     set_motor_profile(motor, MOTOR_PROFILE_TORQUE);
     get_microstep_factor(motor);
     set_target_position(motor, (int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
     motor->currTarget = 0;
     motor->lastHome = global_counter;
     motor->homed = false;
-    #ifdef DEBUG_MOTORS 
-    printf("Pull Motor Current Position: %d\n", get_current_position(motor));
-    #endif
 }
 
 void motor_handler(Motor *motors[], size_t num_of_motors){

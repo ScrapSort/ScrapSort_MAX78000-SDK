@@ -35,7 +35,7 @@ void* flag_callback_params[NUM_FLAGS];
 volatile int exp_times[] = {0,0,0,0,0};
 
 bool is_first = true;
-uint16_t arm_hold_time = 650;
+uint16_t arm_hold_time = 850;
 uint16_t ultrasonic_active_time = 8;
 
 Ultrasonic sensor_cam;
@@ -139,17 +139,23 @@ void camera_callback(void* cb_data)
     {
         case PLASTIC:
         {
+            printf("BEFORE adding plastic\n");
             sorter__add_item(&sorting_queues, 0);
+            printf("AFTER adding plastic\n");
             break;
         }
         case PAPER:
         {
+            printf("BEFORE adding paper\n");
             sorter__add_item(&sorting_queues, 1);
+            printf("AFTER adding paper\n");
             break;
         }
         case METAL:
         {
+            printf("BEFORE adding metal\n");
             sorter__add_item(&sorting_queues, 2);
+            printf("AFTER adding metal\n");
             break;
         }
         case NONE:
