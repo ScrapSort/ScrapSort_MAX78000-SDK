@@ -20,7 +20,7 @@
 // 2 cm null area to avoid oscillation when in between
 #define CLOSE_THRESH 18 /// cm
 #define FAR_THRESH 22 // cm
-#define DEBOUNCE 2500 // 1 gc = 100us --> 1000 gc = 100ms
+#define DEBOUNCE 3000 // 1 gc = 100us --> 1000 gc = 100ms
 #define LPF_COEFF 1
 
 sorter sorting_queues;
@@ -129,7 +129,9 @@ void camera_callback(void* cb_data)
     // call camera take picture
     output = *run_cnn();
 
+    #ifdef DEBUG_LCD
     show_cnn_output(output);
+    #endif
 
     output_classes_t class_type = output.output_class;
     //printf("class type: %s\n", class_strings[class_type]);
@@ -139,23 +141,23 @@ void camera_callback(void* cb_data)
     {
         case PLASTIC:
         {
-            printf("BEFORE adding plastic\n");
+            // printf("BEFORE adding plastic\n");
             sorter__add_item(&sorting_queues, 0);
-            printf("AFTER adding plastic\n");
+            // printf("AFTER adding plastic\n");
             break;
         }
         case PAPER:
         {
-            printf("BEFORE adding paper\n");
+            // printf("BEFORE adding paper\n");
             sorter__add_item(&sorting_queues, 1);
-            printf("AFTER adding paper\n");
+            // printf("AFTER adding paper\n");
             break;
         }
         case METAL:
         {
-            printf("BEFORE adding metal\n");
+            // printf("BEFORE adding metal\n");
             sorter__add_item(&sorting_queues, 2);
-            printf("AFTER adding metal\n");
+            // printf("AFTER adding metal\n");
             break;
         }
         case NONE:

@@ -150,7 +150,9 @@ void display_RGB565_img(int x_coord, int y_coord,uint32_t* cnn_buffer, int load_
   }
 
   // display the image on the LCD
+  #ifdef DEBUG_LCD
 	MXC_TFT_ShowImageCameraRGB565(x_coord, y_coord, raw, h, w);
+  #endif
 }
 
 /***** LCD Functions *****/
