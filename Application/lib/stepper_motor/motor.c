@@ -433,7 +433,7 @@ void set_target_position(Motor *motor, int32_t position){
     fill_tx_32b(position);
     I2C_Send_Message(motor->i2c_slave_addr, 5, 0, 0);
     #ifdef DEBUG_MOTORS 
-    printf("set Postion: %d\n", position); 
+    printf("set Position: %d for %d\n", position, motor->i2c_slave_addr); 
     #endif
     motor->currTarget += position;
 }
