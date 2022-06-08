@@ -169,8 +169,12 @@ int I2C_Send_Message(int slave_addr, int tx_len, int rx_len, int restart) {
         printf(ANSI_COLOR_RED "--> ERROR WRITING: %d\n\tSlave Addr: %d" ANSI_COLOR_RESET "\n", error, slave_addr);
         // MXC_GCR->rst0 |= 1 << 31;slave_addr
         MXC_Delay(MSEC(100));
+        
         //Reset I2C and send again.
+        
+        MXC_I2C_Reset(I2C_MASTER);
         I2C_Init();
+
         I2C_Send_Message(slave_addr, tx_len, rx_len, restart);
         return E_COMM_ERR;
     }

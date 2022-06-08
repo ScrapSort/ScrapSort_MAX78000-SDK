@@ -57,11 +57,11 @@ void calibrate_motors(Motor *motors[], size_t num_of_motors){
         set_motor_profile(motors[motor_num], MOTOR_PROFILE_CALIBRATE);
         MXC_Delay(MSEC(10));
     }
-    for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
-        go_home_reverse(motors[motor_num]);
-    }
-    wait_for_homes(motors, num_of_motors, false);
-    printf("First Home\n");
+    // for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
+    //     go_home_reverse(motors[motor_num]);
+    // }
+    // wait_for_homes(motors, num_of_motors, false);
+    // printf("First Home\n");
 
     for(size_t motor_num = 0; motor_num < num_of_motors; motor_num++){
         go_home_forward(motors[motor_num]);
@@ -192,9 +192,9 @@ void block_object(Motor *motor){
     set_motor_profile(motor, MOTOR_PROFILE_SPEED);
     get_microstep_factor(motor);
     
-    currPosition = get_current_position(motor);
-    set_target_position(motor, -(int32_t)(motor->microstepFactor*(motor->maxStep*BLOCK_COEFFICIENT - abs(currPosition))));
-    // set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
+    // currPosition = get_current_position(motor);
+    // set_target_position(motor, -(int32_t)(motor->microstepFactor*(motor->maxStep*BLOCK_COEFFICIENT - abs(currPosition))));
+    set_target_position(motor, -(int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
     motor->lastBlock = global_counter;
 }
 
@@ -206,9 +206,9 @@ void pull_object(Motor *motor){
     set_motor_profile(motor, MOTOR_PROFILE_TORQUE);
     get_microstep_factor(motor);
     
-    currPosition = get_current_position(motor);
-    set_target_position(motor, (int32_t)(motor->microstepFactor*(motor->maxStep*BLOCK_COEFFICIENT-abs(currPosition))));
-    // set_target_position(motor, (int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
+    // currPosition = get_current_position(motor);
+    // set_target_position(motor, (int32_t)(motor->microstepFactor*(motor->maxStep*BLOCK_COEFFICIENT-abs(currPosition))));
+    set_target_position(motor, (int32_t)(motor->maxStep*motor->microstepFactor*BLOCK_COEFFICIENT));
     motor->currTarget = 0;
     motor->lastHome = global_counter;
     motor->homed = false;
